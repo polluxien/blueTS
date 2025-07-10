@@ -1,20 +1,16 @@
-import * as vscode from "vscode";
+import { commands, ExtensionContext } from "vscode";
+import { Panel } from "./PanelClass";
 
-export function activate(context: vscode.ExtensionContext) {
-  console.log(
-    'Congratulations, your extension "Webview" is up and running now'
+export function activate(context: ExtensionContext) {
+  //Erstelle Panel-Webview
+  const showPanelCommand = commands.registerCommand(
+    "react-ext.showPanel",
+    () => {
+      Panel.render(context.extensionUri);
+    }
   );
 
-  let webview = vscode.commands.registerCommand("helloworld.webview", () => {
-    let panel = vscode.window.createWebviewPanel("webview", "Web View", {
-      viewColumn: vscode.ViewColumn.One,
-    });
-
-    // will set the html here
-    panel.webview.html = `<h1>Classes:</h1>`;
-  });
-
-  context.subscriptions.push(webview);
+  context.subscriptions.push(showPanelCommand);
 }
 
 export function deactivate() {}

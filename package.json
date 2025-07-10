@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "helloworld.webview",
-        "title": "Web View"
+        "command": "react-ext.showPanel",
+        "title": "React Web View"
       }
     ]
   },
@@ -37,5 +37,9 @@
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.30.1",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "uuid": "^11.1.0"
   }
 }
