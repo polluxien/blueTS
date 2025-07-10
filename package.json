@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "redj.helloWorld",
-        "title": "Hello World"
+        "command": "helloworld.webview",
+        "title": "Web View"
       }
     ]
   },
@@ -28,14 +28,14 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.101.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.31.1",
-    "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "typescript": "^5.8.3",
+    "@types/node": "^20.19.6",
+    "@types/vscode": "^1.101.0",
+    "@typescript-eslint/eslint-plugin": "^8.36.0",
+    "@typescript-eslint/parser": "^8.36.0",
     "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.30.1",
+    "typescript": "^5.8.3"
   }
 }
