@@ -61,6 +61,7 @@ export class Panel {
       );
 
       Panel.currentPanel = new Panel(panel, extensionUri);
+      return Panel.currentPanel;
     }
   }
 
@@ -122,11 +123,20 @@ export class Panel {
     `;
   }
 
+  /**
+   * https://code.visualstudio.com/api/extension-guides/webview -> Passing messages from an extension to a webview
+   *
+   * @param message
+   */
+  public postMessage(message: any) {
+    this._panel.webview.postMessage(message);
+  }
+
   // ! Under Construction
   /**
    * https://medium.com/@ashleyluu87/data-flow-from-vs-code-extension-webview-panel-react-components-2f94b881467e
-   * 
-   * @param webview 
+   *
+   * @param webview
    */
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(

@@ -1,6 +1,5 @@
 import { Path } from "typescript";
 
-
 export type TsFileResource = {
   name: string;
   path: Path;
