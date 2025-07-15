@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import reactLogo from "../assets/react.svg";
 
-function App() {
+function ClassPage() {
   const [count, setCount] = useState(0);
   const [classes, setClasses] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -71,4 +71,4 @@ function App() {
   );
 }
 
-export default App;
+export default ClassPage;

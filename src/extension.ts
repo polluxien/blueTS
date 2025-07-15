@@ -15,7 +15,7 @@ export function activate(context: ExtensionContext) {
 
       //hole alle Ts-Files von directory
       const scrFiles = await getAllTsFilesFromDirectory(
-        "../src/ClassExample"
+        "/Users/bennet/Bachelor-Side-Projects/TypeScript-AST-Parsing/src/ClassExample"
       );
 
       //instanzier TSClassAnalyzer
