@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
-import reactLogo from "../assets/react.svg";
+import { vscode } from "../api/vscodeAPI";
 function ClassPage() {
-    const [count, setCount] = useState(0);
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     useEffect(() => {
+        vscode.postMessage({
+            command: "webViewReady",
+        });
+    }, []);
+    useEffect(() => {
         const handleMessage = (event) => {
             const message = event.data;
+            console.log(`Recived message with command: ${message.command}`);
             switch (message.command) {
-                case "curClasses":
-                    setClasses(message.classes);
+                case "postClasses":
+                    console.log(`Massage from command has data: ${message.data}`);
+                    setClasses(message.data);
+                    console.log("classes var: ", classes);
                     setLoading(false);
                     break;
                 case "error":
@@ -34,27 +41,13 @@ function ClassPage() {
     }
     return (<>
       <div>
-        <a href="https://vite.dev" target="_blank"></a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo"/>
-        </a>
-      </div>
-      <h1>TypeScript Klassen</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        //hier Darstellung von Klassen
-        <div>
-          {classes.map((className, index) => (<p key={index}>{className}</p>))}
+        <h1>TypeScript Klassen</h1>
+        <div className="card">
+          <div>
+            {classes.map((cls, index) => (<p key={index}>{cls.className}</p>))}
+          </div>
         </div>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>);
 }
 export default ClassPage;

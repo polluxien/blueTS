@@ -17,6 +17,7 @@ export class Panel {
   //singelton pattern, nur eine Webview kann gleichzeitig exestieren
   public static currentPanel: Panel | undefined;
   private _panel: WebviewPanel;
+  private _webViewIsReady: boolean = false;
 
   //EventListeners
   private _disposables: Disposable[] = [];
@@ -34,12 +35,22 @@ export class Panel {
       this._disposables
     );
 
+    this._panel.webview.onDidReceiveMessage((message) => {
+      if (message.command === "webViewReady") {
+        this._webViewIsReady = true;
+      }
+    });
+
     this._panel.webview.html = this._getWebviewContent(
       this._panel.webview,
       extensionUri
     );
 
     this._setWebviewMessageListener(this._panel.webview);
+  }
+
+  public getwebViewIsReady() {
+    return this._webViewIsReady;
   }
 
   //erstelle und/oder zeige Webview
@@ -123,6 +134,11 @@ export class Panel {
     `;
   }
 
+  public async waitForReady(): Promise<void> {
+    while (!this._webViewIsReady) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+  }
   /**
    * https://code.visualstudio.com/api/extension-guides/webview -> Passing messages from an extension to a webview
    *

@@ -1,6 +1,10 @@
 import ts from "typescript";
 import { TsFileResource } from "../fileService/fileResources";
-import { ClassRessource, ConstructorRessource, ParameterRessource } from "./tsCompilerAPIRessourcees";
+import {
+  ClassRessource,
+  ConstructorRessource,
+  ParameterRessource,
+} from "./tsCompilerAPIRessourcees";
 
 export class TSClassAnalyzer {
   private program;
@@ -30,10 +34,10 @@ export class TSClassAnalyzer {
   private visit(node: ts.Node, sourceFile: ts.SourceFile) {
     if (ts.isClassDeclaration(node) && node.name) {
       const tsFile = this.tsFiles.find(
-        (file) => file.name == sourceFile.fileName
+        (file) => file.path == sourceFile.fileName
       );
       if (!tsFile) {
-        console.error("SourceFile was not found again");
+        console.error("SourceFile was not found again: ", sourceFile.fileName);
       }
       let symbol = this.checker.getSymbolAtLocation(node.name);
       if (symbol) {
