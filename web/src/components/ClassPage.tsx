@@ -1,28 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Path } from "react-router-dom";
 import { vscode } from "../api/vscodeAPI";
-
-export type TsFileResource = {
-  name: string;
-  path: Path;
-};
-
-export type ParameterRessource = {
-  name: string;
-  type: string;
-  optional: boolean;
-};
-
-export type ConstructorRessource = {
-  parameters: ParameterRessource[] | undefined;
-  returnType: string;
-};
-
-export type ClassRessource = {
-  className: string;
-  tsFile: TsFileResource;
-  constructor: ConstructorRessource | undefined;
-};
+import type { ClassRessource } from "../ressources/classRessources";
+import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 
 function ClassPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
@@ -34,7 +13,7 @@ function ClassPage() {
       command: "webViewReady",
     });
   }, []);
-  
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
@@ -77,12 +56,12 @@ function ClassPage() {
     <>
       <div>
         <h1>TypeScript Klassen</h1>
-        <div className="card">
-          <div>
-            {classes.map((cls, index) => (
-              <p key={index}>{cls.className}</p>
-            ))}
-          </div>
+        <div>
+          {classes.map((cls, index) => (
+            <div key={index}>
+              <ClassCardComponent cls={cls}></ClassCardComponent>
+            </div>
+          ))}
         </div>
       </div>
     </>

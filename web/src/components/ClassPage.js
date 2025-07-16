@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { vscode } from "../api/vscodeAPI";
+import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 function ClassPage() {
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -42,10 +43,10 @@ function ClassPage() {
     return (<>
       <div>
         <h1>TypeScript Klassen</h1>
-        <div className="card">
-          <div>
-            {classes.map((cls, index) => (<p key={index}>{cls.className}</p>))}
-          </div>
+        <div>
+          {classes.map((cls, index) => (<div key={index}>
+              <ClassCardComponent cls={cls}></ClassCardComponent>
+            </div>))}
         </div>
       </div>
     </>);
