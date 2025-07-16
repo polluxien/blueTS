@@ -6,26 +6,33 @@ import { useState } from "react";
 
 function ClassCardComponent({ cls }: { cls: ClassRessource }) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
-  const openDialog = () => {
-    setClassDialogOpen(true);
-  };
-  //const closeDialog = () => setClassDialogOpen(false)};
+
+  const openDialog = () => setClassDialogOpen(true);
+  const closeDialog = () => setClassDialogOpen(false);
 
   return (
     <>
-      <Card className="text-center" style={{ width: "18rem" }}>
-        <Card.Header>{cls.className}</Card.Header>
+      <Card
+        bg="secondary"
+        text="white"
+        className="mb-2"
+        style={{ width: "12rem" }}
+      >
         <Card.Body>
-          <Button variant="primary" onClick={openDialog}>
-            Klasse erzeugen
+          <Card.Title>{cls.className}</Card.Title>
+          <Button variant="light" size="sm" onClick={openDialog}>
+            create instance
           </Button>
         </Card.Body>
         <Card.Footer className="text-muted">
-          From File: {cls.tsFile.name}
+          file: <i>{cls.tsFile.name}</i>
         </Card.Footer>
       </Card>
       {classDialogOpen && (
-        <CreateClassDialogComponent cls={cls}></CreateClassDialogComponent>
+        <CreateClassDialogComponent
+          cls={cls}
+          close={closeDialog}
+        ></CreateClassDialogComponent>
       )}
     </>
   );

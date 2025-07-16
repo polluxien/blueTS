@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { vscode } from "../api/vscodeAPI";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import type { ClassRessource } from "../ressources/classRessources";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
+import { Container } from "react-bootstrap";
 
 function ClassPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
@@ -57,11 +60,15 @@ function ClassPage() {
       <div>
         <h1>TypeScript Klassen</h1>
         <div>
-          {classes.map((cls, index) => (
-            <div key={index}>
-              <ClassCardComponent cls={cls}></ClassCardComponent>
-            </div>
-          ))}
+          <Container>
+            <Row>
+              {classes.map((cls, index) => (
+                <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
+                  <ClassCardComponent cls={cls} />
+                </Col>
+              ))}
+            </Row>
+          </Container>
         </div>
       </div>
     </>
