@@ -11,6 +11,8 @@ export type ParameterRessource = {
   optional: boolean;
 };
 
+
+
 export type ConstructorRessource = {
   parameters: ParameterRessource[] | undefined;
   returnType: string;

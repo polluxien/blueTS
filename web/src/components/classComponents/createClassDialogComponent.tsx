@@ -35,6 +35,7 @@ function CreateClassDialogComponent({ cls }: { cls: ClassRessource }) {
               >
                 {classVariables.map((param, index) => (
                   <FormGroup key={index}>
+                    
                     <Form.Label>
                       {param.name}: {param.type}
                       {param.optional && "?"}
