@@ -20,7 +20,6 @@ export function activate(context: ExtensionContext) {
         console.log("Ausgabe vor async");
 
         await currentPanel!.waitForReady();
-        console.log("WebView is ready: ", currentPanel!.getwebViewIsReady());
         console.log("Workspace: ", currentWorkspace);
 
         //hole alle Ts-Files von directory
@@ -39,8 +38,7 @@ export function activate(context: ExtensionContext) {
         //schicke alle ClassRessources an Frontend
         currentPanel!.postMessage({
           command: "postClasses",
-          //muss ersteinmal von ClassRessource zum string/JSON geparsed werden
-          data: JSON.stringify(tsClasses.parse()),
+          data: tsClasses.parse(),
         });
       }
     );

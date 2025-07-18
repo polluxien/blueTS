@@ -3,6 +3,7 @@ import { TsFileResource } from "../fileService/fileResources";
 import {
   ClassRessource,
   ConstructorRessource,
+  MethodRessource,
   ParameterRessource,
 } from "./tsCompilerAPIRessourcees";
 
@@ -12,6 +13,11 @@ export class TSClassAnalyzer {
   private tsFiles: TsFileResource[];
   private classRessourceArr: ClassRessource[] = [];
 
+  /**
+   *
+   * @param tsFiles
+   * @param options
+   */
   constructor(tsFiles: TsFileResource[], options: ts.CompilerOptions) {
     this.tsFiles = tsFiles;
     this.program = ts.createProgram(
@@ -31,6 +37,11 @@ export class TSClassAnalyzer {
     return this.classRessourceArr;
   }
 
+  /**
+   *
+   * @param node
+   * @param sourceFile
+   */
   private visit(node: ts.Node, sourceFile: ts.SourceFile) {
     if (ts.isClassDeclaration(node) && node.name) {
       const tsFile = this.tsFiles.find(
@@ -45,6 +56,7 @@ export class TSClassAnalyzer {
           className: symbol.getName(),
           tsFile: tsFile!,
           constructor: this.extractConstructorRessource(symbol),
+          methodes: this.extractMethodRessource(symbol),
         });
       }
     } else if (ts.isModuleDeclaration(node)) {
@@ -52,6 +64,11 @@ export class TSClassAnalyzer {
     }
   }
 
+  /**
+   *
+   * @param symbol
+   * @returns
+   */
   private extractConstructorRessource(
     symbol: ts.Symbol
   ): ConstructorRessource | undefined {
@@ -69,6 +86,63 @@ export class TSClassAnalyzer {
     return { parameters, returnType };
   }
 
+  /**
+   *
+   * @param symbol
+   * @returns
+   */
+  private extractMethodRessource(symbol: ts.Symbol): MethodRessource[] {
+    const methodRessourceArr: MethodRessource[] = [];
+
+    const classDeclaration = symbol.valueDeclaration as ts.ClassDeclaration;
+    if (!classDeclaration || !ts.isClassDeclaration(classDeclaration)) {
+      return methodRessourceArr;
+    }
+
+    // gehe durch alle members in Klasse
+    for (const member of classDeclaration.members) {
+      let methodName = "";
+      let signature: ts.Signature | undefined;
+      let isStatic = false;
+
+      // method-Declarations
+      if (ts.isMethodDeclaration(member) && member.name) {
+        methodName = member.name.getText();
+        signature = this.checker.getSignatureFromDeclaration(member);
+      }
+      // getter-Declarations
+      else if (ts.isGetAccessorDeclaration(member) && member.name) {
+        methodName = member.name.getText();
+        signature = this.checker.getSignatureFromDeclaration(member);
+      }
+      // setter-Declarations
+      else if (ts.isSetAccessorDeclaration(member) && member.name) {
+        methodName = member.name.getText();
+        signature = this.checker.getSignatureFromDeclaration(member);
+      }
+
+      if (signature && methodName) {
+        const parameters: ParameterRessource[] | undefined =
+          this.extractParameterRessource(signature);
+        const returnType = this.checker.typeToString(signature.getReturnType());
+
+        methodRessourceArr.push({
+          methodName,
+          parameters,
+          returnType,
+          isStatic,
+        });
+      }
+    }
+
+    return methodRessourceArr;
+  }
+
+  /**
+   *
+   * @param signature
+   * @returns
+   */
   private extractParameterRessource(
     signature: ts.Signature
   ): ParameterRessource[] | undefined {

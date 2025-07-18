@@ -8,7 +8,7 @@ import {
 } from "vscode";
 
 /**
- * Baut auf folgender Beispiel-Klasse auf:
+ * Baut auf folgender Beispiel-Klasse von Microsoft auf:
  * https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/frameworks/hello-world-react-vite/src/panels/HelloWorldPanel.ts
  *
  * Wurde auf eigene Bedürfnisse angepasst und erweitert
@@ -35,22 +35,12 @@ export class Panel {
       this._disposables
     );
 
-    this._panel.webview.onDidReceiveMessage((message) => {
-      if (message.command === "webViewReady") {
-        this._webViewIsReady = true;
-      }
-    });
-
     this._panel.webview.html = this._getWebviewContent(
       this._panel.webview,
       extensionUri
     );
 
     this._setWebviewMessageListener(this._panel.webview);
-  }
-
-  public getwebViewIsReady() {
-    return this._webViewIsReady;
   }
 
   //erstelle und/oder zeige Webview
@@ -136,7 +126,7 @@ export class Panel {
 
   public async waitForReady(): Promise<void> {
     while (!this._webViewIsReady) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
   /**
@@ -157,16 +147,14 @@ export class Panel {
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
       (message: any) => {
-        const command = message.command;
-        const text = message.text;
-
-        switch (command) {
-          case "hello":
-            // Code that should run in response to the hello message command
-            window.showInformationMessage(text);
-            return;
-          // Add more switch case statements here as more webview message commands
-          // are created within the webview context (i.e. inside media/main.js)
+        switch (message.command) {
+          case "webViewReady":
+            this._webViewIsReady = true;
+            break;
+          case "postClassInstance": {
+            
+            break;
+          }
         }
       },
       undefined,

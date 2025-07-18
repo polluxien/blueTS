@@ -8,6 +8,8 @@ import { Container } from "react-bootstrap";
 
 function ClassPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
+  //const [instances, setInstance] = useState<Record<string, string>[]>();
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,13 +60,27 @@ function ClassPage() {
   return (
     <>
       <div>
-        <h1>TypeScript Klassen</h1>
+        {/* Hier werden die gefunden TS-Klassen gezeigt*/}
         <div>
+          <h1>ts-Classes</h1>
           <Container>
             <Row>
               {classes.map((cls, index) => (
                 <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
                   <ClassCardComponent cls={cls} />
+                </Col>
+              ))}
+            </Row>
+          </Container>
+        </div>
+        {/* Hier werden die erstellten Klassen-Instances angezeigt*/}
+        <div>
+          <h1>Class-Instances</h1>
+          <Container>
+            <Row>
+              {classes.map((ins, index) => (
+                <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
+                  <ClassCardComponent cls={ins} />
                 </Col>
               ))}
             </Row>

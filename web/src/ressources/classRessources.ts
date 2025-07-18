@@ -11,15 +11,21 @@ export type ParameterRessource = {
   optional: boolean;
 };
 
-
-
 export type ConstructorRessource = {
   parameters: ParameterRessource[] | undefined;
   returnType: string;
+};
+
+export type MethodRessource = {
+  methodName: string;
+  parameters: ParameterRessource[] | undefined;
+  returnType: string;
+  isStatic: boolean;
 };
 
 export type ClassRessource = {
   className: string;
   tsFile: TsFileResource;
   constructor: ConstructorRessource | undefined;
+  methodes: MethodRessource[];
 };
