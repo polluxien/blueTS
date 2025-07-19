@@ -1,16 +1,23 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import type { ClassRessource } from "../../ressources/classRessources";
+import type {
+  ClassRessource,
+  //CreateClassInstanceRessource,
+  InstanceRessource,
+} from "../../ressources/classRessources";
 import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
+//import { vscode } from "../../api/vscodeAPI";
 
 function CreateClassDialogComponent({
   cls,
   close,
+  addToInstanceWaitingList,
 }: {
   cls: ClassRessource;
   close: () => void;
+  addToInstanceWaitingList: (instance: InstanceRessource) => void;
 }) {
   const classVariables = cls.constructor?.parameters || [];
 
@@ -47,8 +54,32 @@ function CreateClassDialogComponent({
     setValidated(true);
 
     if (Object.keys(newErrors).length === 0) {
-      console.log("Create instance with values:", formValues);
-      // hier sende zurück
+      //Zum interenen erstellen einer Instanz-Component
+      const instRes: InstanceRessource = {
+        instanceName,
+        className: cls.className,
+        methodes: cls.methodes,
+      };
+      addToInstanceWaitingList(instRes);
+
+      //zum Prüfen ans Backend
+      /*
+      const constructorParameter = classVariables.map((param) => {
+        return formValues[param.name];
+      });
+
+      const creClsInRes: CreateClassInstanceRessource = {
+        instanceName,
+        className: cls.className,
+        tsFile: cls.tsFile,
+        constructorParameter,
+      };
+      console.log("Create instance with values:", creClsInRes);
+      vscode.postMessage({
+        command: "createInstance",
+        data: creClsInRes,
+      });
+      */
     }
   }
 

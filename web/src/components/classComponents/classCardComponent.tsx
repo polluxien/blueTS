@@ -1,10 +1,16 @@
-import type { ClassRessource } from "../../ressources/classRessources";
+import type { ClassRessource, InstanceRessource } from "../../ressources/classRessources";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import CreateClassDialogComponent from "./createClassDialogComponent.tsx";
 import { useState } from "react";
 
-function ClassCardComponent({ cls }: { cls: ClassRessource }) {
+function ClassCardComponent({
+  cls,
+  addToInstanceWaitingList,
+}: {
+  cls: ClassRessource;
+  addToInstanceWaitingList: (instance: InstanceRessource) => void;
+}) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
 
   const openDialog = () => setClassDialogOpen(true);
@@ -32,6 +38,7 @@ function ClassCardComponent({ cls }: { cls: ClassRessource }) {
         <CreateClassDialogComponent
           cls={cls}
           close={closeDialog}
+          addToInstanceWaitingList={addToInstanceWaitingList}
         ></CreateClassDialogComponent>
       )}
     </>

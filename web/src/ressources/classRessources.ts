@@ -29,3 +29,17 @@ export type ClassRessource = {
   constructor: ConstructorRessource | undefined;
   methodes: MethodRessource[];
 };
+
+//Zum versenden zur Extension
+export type CreateClassInstanceRessource = {
+  instanceName: string;
+  className: string;
+  tsFile: TsFileResource;
+  constructorParameter: unknown[];
+};
+
+export type InstanceRessource = {
+  instanceName: string;
+  className: string;
+  methodes: MethodRessource[];
+};
