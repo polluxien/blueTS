@@ -11,8 +11,9 @@ import type { WebviewApi } from "vscode-webview";
  * dev server by using native web browser features that mock the functionality
  * enabled by acquireVsCodeApi.
  */
-class VSCodeAPIWrapper {
+export class VSCodeAPIWrapper {
   private readonly vsCodeApi: WebviewApi<unknown> | undefined;
+  private static vsCodeApiInstance: VSCodeAPIWrapper | undefined;
 
   constructor() {
     // Check if the acquireVsCodeApi function exists in the current development
@@ -20,6 +21,12 @@ class VSCodeAPIWrapper {
     if (typeof acquireVsCodeApi === "function") {
       this.vsCodeApi = acquireVsCodeApi();
     }
+  }
+
+  public static getInstance() {
+    if (!this.vsCodeApiInstance)
+      this.vsCodeApiInstance = new VSCodeAPIWrapper();
+    return this.vsCodeApiInstance;
   }
 
   /**
@@ -77,4 +84,14 @@ class VSCodeAPIWrapper {
 }
 
 // Exports class singleton to prevent multiple invocations of acquireVsCodeApi.
-export const vscode = new VSCodeAPIWrapper();
+/*
+export const vscode = (() => {
+  if (!vsCodeAPIInstance) {
+    vsCodeAPIInstance = new VSCodeAPIWrapper();
+  }
+  return vsCodeAPIInstance;
+})();
+
+*/
+
+export const vscode = VSCodeAPIWrapper.getInstance();

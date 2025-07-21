@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { vscode } from "../api/vscodeAPI.ts";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import type {
@@ -8,6 +7,8 @@ import type {
 } from "../ressources/classRessources.ts";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 import { Container } from "react-bootstrap";
+
+import { vscode } from "../api/vscodeAPI.ts";
 
 function LandingPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
@@ -100,6 +101,7 @@ function LandingPage() {
                       <ClassCardComponent
                         cls={cls}
                         addToInstanceWaitingList={addToInstanceWaitingList}
+                        vscode={vscode}
                       />
                     </Col>
                   ))}

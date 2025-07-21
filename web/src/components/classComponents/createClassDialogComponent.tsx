@@ -3,21 +3,23 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import type {
   ClassRessource,
-  //CreateClassInstanceRessource,
+  CreateClassInstanceRessource,
   InstanceRessource,
 } from "../../ressources/classRessources";
 import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
-//import { vscode } from "../../api/vscodeAPI";
+import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
 
 function CreateClassDialogComponent({
   cls,
   close,
   addToInstanceWaitingList,
+  vscode
 }: {
   cls: ClassRessource;
   close: () => void;
   addToInstanceWaitingList: (instance: InstanceRessource) => void;
+  vscode: VSCodeAPIWrapper
 }) {
   const classVariables = cls.constructor?.parameters || [];
 
@@ -63,7 +65,6 @@ function CreateClassDialogComponent({
       addToInstanceWaitingList(instRes);
 
       //zum Prüfen ans Backend
-      /*
       const constructorParameter = classVariables.map((param) => {
         return formValues[param.name];
       });
@@ -79,7 +80,7 @@ function CreateClassDialogComponent({
         command: "createInstance",
         data: creClsInRes,
       });
-      */
+
     }
   }
 

@@ -3,13 +3,16 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import CreateClassDialogComponent from "./createClassDialogComponent.tsx";
 import { useState } from "react";
+import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 function ClassCardComponent({
   cls,
   addToInstanceWaitingList,
+  vscode
 }: {
   cls: ClassRessource;
   addToInstanceWaitingList: (instance: InstanceRessource) => void;
+  vscode: VSCodeAPIWrapper
 }) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
 
@@ -39,6 +42,7 @@ function ClassCardComponent({
           cls={cls}
           close={closeDialog}
           addToInstanceWaitingList={addToInstanceWaitingList}
+          vscode={vscode}
         ></CreateClassDialogComponent>
       )}
     </>
