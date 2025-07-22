@@ -43,3 +43,9 @@ export type InstanceRessource = {
   className: string;
   methodes: MethodRessource[];
 };
+
+export type InstanceCheckRessource = {
+  instanceName: string;
+  isValid: boolean;
+  error: unknown;
+};

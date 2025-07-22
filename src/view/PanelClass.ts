@@ -6,6 +6,7 @@ import {
   window,
   ViewColumn,
 } from "vscode";
+import { addInstanceToInstanceMap } from "../nodeVM/instanceManager";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -146,13 +147,18 @@ export class Panel {
    */
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
-      (message: any) => {
+      async (message: any) => {
         switch (message.command) {
           case "webViewReady":
             this._webViewIsReady = true;
             break;
-          case "postClassInstance": {
-            
+          case "createInstance": {
+            const mesageData = await addInstanceToInstanceMap(message.data);
+            this.postMessage({
+              command: "postInstanceCheck",
+              data: mesageData,
+            });
+
             break;
           }
         }

@@ -14,12 +14,12 @@ function CreateClassDialogComponent({
   cls,
   close,
   addToInstanceWaitingList,
-  vscode
+  vscode,
 }: {
   cls: ClassRessource;
   close: () => void;
   addToInstanceWaitingList: (instance: InstanceRessource) => void;
-  vscode: VSCodeAPIWrapper
+  vscode: VSCodeAPIWrapper;
 }) {
   const classVariables = cls.constructor?.parameters || [];
 
@@ -80,7 +80,6 @@ function CreateClassDialogComponent({
         command: "createInstance",
         data: creClsInRes,
       });
-
     }
   }
 
@@ -145,16 +144,16 @@ function CreateClassDialogComponent({
                 </Form.Control.Feedback>
               </FormGroup>
             ))}
+          <Modal.Footer>
+            <Button variant="secondary" type="button" onClick={close}>
+              Close
+            </Button>
+            <Button variant="primary" type="submit">
+              Create instance
+            </Button>
+          </Modal.Footer>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" type="button" onClick={close}>
-          Close
-        </Button>
-        <Button variant="primary" type="submit">
-          create Class
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 }

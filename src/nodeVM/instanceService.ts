@@ -16,8 +16,8 @@ export async function createClassVM(
     const transpiled = ts.transpileModule(tsCode, {
       compilerOptions: { module: ts.ModuleKind.CommonJS },
     });
-
     const jsCode = transpiled.outputText;
+    
     let context = {};
     vm.createContext(context);
     vm.runInContext(jsCode, context);

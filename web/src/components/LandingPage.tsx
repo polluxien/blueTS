@@ -3,16 +3,18 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import type {
   ClassRessource,
+  InstanceCheckRessource,
   InstanceRessource,
 } from "../ressources/classRessources.ts";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 import { Container } from "react-bootstrap";
 
 import { vscode } from "../api/vscodeAPI.ts";
+import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 
 function LandingPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
-  //const [instances, setInstance] = useState<InstanceRessource[]>([]);
+  const [instances, setInstance] = useState<InstanceRessource[]>([]);
 
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
   const instanceWaitingMap = useRef(new Map<string, InstanceRessource>([]));
@@ -39,22 +41,22 @@ function LandingPage() {
           setLoading(false);
           break;
         case "postInstanceCheck": {
-          console.log(`Massage from instanceCheck has data: ${message.data}`);
+          const messageData: InstanceCheckRessource = message.data;
+          console.log(`Massage from command has InstanceCheckRessource: ${messageData}`);
+
           const myInstance: InstanceRessource | undefined =
-            instanceWaitingMap.current.get(message.data.instanceName);
+            instanceWaitingMap.current.get(messageData.instanceName);
           if (!myInstance) {
             console.log(
-              `Instance with name: ${message.data.instanceName} was not found`
+              `Instance with name: ${messageData.instanceName} was not found`
             );
           }
-          instanceWaitingMap.current.delete(message.data.instanceName);
-          if (message.data.isValid) {
-            //setInstance((ins) => [...(ins + myInstance)]);
+          instanceWaitingMap.current.delete(messageData.instanceName);
+          if (messageData.isValid && myInstance) {
+            setInstance((ins) => [...ins, myInstance]);
           } else {
             throw Error();
           }
-          console.log("classes var: ", classes);
-          setLoading(false);
           break;
         }
         case "error":
@@ -119,11 +121,11 @@ function LandingPage() {
           <h1>Class-Instances</h1>
           <Container>
             <Row>
-              {/* instances.map((ins, index) => (
+              {instances.map((ins, index) => (
                 <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
-                  <ClassCardComponent cls={ins} />
+                  <InstanceCardComponent ins={ins} />
                 </Col>
-              )) */}
+              ))}
             </Row>
           </Container>
         </div>

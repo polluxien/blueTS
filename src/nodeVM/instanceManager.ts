@@ -20,6 +20,12 @@ export type ClassInstanceConstructionRessource = {
   function: ClassInstanceConstructionFunctionRessource[];
 };
 
+export type InstanceCheckRessource = {
+  instanceName: string;
+  isValid: boolean;
+  error: unknown;
+};
+
 const instanceMap = new Map<string, object>();
 
 export function getInstanceMap() {
@@ -48,14 +54,21 @@ export function getInstanceFromInstanceMap(instanceName: string) {
 
 export async function addInstanceToInstanceMap(
   createClsInstanceRes: CreateClassInstanceRessource
-) {
+): Promise<InstanceCheckRessource> {
+  let result: InstanceCheckRessource = {
+    instanceName: createClsInstanceRes.instanceName,
+    isValid: false,
+    error: undefined,
+  };
   try {
     const instance = await createClassVM(createClsInstanceRes);
-    if (!instance) throw new Error();
+    if (!instance) throw new Error("Instance konnte nicht erstellt werden");
     instanceMap.set(createClsInstanceRes.className, instance);
+    result.isValid = true;
   } catch (err) {
-    throw err;
+    result.error = err;
   }
+  return result;
 }
 
 export async function compileMethodInClassObject(instanceName: string) {

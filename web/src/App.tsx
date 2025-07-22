@@ -7,7 +7,6 @@ function App() {
   return (
     <>
       <div>
-        <h1>Hier ist ein Titel</h1>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
