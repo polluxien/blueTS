@@ -73,21 +73,31 @@ export class TSClassAnalyzer {
    */
   private extractConstructorRessource(
     symbol: ts.Symbol
-  ): ConstructorRessource | undefined {
+  ): ConstructorRessource[] | undefined {
+    const constructorRessourceArr: ConstructorRessource[] = [];
+
     const type = this.checker.getTypeOfSymbolAtLocation(
       symbol,
       symbol.valueDeclaration!
     );
-    //ich gebe jetzt Array zurück mit allen Constructor-signaturen, kann ja auch überladen werden
+
+    //ich gebe jetzt Array zurück mit allen Constructor-signaturen
     const signatures = type.getConstructSignatures();
     if (signatures.length === 0) {
       return undefined;
     }
-    //ich nehm erst einmal nur die erste möglichkeit an Constructor
-    const parameters: ParameterRessource[] | undefined =
-      this.extractParameterRessource(signatures[0]);
-    const returnType = this.checker.typeToString(signatures[0].getReturnType());
-    return { parameters, returnType };
+
+    //gebe mir alle Konstrucktor für die Klasse
+    for (let signature of signatures) {
+      const parameters: ParameterRessource[] | undefined =
+        this.extractParameterRessource(signatures[0]);
+      const returnType = this.checker.typeToString(
+        signatures[0].getReturnType()
+      );
+      constructorRessourceArr.push({ parameters, returnType });
+    }
+
+    return constructorRessourceArr;
   }
 
   /**
@@ -95,12 +105,14 @@ export class TSClassAnalyzer {
    * @param symbol
    * @returns
    */
-  private extractMethodRessource(symbol: ts.Symbol): MethodRessource[] {
+  private extractMethodRessource(
+    symbol: ts.Symbol
+  ): MethodRessource[] | undefined {
     const methodRessourceArr: MethodRessource[] = [];
 
     const classDeclaration = symbol.valueDeclaration as ts.ClassDeclaration;
     if (!classDeclaration || !ts.isClassDeclaration(classDeclaration)) {
-      return methodRessourceArr;
+      return undefined;
     }
 
     // gehe durch alle members in Klasse
