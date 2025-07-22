@@ -28,8 +28,8 @@ export type MethodRessource = {
 export type ClassRessource = {
   className: string;
   tsFile: TsFileResource;
-  constructor: ConstructorRessource | undefined;
-  methodes: MethodRessource[];
+  constructor: ConstructorRessource[] | undefined;
+  methodes: MethodRessource[] | undefined;
 };
 
 //Zum versenden zur Extension
