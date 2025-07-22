@@ -1,4 +1,5 @@
 import type { Path } from "react-router-dom";
+import type { Type } from "typescript";
 
 export type TsFileResource = {
   name: string;
@@ -7,7 +8,8 @@ export type TsFileResource = {
 
 export type ParameterRessource = {
   name: string;
-  type: string;
+  type: Type;
+  typeAsString: string;
   optional: boolean;
 };
 

@@ -1,8 +1,10 @@
-import { TsFileResource } from "../fileService/fileResources";
+import { Type } from "typescript";
+import { TsFileResource } from "./fileService/fileResources";
 
 export type ParameterRessource = {
   name: string;
-  type: string;
+  type: Type;
+  typeAsString: string;
   optional: boolean;
 };
 

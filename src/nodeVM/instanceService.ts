@@ -17,7 +17,7 @@ export async function createClassVM(
       compilerOptions: { module: ts.ModuleKind.CommonJS },
     });
     const jsCode = transpiled.outputText;
-    
+
     let context = {};
     vm.createContext(context);
     vm.runInContext(jsCode, context);
@@ -28,7 +28,9 @@ export async function createClassVM(
     }
     console.log("Constructor ausgabe: ", classConstructor);
     const myInstance = new classConstructor(
-      ...createClsInstanceRes.constructorParameter
+      ...(createClsInstanceRes.constructorParameter.length > 0
+        ? createClsInstanceRes.constructorParameter
+        : [])
     );
 
     return myInstance;
@@ -42,6 +44,4 @@ export async function compileClassMethod(
   classObj: object,
   methodName: string,
   parameter?: any[]
-) {
-    
-}
+) {}

@@ -9,6 +9,7 @@ import type {
 import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
+import type { Type } from "typescript";
 
 function CreateClassDialogComponent({
   cls,
@@ -44,7 +45,7 @@ function CreateClassDialogComponent({
 
     for (const param of classVariables) {
       const value = formValues[param.name];
-      const err: Error | null = validateFormControllType(
+      const err: Error | undefined | null = validateFormControllType(
         param.type,
         value,
         param.optional
@@ -56,7 +57,7 @@ function CreateClassDialogComponent({
     setValidated(true);
 
     if (Object.keys(newErrors).length === 0) {
-      //Zum interenen erstellen einer Instanz-Component
+      //internes erstellen einer Instanz-Component
       const instRes: InstanceRessource = {
         instanceName,
         className: cls.className,
@@ -84,13 +85,23 @@ function CreateClassDialogComponent({
   }
 
   const validateFormControllType = (
-    paramType: string,
+    paramType: Type,
     formValue: string,
     optional: boolean = false
   ) => {
+    //if (paramType == "any" || paramType == "unknown") return;
+
     if (!formValue && !optional) {
       return new Error("This field is required");
     }
+    /*
+    if (
+      (paramType === "array" && !formValue.startsWith("[")) ||
+      !formValue.endsWith("]")
+    )
+    return new Error("No array format [...]");
+
+    */
     //Typvalidierung
     console.log(paramType, formValue);
     return null;
@@ -129,8 +140,8 @@ function CreateClassDialogComponent({
             classVariables.map((param, index) => (
               <FormGroup key={index + 1}>
                 <Form.Label>
-                  {param.name}: {param.type}
-                  {param.optional && "?"}
+                  {param.name}
+                  {param.optional && "?"}: {param.typeAsString}
                 </Form.Label>
                 <FormControl
                   type="text"

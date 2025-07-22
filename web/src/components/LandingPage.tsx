@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Badge from "react-bootstrap/Badge";
 import type {
   ClassRessource,
   InstanceCheckRessource,
@@ -22,19 +23,29 @@ function LandingPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  //wenn Webview ist ready hole alle KLassen
   useEffect(() => {
     vscode.postMessage({
-      command: "webViewReady",
+      command: "getAllTsClasses",
     });
   }, []);
 
+  //
+  const refreshClasses = () => {
+    setLoading(true);
+    vscode.postMessage({
+      command: "getAllTsClasses",
+    });
+  };
+
+  //api - alle erhaltenen messages vom backend
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
       console.log(`Recived message with command: ${message.command}`);
 
       switch (message.command) {
-        case "postClasses":
+        case "postAllClasses":
           console.log(`Massage from command has data: ${message.data}`);
           setClasses(message.data);
           console.log("classes var: ", classes);
@@ -42,7 +53,9 @@ function LandingPage() {
           break;
         case "postInstanceCheck": {
           const messageData: InstanceCheckRessource = message.data;
-          console.log(`Massage from command has InstanceCheckRessource: ${messageData}`);
+          console.log(
+            `Massage from command has InstanceCheckRessource: ${messageData}`
+          );
 
           const myInstance: InstanceRessource | undefined =
             instanceWaitingMap.current.get(messageData.instanceName);
@@ -86,7 +99,12 @@ function LandingPage() {
       <div>
         {/* Hier werden die gefunden TS-Klassen gezeigt*/}
         <div>
-          <h1>ts-Classes</h1>
+          <h1>
+            TS-Classes
+            <Badge bg="secondary" onClick={refreshClasses}>
+              reload
+            </Badge>
+          </h1>
           <div>
             {!loading ? (
               <Container>

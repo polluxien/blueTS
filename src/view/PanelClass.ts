@@ -7,6 +7,7 @@ import {
   ViewColumn,
 } from "vscode";
 import { addInstanceToInstanceMap } from "../nodeVM/instanceManager";
+import { getAllClasses } from "../tsCompilerApi/tsclassManager";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -18,7 +19,6 @@ export class Panel {
   //singelton pattern, nur eine Webview kann gleichzeitig exestieren
   public static currentPanel: Panel | undefined;
   private _panel: WebviewPanel;
-  private _webViewIsReady: boolean = false;
 
   //EventListeners
   private _disposables: Disposable[] = [];
@@ -125,11 +125,6 @@ export class Panel {
     `;
   }
 
-  public async waitForReady(): Promise<void> {
-    while (!this._webViewIsReady) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-  }
   /**
    * https://code.visualstudio.com/api/extension-guides/webview -> Passing messages from an extension to a webview
    *
@@ -149,8 +144,12 @@ export class Panel {
     webview.onDidReceiveMessage(
       async (message: any) => {
         switch (message.command) {
-          case "webViewReady":
-            this._webViewIsReady = true;
+          case "getAllTsClasses":
+            const mesageData = await getAllClasses();
+            this.postMessage({
+              command: "postAllClasses",
+              data: mesageData,
+            });
             break;
           case "createInstance": {
             const mesageData = await addInstanceToInstanceMap(message.data);
