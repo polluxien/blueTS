@@ -44,7 +44,7 @@ export class TSClassAnalyzer {
           className: cls.getName()!,
           tsFile: tsFile!,
           constructors: this.extractConstructors(cls),
-          methodes: this.extractMethodes(cls),
+          methods: this.extractMethodes(cls),
         };
         this.classRessourceArr.push(myClass);
       }
@@ -52,9 +52,7 @@ export class TSClassAnalyzer {
     return this.classRessourceArr;
   }
 
-  private extractConstructors(
-    cls: ClassDeclaration
-  ): ConstructorRessource[] | undefined {
+  private extractConstructors(cls: ClassDeclaration): ConstructorRessource[] {
     const constructorRessourceArr: ConstructorRessource[] = [];
     for (let con of cls.getConstructors()) {
       const myConstructor: ConstructorRessource = {
@@ -65,9 +63,7 @@ export class TSClassAnalyzer {
     return constructorRessourceArr;
   }
 
-  private extractMethodes(
-    cls: ClassDeclaration
-  ): MethodRessource[] | undefined {
+  private extractMethodes(cls: ClassDeclaration): MethodRessource[] {
     const methodRessourceArr: MethodRessource[] = [];
     for (let met of cls.getMethods()) {
       const myMethod: MethodRessource = {
@@ -86,12 +82,13 @@ export class TSClassAnalyzer {
   ): ParameterRessource[] {
     const parameterRessourceArr: ParameterRessource[] = [];
     for (let param of foo.getParameters()) {
+      const typeNode = param.getTypeNode();
       const myParameter: ParameterRessource = {
         paramName: param.getName(),
-        type: param.getType(),
-        typeAsString: param.getType().getText(),
+        typeAsString: typeNode ? typeNode.getText() : param.getType().getText(),
         optional: param.isOptional(),
       };
+      parameterRessourceArr.push(myParameter);
     }
     return parameterRessourceArr;
   }

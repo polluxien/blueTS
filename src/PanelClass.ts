@@ -7,7 +7,7 @@ import {
   ViewColumn,
 } from "vscode";
 import { addInstanceToInstanceMap } from "./nodeVM/instanceManager";
-import { getAllClasses } from "./tsCompilerApi/tsclassManager";
+import { getAllClasses } from "./tsCompilerApi/tsClassManager";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:

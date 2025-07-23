@@ -12,7 +12,6 @@ import type {
 import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
-import type { Type } from "typescript";
 
 function CreateClassDialogComponent({
   cls,
@@ -52,7 +51,7 @@ function CreateClassDialogComponent({
     for (const param of classVariables) {
       const value = formValues[param.paramName];
       const err: Error | undefined | null = validateFormControllType(
-        param.type,
+        param.typeAsString,
         param.paramName,
         value,
         param.optional
@@ -68,7 +67,7 @@ function CreateClassDialogComponent({
       const instRes: InstanceRessource = {
         instanceName,
         className: cls.className,
-        methodes: cls.methodes || [],
+        methods: cls.methods || [],
       };
       addToInstanceWaitingList(instRes);
 
@@ -92,7 +91,7 @@ function CreateClassDialogComponent({
   }
 
   const validateFormControllType = (
-    paramType: Type,
+    paramTypeAsString: string,
     paramName: string,
     formValue: string,
     optional: boolean = false
@@ -111,7 +110,7 @@ function CreateClassDialogComponent({
 
     */
     //Typvalidierung
-    console.log(paramType, formValue);
+    console.log(paramTypeAsString, formValue);
     return null;
   };
 

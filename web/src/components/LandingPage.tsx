@@ -46,7 +46,14 @@ function LandingPage() {
 
       switch (message.command) {
         case "postAllClasses":
-          console.log(`Massage from command has data: ${message.data}`);
+          console.log(
+            `Massage from command has data: ${JSON.stringify(
+              message.data,
+              null,
+              4
+            )}`
+          );
+
           setClasses(message.data);
           console.log("classes var: ", classes);
           setLoading(false);

@@ -17,5 +17,7 @@ export async function getAllClasses(path?: Path): Promise<ClassRessource[]> {
   const tsClasses = new TSClassAnalyzer(scrFiles);
 
   //Erstelle ClassRessource
+  const parsedTSClasses = tsClasses.parse();
+  console.log("Klassenausgabe: ", parsedTSClasses);
   return tsClasses.parse();
 }

@@ -1,5 +1,4 @@
 import type { Path } from "react-router-dom";
-import type { Type } from "typescript";
 
 export type TsFileResource = {
   name: string;
@@ -8,7 +7,6 @@ export type TsFileResource = {
 
 export type ParameterRessource = {
   paramName: string;
-  type: Type;
   typeAsString: string;
   optional: boolean;
 };
@@ -29,7 +27,7 @@ export type ClassRessource = {
   className: string;
   tsFile: TsFileResource;
   constructors: ConstructorRessource[];
-  methodes: MethodRessource[];
+  methods: MethodRessource[];
 };
 
 //Zum versenden zur Extension
@@ -43,7 +41,7 @@ export type CreateClassInstanceRessource = {
 export type InstanceRessource = {
   instanceName: string;
   className: string;
-  methodes: MethodRessource[];
+  methods: MethodRessource[];
 };
 
 export type InstanceCheckRessource = {
