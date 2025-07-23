@@ -1,4 +1,10 @@
-import ts from "typescript";
+import {
+  ClassDeclaration,
+  ConstructorDeclaration,
+  MethodDeclaration,
+  Project,
+  Type,
+} from "ts-morph";
 import { TsFileResource } from "./fileService/fileResources";
 import {
   ClassRessource,
@@ -6,179 +12,87 @@ import {
   MethodRessource,
   ParameterRessource,
 } from "./tsCompilerAPIRessourcees";
+import path from "path";
 
 export class TSClassAnalyzer {
-  private program;
-  private checker;
   private tsFiles: TsFileResource[];
+  private project: Project;
   private classRessourceArr: ClassRessource[] = [];
 
-  /**
-   *
-   * @param tsFiles
-   * @param options
-   */
-  constructor(tsFiles: TsFileResource[], options: ts.CompilerOptions) {
+  constructor(tsFiles: TsFileResource[]) {
     this.tsFiles = tsFiles;
-    this.program = ts.createProgram(
-      tsFiles.map((file) => file.path),
-      options
-    );
-    this.checker = this.program.getTypeChecker();
+    this.project = new Project();
   }
 
   public parse(): ClassRessource[] {
-    for (const sourceFile of this.program.getSourceFiles()) {
-      if (sourceFile.isDeclarationFile) {
-        continue;
-      }
-      //ts.sourceFile erbt von ts.Node und muss daher nicht gecasted werden
-      ts.forEachChild(sourceFile, (node) => this.visit(node, sourceFile));
-    }
+    this.tsFiles.map((file) => this.project.addSourceFilesAtPaths(file.path));
 
+    for (let sourceFile of this.project.getSourceFiles()) {
+      for (let cls of sourceFile.getClasses()) {
+        const tsFile = this.tsFiles.find(
+          (file) =>
+            path.normalize(file.path) ===
+            path.normalize(sourceFile.getFilePath())
+        );
+        if (!tsFile) {
+          console.warn(
+            "File konnte nicht noch einmal gefunden werden: ",
+            path.normalize(sourceFile.getFilePath())
+          );
+        }
+        const myClass: ClassRessource = {
+          className: cls.getName()!,
+          tsFile: tsFile!,
+          constructors: this.extractConstructors(cls),
+          methodes: this.extractMethodes(cls),
+        };
+        this.classRessourceArr.push(myClass);
+      }
+    }
     return this.classRessourceArr;
   }
 
-  /**
-   *
-   * @param node
-   * @param sourceFile
-   */
-  private visit(node: ts.Node, sourceFile: ts.SourceFile) {
-    if (ts.isClassDeclaration(node) && node.name) {
-      const tsFile = this.tsFiles.find(
-        (file) => file.path === sourceFile.fileName
-      );
-      if (!tsFile) {
-        console.error("SourceFile was not found again: ", sourceFile.fileName);
-      }
-      let symbol = this.checker.getSymbolAtLocation(node.name);
-      if (symbol) {
-        this.classRessourceArr.push({
-          className: symbol.getName(),
-          tsFile: tsFile!,
-          constructor: this.extractConstructorRessource(symbol),
-          methodes: this.extractMethodRessource(symbol),
-        });
-      }
-    } else if (ts.isModuleDeclaration(node)) {
-      ts.forEachChild(node, (node) => this.visit(node, sourceFile));
-    }
-  }
-
-  /**
-   *
-   * @param symbol
-   * @returns
-   */
-  private extractConstructorRessource(
-    symbol: ts.Symbol
+  private extractConstructors(
+    cls: ClassDeclaration
   ): ConstructorRessource[] | undefined {
     const constructorRessourceArr: ConstructorRessource[] = [];
-
-    const type = this.checker.getTypeOfSymbolAtLocation(
-      symbol,
-      symbol.valueDeclaration!
-    );
-
-    //ich gebe jetzt Array zurück mit allen Constructor-signaturen
-    const signatures = type.getConstructSignatures();
-    if (signatures.length === 0) {
-      return undefined;
+    for (let con of cls.getConstructors()) {
+      const myConstructor: ConstructorRessource = {
+        parameters: this.extractParameters(con),
+      };
+      constructorRessourceArr.push(myConstructor);
     }
-
-    //gebe mir alle Konstrucktor für die Klasse
-    for (let signature of signatures) {
-      const parameters: ParameterRessource[] | undefined =
-        this.extractParameterRessource(signatures[0]);
-      const returnType = this.checker.typeToString(
-        signatures[0].getReturnType()
-      );
-      constructorRessourceArr.push({ parameters, returnType });
-    }
-
     return constructorRessourceArr;
   }
 
-  /**
-   *
-   * @param symbol
-   * @returns
-   */
-  private extractMethodRessource(
-    symbol: ts.Symbol
+  private extractMethodes(
+    cls: ClassDeclaration
   ): MethodRessource[] | undefined {
     const methodRessourceArr: MethodRessource[] = [];
-
-    const classDeclaration = symbol.valueDeclaration as ts.ClassDeclaration;
-    if (!classDeclaration || !ts.isClassDeclaration(classDeclaration)) {
-      return undefined;
+    for (let met of cls.getMethods()) {
+      const myMethod: MethodRessource = {
+        methodName: met.getName(),
+        parameters: this.extractParameters(met),
+        returnType: met.getReturnType().getText(),
+        isStatic: met.isStatic(),
+      };
+      methodRessourceArr.push(myMethod);
     }
-
-    // gehe durch alle members in Klasse
-    for (const member of classDeclaration.members) {
-      let methodName = "";
-      let signature: ts.Signature | undefined;
-      let isStatic = false;
-
-      // method-Declarations
-      if (ts.isMethodDeclaration(member) && member.name) {
-        methodName = member.name.getText();
-        signature = this.checker.getSignatureFromDeclaration(member);
-      }
-      // getter-Declarations
-      else if (ts.isGetAccessorDeclaration(member) && member.name) {
-        methodName = member.name.getText();
-        signature = this.checker.getSignatureFromDeclaration(member);
-      }
-      // setter-Declarations
-      else if (ts.isSetAccessorDeclaration(member) && member.name) {
-        methodName = member.name.getText();
-        signature = this.checker.getSignatureFromDeclaration(member);
-      }
-
-      if (signature && methodName) {
-        const parameters: ParameterRessource[] | undefined =
-          this.extractParameterRessource(signature);
-        const returnType = this.checker.typeToString(signature.getReturnType());
-
-        methodRessourceArr.push({
-          methodName,
-          parameters,
-          returnType,
-          isStatic,
-        });
-      }
-    }
-
     return methodRessourceArr;
   }
 
-  /**
-   *
-   * @param signature
-   * @returns
-   */
-  private extractParameterRessource(
-    signature: ts.Signature
-  ): ParameterRessource[] | undefined {
+  private extractParameters(
+    foo: MethodDeclaration | ConstructorDeclaration
+  ): ParameterRessource[] {
     const parameterRessourceArr: ParameterRessource[] = [];
-    if (signature.parameters.length === 0) {
-      return undefined;
+    for (let param of foo.getParameters()) {
+      const myParameter: ParameterRessource = {
+        paramName: param.getName(),
+        type: param.getType(),
+        typeAsString: param.getType().getText(),
+        optional: param.isOptional(),
+      };
     }
-    for (let param of signature.parameters) {
-      const decl = param.valueDeclaration!;
-      const type = this.checker.getTypeOfSymbolAtLocation(param, decl);
-      const optional = ts.isParameter(decl) && !!decl.questionToken;
-
-      parameterRessourceArr.push({
-        name: param.getName(),
-        type: type,
-        typeAsString: this.checker.typeToString(type),
-        optional: optional,
-      });
-    }
-
     return parameterRessourceArr;
   }
 }

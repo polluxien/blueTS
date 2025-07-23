@@ -5,6 +5,7 @@ import Carousel from "react-bootstrap/Carousel";
 import Container from "react-bootstrap/Container";
 import type {
   ClassRessource,
+  ConstructorRessource,
   CreateClassInstanceRessource,
   InstanceRessource,
 } from "../../ressources/classRessources";
@@ -29,7 +30,7 @@ function CreateClassDialogComponent({
   const [errors, setErrors] = useState<Record<string, Error>>({});
   const [formValues, setFormValues] = useState<Record<string, string>>({});
 
-  const constructors = cls.constructor || [];
+  const constructors: ConstructorRessource[] = cls.constructors || [];
   const currentConstructor = constructors[constructorIndex];
   const classVariables = currentConstructor?.parameters || [];
 
@@ -49,14 +50,14 @@ function CreateClassDialogComponent({
     }
 
     for (const param of classVariables) {
-      const value = formValues[param.name];
+      const value = formValues[param.paramName];
       const err: Error | undefined | null = validateFormControllType(
         param.type,
-        param.name,
+        param.paramName,
         value,
         param.optional
       );
-      if (err) newErrors[param.name] = err;
+      if (err) newErrors[param.paramName] = err;
     }
 
     setErrors(newErrors);
@@ -73,14 +74,14 @@ function CreateClassDialogComponent({
 
       //zum Prüfen ans Backend
       const constructorParameter = classVariables.map((param) => {
-        return formValues[param.name];
+        return formValues[param.paramName];
       });
 
       const creClsInRes: CreateClassInstanceRessource = {
         instanceName,
         className: cls.className,
-        tsFile: cls.tsFile,
         constructorParameter,
+        tsFile: cls.tsFile,
       };
       console.log("Create instance with values:", creClsInRes);
       vscode.postMessage({
@@ -142,7 +143,7 @@ function CreateClassDialogComponent({
             {currentConstructor.parameters
               ?.map(
                 (param) =>
-                  param.name +
+                  param.paramName +
                   (param.optional ? "?" : "") +
                   ": " +
                   param.typeAsString
@@ -173,20 +174,20 @@ function CreateClassDialogComponent({
                         constructor.parameters.map((param, index) => (
                           <FormGroup key={index}>
                             <Form.Label>
-                              {param.name}
+                              {param.paramName}
                               {param.optional && "?"}: {param.typeAsString}
                             </Form.Label>
                             <FormControl
                               type="text"
                               required={!param.optional}
-                              value={formValues[param.name] || ""}
+                              value={formValues[param.paramName] || ""}
                               onChange={(e) =>
-                                handleChange(param.name, e.target.value)
+                                handleChange(param.paramName, e.target.value)
                               }
-                              isInvalid={validated && !!errors[param.name]}
+                              isInvalid={validated && !!errors[param.paramName]}
                             />
                             <Form.Control.Feedback type="invalid">
-                              {errors[param.name]?.message ||
+                              {errors[param.paramName]?.message ||
                                 "This field is required"}
                             </Form.Control.Feedback>
                           </FormGroup>

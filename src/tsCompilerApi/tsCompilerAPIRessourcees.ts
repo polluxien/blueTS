@@ -1,8 +1,8 @@
-import { Type } from "typescript";
+import { Type } from "ts-morph";
 import { TsFileResource } from "./fileService/fileResources";
 
 export type ParameterRessource = {
-  name: string;
+  paramName: string;
   type: Type;
   typeAsString: string;
   optional: boolean;
@@ -10,7 +10,7 @@ export type ParameterRessource = {
 
 export type ConstructorRessource = {
   parameters: ParameterRessource[] | undefined;
-  returnType: string;
+  returnType?: string;
 };
 
 export type MethodRessource = {
@@ -23,6 +23,7 @@ export type MethodRessource = {
 export type ClassRessource = {
   className: string;
   tsFile: TsFileResource;
-  constructor: ConstructorRessource[] | undefined;
+  constructors: ConstructorRessource[] | undefined;
   methodes: MethodRessource[] | undefined;
 };
+

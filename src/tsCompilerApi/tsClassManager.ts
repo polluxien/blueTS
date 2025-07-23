@@ -14,10 +14,7 @@ export async function getAllClasses(path?: Path): Promise<ClassRessource[]> {
   const scrFiles = await getAllTsFilesFromDirectory(currentWorkspace!);
 
   //Finde alle TS-KLassen
-  const tsClasses = new TSClassAnalyzer(scrFiles, {
-    target: ts.ScriptTarget.ES5,
-    module: ts.ModuleKind.CommonJS,
-  });
+  const tsClasses = new TSClassAnalyzer(scrFiles);
 
   //Erstelle ClassRessource
   return tsClasses.parse();

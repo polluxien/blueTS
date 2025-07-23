@@ -34,7 +34,7 @@ function ClassCardComponent({
           </Button>
         </Card.Body>
         <Card.Footer className="text-muted">
-          file: <i>{cls.tsFile.name}</i>
+          file: <i>{cls.tsFile?.name}</i>
         </Card.Footer>
       </Card>
       {classDialogOpen && (

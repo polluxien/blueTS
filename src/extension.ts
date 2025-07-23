@@ -1,5 +1,5 @@
 import { commands, ExtensionContext } from "vscode";
-import { Panel } from "./view/PanelClass";
+import { Panel } from "./PanelClass";
 import * as vscode from "vscode";
 
 export function activate(context: ExtensionContext) {
