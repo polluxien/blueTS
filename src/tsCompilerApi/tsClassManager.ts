@@ -13,11 +13,7 @@ export async function getAllClasses(path?: Path): Promise<ClassRessource[]> {
   //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
   const scrFiles = await getAllTsFilesFromDirectory(currentWorkspace!);
 
-  //Finde alle TS-KLassen
+  //Erstelle ClasenRessources
   const tsClasses = new TSClassAnalyzer(scrFiles);
-
-  //Erstelle ClassRessource
-  const parsedTSClasses = tsClasses.parse();
-  console.log("Klassenausgabe: ", parsedTSClasses);
   return tsClasses.parse();
 }

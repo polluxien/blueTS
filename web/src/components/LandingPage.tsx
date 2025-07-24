@@ -23,7 +23,7 @@ function LandingPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  //wenn Webview ist ready hole alle KLassen
+  //wenn Webview ready hole alle KLassen
   useEffect(() => {
     vscode.postMessage({
       command: "getAllTsClasses",
@@ -55,7 +55,11 @@ function LandingPage() {
           );
 
           setClasses(message.data);
-          console.log("classes var: ", classes);
+          console.log("Received postAllClasses, length:", message.data.length);
+          message.data.map((cls: ClassRessource) =>
+            console.log("Class names:", cls.className)
+          );
+
           setLoading(false);
           break;
         case "postInstanceCheck": {
@@ -89,6 +93,7 @@ function LandingPage() {
     window.addEventListener("message", handleMessage);
 
     return () => {
+      console.log("Removing message event listener");
       window.removeEventListener("message", handleMessage);
     };
   }, []);

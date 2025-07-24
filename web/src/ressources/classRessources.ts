@@ -5,9 +5,32 @@ export type TsFileResource = {
   path: Path;
 };
 
+export type TypeRessource = {
+  typeAsString: string;
+  paramType:
+    | "basic"
+    | "union"
+    | "object"
+    | "array"
+    | "tuple"
+    | "enum"
+    | "literal"
+    | "tupel"
+    | "function"
+    | "any"
+    | "never"
+    | "void"
+    | "unknown";
+  enumValues?: string[];
+  tupleElements?: TypeRessource[];
+  unionValues?: TypeRessource[];
+  arrayType?: TypeRessource;
+  objectParameters?: ParameterRessource[];
+};
+
 export type ParameterRessource = {
   paramName: string;
-  typeAsString: string;
+  typeInfo: TypeRessource;
   optional: boolean;
 };
 

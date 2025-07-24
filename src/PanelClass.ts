@@ -145,17 +145,23 @@ export class Panel {
       async (message: any) => {
         switch (message.command) {
           case "getAllTsClasses":
-            const mesageData = await getAllClasses();
+            const messageData = await getAllClasses();
+            console.log(
+              "Sending postAllClasses message with",
+              messageData.length,
+              "classes"
+            );
+
             this.postMessage({
               command: "postAllClasses",
-              data: mesageData,
+              data: messageData,
             });
             break;
           case "createInstance": {
-            const mesageData = await addInstanceToInstanceMap(message.data);
+            const messageData = await addInstanceToInstanceMap(message.data);
             this.postMessage({
               command: "postInstanceCheck",
-              data: mesageData,
+              data: messageData,
             });
 
             break;
