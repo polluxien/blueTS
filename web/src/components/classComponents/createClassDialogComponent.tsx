@@ -3,15 +3,19 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Carousel from "react-bootstrap/Carousel";
 import Container from "react-bootstrap/Container";
+import { FormControl, FormGroup } from "react-bootstrap";
+import { useState } from "react";
+
+import ParameterFormControllComponent from "./ParameterFormControllComponenet.tsx";
+
 import type {
   ClassRessource,
   ConstructorRessource,
   CreateClassInstanceRessource,
   InstanceRessource,
-} from "../../ressources/classRessources";
-import { FormControl, FormGroup } from "react-bootstrap";
-import { useState } from "react";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
+} from "../../ressources/classRessources.ts";
+
+import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 function CreateClassDialogComponent({
   cls,
@@ -51,7 +55,7 @@ function CreateClassDialogComponent({
     for (const param of classVariables) {
       const value = formValues[param.paramName];
       const err: Error | undefined | null = validateFormControllType(
-        param.typeAsString,
+        param.typeInfo.typeAsString,
         param.paramName,
         value,
         param.optional
@@ -145,7 +149,7 @@ function CreateClassDialogComponent({
                   param.paramName +
                   (param.optional ? "?" : "") +
                   ": " +
-                  param.typeAsString
+                  param.typeInfo.typeAsString
               )
               .join(", ")}
             )
@@ -171,25 +175,14 @@ function CreateClassDialogComponent({
                     <Container>
                       {constructor.parameters &&
                         constructor.parameters.map((param, index) => (
-                          <FormGroup key={index}>
-                            <Form.Label>
-                              {param.paramName}
-                              {param.optional && "?"}: {param.typeAsString}
-                            </Form.Label>
-                            <FormControl
-                              type="text"
-                              required={!param.optional}
-                              value={formValues[param.paramName] || ""}
-                              onChange={(e) =>
-                                handleChange(param.paramName, e.target.value)
-                              }
-                              isInvalid={validated && !!errors[param.paramName]}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                              {errors[param.paramName]?.message ||
-                                "This field is required"}
-                            </Form.Control.Feedback>
-                          </FormGroup>
+                          <ParameterFormControllComponent
+                            index={index}
+                            param={param}
+                            value={formValues[param.paramName] || ""}
+                            validated={validated}
+                            error={errors[param.paramName]}
+                            onChange={handleChange}
+                          ></ParameterFormControllComponent>
                         ))}
                     </Container>
                     <Carousel.Caption></Carousel.Caption>

@@ -7,11 +7,11 @@ import type {
   InstanceCheckRessource,
   InstanceRessource,
 } from "../ressources/classRessources.ts";
-import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 import { Container } from "react-bootstrap";
 
 import { vscode } from "../api/vscodeAPI.ts";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
+import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 
 function LandingPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
@@ -50,7 +50,7 @@ function LandingPage() {
             `Massage from command has data: ${JSON.stringify(
               message.data,
               null,
-              4
+              2
             )}`
           );
 

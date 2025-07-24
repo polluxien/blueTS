@@ -93,8 +93,6 @@ export class TSClassAnalyzer {
 }
 
 export class TSParameterAnalyzer {
-  private curParamAsString: string | undefined;
-
   constructor(private param: ParameterDeclaration) {}
 
   private parseType(param: ParameterDeclaration): string {
@@ -106,7 +104,6 @@ export class TSParameterAnalyzer {
   public paramAnalyzer(
     param: ParameterDeclaration = this.param
   ): ParameterRessource {
-    this.curParamAsString = this.parseType(param);
     return {
       paramName: param.getName(),
       typeInfo: this.typeAnalyzer(param.getType()),
@@ -120,15 +117,15 @@ export class TSParameterAnalyzer {
 
   //default type-analyser (eine Ebene Tiefer)
   private typeAnalyzer(type: Type): TypeRessource {
-    const typeAsString = this.curParamAsString!;
+    const typeAsString = type.getText();
 
-    if (type.isUnion()) {
+    if (type.isUnion() && !type.isBoolean() && !type.isEnum()) {
       return {
         typeAsString,
         paramType: "union",
         unionValues: type
           .getUnionTypes()
-          .map((union) => this.typeAnalyzer(union)),
+          .map((unionTyp) => this.typeAnalyzer(unionTyp)),
       };
     }
 
@@ -137,14 +134,6 @@ export class TSParameterAnalyzer {
         typeAsString,
         paramType: "tuple",
         tupleElements: type.getTupleElements().map((t) => this.typeAnalyzer(t)),
-      };
-    }
-
-    if (type.isArray()) {
-      return {
-        typeAsString,
-        paramType: "array",
-        arrayType: this.typeAnalyzer(type.getArrayElementTypeOrThrow()),
       };
     }
 
@@ -171,7 +160,15 @@ export class TSParameterAnalyzer {
 
     // ! functional und litral hier noch implementieren
 
-    if (this.isBasicType(type)) {
+    if (type.isArray()) {
+      return {
+        typeAsString,
+        paramType: "array",
+        arrayType: this.typeAnalyzer(type.getArrayElementTypeOrThrow()),
+      };
+    }
+
+    if (type.isString() || type.isNumber()) {
       return {
         typeAsString,
         paramType: "basic",

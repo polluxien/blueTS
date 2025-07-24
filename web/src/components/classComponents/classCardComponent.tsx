@@ -1,9 +1,9 @@
-import type { ClassRessource, InstanceRessource } from "../../ressources/classRessources";
+import type { ClassRessource, InstanceRessource } from "../../ressources/classRessources.ts";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import CreateClassDialogComponent from "./createClassDialogComponent.tsx";
 import { useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
+import CreateClassDialogComponent from "./CreateClassDialogComponent.tsx";
 
 function ClassCardComponent({
   cls,
