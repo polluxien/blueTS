@@ -11,7 +11,7 @@ import { Container } from "react-bootstrap";
 
 import { vscode } from "../api/vscodeAPI.ts";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
-import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
+import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 
 function LandingPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);

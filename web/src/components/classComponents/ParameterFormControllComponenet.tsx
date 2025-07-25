@@ -103,6 +103,25 @@ function ParameterFormControllComponent({
     );
   }
 
+  if (typeRes.paramType === "void" || typeRes.paramType === "never") {
+    return (
+      <FormGroup key={index}>
+        {getFormLabel(param)}
+        <FormControl
+          type="text"
+          required={!param.optional}
+          placeholder="undefined"
+          value={"undefined"}
+          disabled
+          isInvalid={validated}
+        />
+        <Form.Control.Feedback type="invalid">
+          {error?.message || "This field is required"}
+        </Form.Control.Feedback>
+      </FormGroup>
+    );
+  }
+
   return (
     <FormGroup key={index}>
       {getFormLabel(param)}
@@ -123,7 +142,7 @@ function ParameterFormControllComponent({
 function getFormLabel(param: ParameterRessource) {
   return (
     <Form.Label>
-      {param.paramName}
+      <strong>{param.paramName}</strong>
       {param.optional && "?"}: {param.typeInfo.typeAsString}
     </Form.Label>
   );

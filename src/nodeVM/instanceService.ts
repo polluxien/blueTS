@@ -18,14 +18,27 @@ export async function createClassVM(
     });
     const jsCode = transpiled.outputText;
 
-    let context = {};
+    const context: any = {
+      //debugging
+      console,
+
+      //hole alle module
+      exports: {},
+      module: { exports: {} },
+      require: require,
+
+      //setzte automatischen Timout nach 3 sekunden
+      setTimeout: 3000,
+    };
     vm.createContext(context);
     vm.runInContext(jsCode, context);
 
-    const classConstructor = (context as any)[createClsInstanceRes.className];
-    if (!classConstructor) {
-      throw Error("Klasse in File nicht gefunden");
-    }
+    //finde und identifiziere KLasse
+    const classConstructor = identifyClass(
+      context,
+      createClsInstanceRes.className
+    );
+
     console.log("Constructor ausgabe: ", classConstructor);
     const myInstance = new classConstructor(
       ...(createClsInstanceRes.constructorParameter.length > 0
@@ -38,6 +51,26 @@ export async function createClassVM(
     console.warn(err.message ? err.message : "Error: " + err);
     throw err;
   }
+}
+
+function identifyClass(context: any, className: string) {
+  //Klasse von typ function da js sie so wertet
+
+  //nicht exportierte Klasse
+  if (context[className] && typeof context[className] === "function") {
+    return context[className];
+  }
+
+  //exportierte Klassen
+  if (
+    context.exports &&
+    context.exports[className] &&
+    typeof context.exports[className] === "function"
+  ) {
+    return context.exports[className];
+  }
+
+  throw Error("Klasse in File nicht gefunden");
 }
 
 export async function compileClassMethod(

@@ -16,6 +16,10 @@ import type {
 } from "../../ressources/classRessources.ts";
 
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
+import {
+  validateFormControllType,
+  type ValidationResult,
+} from "../../helper/validateType.ts";
 
 function CreateClassDialogComponent({
   cls,
@@ -31,6 +35,8 @@ function CreateClassDialogComponent({
   const [constructorIndex, setConstructorIndex] = useState(0);
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
+
+  //form Values before parsing
   const [formValues, setFormValues] = useState<Record<string, string>>({});
 
   const constructors: ConstructorRessource[] = cls.constructors || [];
@@ -46,6 +52,7 @@ function CreateClassDialogComponent({
     event.stopPropagation();
 
     const newErrors: Record<string, Error> = {};
+    const newParsedValues: Record<string, unknown> = {};
 
     const instanceName = formValues["__instanceName"];
     if (!instanceName) {
@@ -54,13 +61,16 @@ function CreateClassDialogComponent({
 
     for (const param of classVariables) {
       const value = formValues[param.paramName];
-      const err: Error | undefined | null = validateFormControllType(
-        param.typeInfo.typeAsString,
-        param.paramName,
-        value,
-        param.optional
+      const { err, parsedValue }: ValidationResult = validateFormControllType(
+        param,
+        value
       );
-      if (err) newErrors[param.paramName] = err;
+
+      if (err) {
+        newErrors[param.paramName] = err;
+      } else {
+        newParsedValues[param.paramName] = parsedValue;
+      }
     }
 
     setErrors(newErrors);
@@ -77,7 +87,7 @@ function CreateClassDialogComponent({
 
       //zum Prüfen ans Backend
       const constructorParameter = classVariables.map((param) => {
-        return formValues[param.paramName];
+        return newParsedValues[param.paramName];
       });
 
       const creClsInRes: CreateClassInstanceRessource = {
@@ -93,30 +103,6 @@ function CreateClassDialogComponent({
       });
     }
   }
-
-  const validateFormControllType = (
-    paramTypeAsString: string,
-    paramName: string,
-    formValue: string,
-    optional: boolean = false
-  ) => {
-    //if (paramType == "any" || paramType == "unknown") return;
-
-    if (!formValue && !optional) {
-      return new Error(`${paramName} is required`);
-    }
-    /*
-    if (
-      (paramType === "array" && !formValue.startsWith("[")) ||
-      !formValue.endsWith("]")
-    )
-    return new Error("No array format [...]");
-
-    */
-    //Typvalidierung
-    console.log(paramTypeAsString, formValue);
-    return null;
-  };
 
   return (
     <Modal show={true} onHide={close} size="lg" centered>

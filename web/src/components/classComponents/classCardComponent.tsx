@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
-import CreateClassDialogComponent from "./CreateClassDialogComponent.tsx";
+import CreateClassDialogComponent from "./createClassDialogComponent.tsx";
 
 function ClassCardComponent({
   cls,
