@@ -1,3 +1,4 @@
+import { PseudoBigInt } from "typescript";
 import { TsFileResource } from "./fileService/fileResources";
 
 export type TypeRessource = {
@@ -20,6 +21,7 @@ export type TypeRessource = {
   tupleElements?: TypeRessource[];
   unionValues?: TypeRessource[];
   arrayType?: TypeRessource;
+  literalValue?: string | number | undefined;
   objectParameters?: ParameterRessource[];
 };
 

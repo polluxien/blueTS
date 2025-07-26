@@ -16,6 +16,7 @@ import {
   TypeRessource,
 } from "./tsCompilerAPIRessourcees";
 import path from "path";
+import { PseudoBigInt } from "typescript";
 
 export class TSClassAnalyzer {
   private tsFiles: TsFileResource[];
@@ -119,7 +120,48 @@ export class TSParameterAnalyzer {
   private typeAnalyzer(type: Type): TypeRessource {
     const typeAsString = type.getText();
 
-    if (type.isUnion() && !type.isBoolean() && !type.isEnum()) {
+    if (
+      typeAsString === "any" ||
+      typeAsString === "unknown" ||
+      typeAsString === "never" ||
+      typeAsString === "void"
+    ) {
+      return { typeAsString, paramType: typeAsString };
+    }
+
+    if (
+      type.isStringLiteral() ||
+      type.isNumberLiteral() ||
+      type.isBooleanLiteral()
+    ) {
+      return {
+        typeAsString,
+        paramType: "literal",
+        //  literalValue: type.getLiteralValue(),
+      };
+    }
+
+    if (type.isEnum()) {
+      const enumDecl = type.getSymbol()?.getDeclarations()?.[0];
+      if (enumDecl && Node.isEnumDeclaration(enumDecl)) {
+        const members = enumDecl.getMembers();
+        const enumValues = members.map((m) => m.getName());
+        return { typeAsString, paramType: "enum", enumValues };
+      }
+      return { typeAsString, paramType: "enum", enumValues: [] };
+    }
+
+    //array
+    if (type.isArray()) {
+      return {
+        typeAsString,
+        paramType: "array",
+        arrayType: this.typeAnalyzer(type.getArrayElementTypeOrThrow()),
+      };
+    }
+
+    if (type.isUnion() && !type.isBoolean()) {
+      // ! hier muss noch mal true oder false abgefangen werden das nicht true und false gesplitted werden
       return {
         typeAsString,
         paramType: "union",
@@ -137,36 +179,24 @@ export class TSParameterAnalyzer {
       };
     }
 
-    if (type.isEnum()) {
-      const enumDecl = type.getSymbol()?.getDeclarations()?.[0];
-      if (enumDecl && Node.isEnumDeclaration(enumDecl)) {
-        const members = enumDecl.getMembers();
-        const enumValues = members.map((m) => m.getName());
-        return { typeAsString, paramType: "enum", enumValues };
-      }
-    }
-
-    if (type.isArray()) {
-      return {
-        typeAsString,
-        paramType: "array",
-        arrayType: this.typeAnalyzer(type.getArrayElementTypeOrThrow()),
-      };
-    }
-
-    // ! Unvollständig muss noch fertig implementiert werden
     if (type.isObject()) {
       const props = type.getProperties();
-      //const fields = props.map((prop) => this.paramAnalyzer(prop));
 
+      const paramArr: ParameterRessource[] = [];
+      for (let prop of props) {
+        const propType = prop.getTypeAtLocation(this.param);
+        paramArr.push({
+          paramName: prop.getName(),
+          typeInfo: this.typeAnalyzer(propType),
+          optional: prop.isOptional?.() ?? false,
+        });
+      }
       return {
         typeAsString,
         paramType: "object",
-        // objectParameters: fields,
+        objectParameters: paramArr,
       };
     }
-
-    // ! functional und litral hier noch implementieren
 
     if (type.isString() || type.isNumber() || type.isBoolean()) {
       return {
@@ -175,18 +205,7 @@ export class TSParameterAnalyzer {
       };
     }
 
-    if (typeAsString === "any") {
-      return { typeAsString, paramType: "any" };
-    }
-    if (typeAsString === "unknown") {
-      return { typeAsString, paramType: "unknown" };
-    }
-    if (typeAsString === "never") {
-      return { typeAsString, paramType: "never" };
-    }
-    if (typeAsString === "void") {
-      return { typeAsString, paramType: "void" };
-    }
+    // ! functional fehlt noch
 
     //default Fallback
     return {

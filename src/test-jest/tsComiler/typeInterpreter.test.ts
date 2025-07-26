@@ -196,27 +196,39 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
   });
 
   test("erkenne Eingabeparameter: array - object[]", () => {
-    /*
     const expectedParam = {
-      paramName: "tupleArray",
+      paramName: "objectArray",
       typeInfo: {
-        typeAsString: "[string, number][]",
+        typeAsString: "{ name: string; age: number; }[]",
         paramType: "array",
         arrayType: {
-          typeAsString: "[string, number]",
-          paramType: "tuple",
-          tupleElements: [
-            { typeAsString: "string", paramType: "basic" },
-            { typeAsString: "number", paramType: "basic" },
+          typeAsString: "{ name: string; age: number; }",
+          paramType: "object",
+          objectParameters: [
+            {
+              paramName: "name",
+              typeInfo: {
+                typeAsString: "string",
+                paramType: "basic",
+              },
+              optional: false,
+            },
+            {
+              paramName: "age",
+              typeInfo: {
+                typeAsString: "number",
+                paramType: "basic",
+              },
+              optional: false,
+            },
           ],
         },
       },
       optional: false,
     };
-    */
 
     //object not implemented jet
-    expect(res[0].constructors[0].parameters[4]).toEqual("");
+    expect(res[0].constructors[0].parameters[4]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: 2D array -> string[][]", () => {
