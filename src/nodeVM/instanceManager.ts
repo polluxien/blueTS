@@ -1,30 +1,8 @@
-import { TsFileResource } from "../tsCompilerApi/fileService/fileResources";
-import { ParameterRessource } from "../tsCompilerApi/tsCompilerAPIRessourcees";
+import {
+  CreateClassInstanceRessource,
+  InstanceCheckRessource,
+} from "./instanceResources";
 import { compileClassMethod, createClassVM } from "./instanceService";
-
-export type CreateClassInstanceRessource = {
-  instanceName: string;
-  className: string;
-  tsFile: TsFileResource;
-  constructorParameter: any[];
-};
-
-export type ClassInstanceConstructionFunctionRessource = {
-  functionName: string;
-  parameter: ParameterRessource;
-};
-
-export type ClassInstanceConstructionRessource = {
-  className: string;
-  instanceName: string;
-  function: ClassInstanceConstructionFunctionRessource[];
-};
-
-export type InstanceCheckRessource = {
-  instanceName: string;
-  isValid: boolean;
-  error: unknown;
-};
 
 const instanceMap = new Map<string, object>();
 
@@ -62,7 +40,9 @@ export async function addInstanceToInstanceMap(
   };
   try {
     const instance = await createClassVM(createClsInstanceRes);
-    if (!instance) throw new Error("Instance konnte nicht erstellt werden");
+    if (!instance) {
+      throw new Error("Instance konnte nicht erstellt werden");
+    }
     instanceMap.set(createClsInstanceRes.className, instance);
     result.isValid = true;
   } catch (err) {
@@ -74,7 +54,9 @@ export async function addInstanceToInstanceMap(
 export async function compileMethodInClassObject(instanceName: string) {
   try {
     const instance = getInstanceFromInstanceMap(instanceName);
-    if (!instance) throw new Error();
+    if (!instance) {
+      throw new Error();
+    }
 
     const dotdotdot = compileClassMethod(instance, "", []);
   } catch (err) {

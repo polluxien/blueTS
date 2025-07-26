@@ -1,6 +1,6 @@
 import fs from "fs";
 import ts from "typescript";
-import { CreateClassInstanceRessource } from "./instanceManager";
+import { CreateClassInstanceRessource } from "./instanceResources";
 
 const vm = require("vm");
 

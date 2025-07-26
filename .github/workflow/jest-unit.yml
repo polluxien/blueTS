@@ -1,0 +1,44 @@
+name: Jest Unit Backend-Tests
+on:
+  push:
+    branches: [ main, master ]
+
+   # Eigentlich nur ausführen falls sich etwas im Backend ändert, für Testzwecke auskommentiert
+   # paths:
+   #     - 'backend/**'  # Nur ausführen wenn sich was im Backend ändert
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        
+        defaults:
+          run:
+            working-directory: ./backend 
+    
+        steps:
+        - uses: actions/checkout@v4
+    
+        - uses: actions/setup-node@v4
+          with:
+            node-version: 20
+            cache: 'npm'
+            cache-dependency-path: './backend/package-lock.json'
+    
+        - name: Install dependencies
+          run: npm ci
+    
+        - name: Run Jest tests
+          run: npm test
+    
+        # Optional: Coverage Report speichern
+        - name: Upload coverage reports
+          if: always()
+          uses: actions/upload-artifact@v4
+          with:
+            name: coverage-report
+            path: backend/coverage/
+            retention-days: 30
