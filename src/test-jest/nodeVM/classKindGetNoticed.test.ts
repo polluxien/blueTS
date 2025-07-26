@@ -25,8 +25,8 @@ describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   test("Klasse mit export", async () => {
     const instanceCheckRes: InstanceCheckRessource =
       await addInstanceToInstanceMap({
-        instanceName: "testi_01",
-        className: "Testi_01",
+        instanceName: "testi_02",
+        className: "Testi_02",
         tsFile: {
           name: "classKinds.ts",
           path: "/Users/bennet/redj/src/test-jest/mockCode/classKinds.ts" as Path,
@@ -42,8 +42,8 @@ describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   test("Klasse mit nachträglichen export", async () => {
     const instanceCheckRes: InstanceCheckRessource =
       await addInstanceToInstanceMap({
-        instanceName: "testi_01",
-        className: "Testi_01",
+        instanceName: "testi_03",
+        className: "Testi_03",
         tsFile: {
           name: "classKinds.ts",
           path: "/Users/bennet/redj/src/test-jest/mockCode/classKinds.ts" as Path,
@@ -59,8 +59,8 @@ describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   test("Klasse mit default export", async () => {
     const instanceCheckRes: InstanceCheckRessource =
       await addInstanceToInstanceMap({
-        instanceName: "testi_01",
-        className: "Testi_01",
+        instanceName: "testi_04",
+        className: "Testi_04",
         tsFile: {
           name: "classKinds.ts",
           path: "/Users/bennet/redj/src/test-jest/mockCode/classKinds.ts" as Path,
