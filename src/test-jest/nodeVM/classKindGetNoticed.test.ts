@@ -5,7 +5,7 @@ import { InstanceCheckRessource } from "../../nodeVM/instanceResources";
 
 const tsFile = {
   name: "classKinds.ts",
-  path: path.resolve(__dirname, "../mockCode/classKinds.ts") as Path,
+  path: path.resolve(__dirname, "../mockCode/nodeVM/classKinds.ts") as Path,
 };
 describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   test("default KLasse (ohne export)", async () => {

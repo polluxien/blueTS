@@ -146,6 +146,14 @@ export class TSParameterAnalyzer {
       }
     }
 
+    if (type.isArray()) {
+      return {
+        typeAsString,
+        paramType: "array",
+        arrayType: this.typeAnalyzer(type.getArrayElementTypeOrThrow()),
+      };
+    }
+
     // ! Unvollständig muss noch fertig implementiert werden
     if (type.isObject()) {
       const props = type.getProperties();
@@ -160,15 +168,7 @@ export class TSParameterAnalyzer {
 
     // ! functional und litral hier noch implementieren
 
-    if (type.isArray()) {
-      return {
-        typeAsString,
-        paramType: "array",
-        arrayType: this.typeAnalyzer(type.getArrayElementTypeOrThrow()),
-      };
-    }
-
-    if (type.isString() || type.isNumber()) {
+    if (type.isString() || type.isNumber() || type.isBoolean()) {
       return {
         typeAsString,
         paramType: "basic",
