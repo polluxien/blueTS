@@ -103,6 +103,36 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
     };
     expect(res[0].constructors[0].parameters).toContainEqual(expectedParam);
   });
+
+  test("erkenne Eingabeparameter: undefined", () => {
+    const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassUndefined")]);
+    const res: ClassRessource[] = myAnalyser.parse();
+
+    const expectedParam = {
+      paramName: "x",
+      typeInfo: {
+        typeAsString: "undefined",
+        paramType: "undefined",
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters).toContainEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: null", () => {
+    const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassNull")]);
+    const res: ClassRessource[] = myAnalyser.parse();
+
+    const expectedParam = {
+      paramName: "x",
+      typeInfo: {
+        typeAsString: "null",
+        paramType: "null",
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters).toContainEqual(expectedParam);
+  });
 });
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ENUM", () => {
   test("erkenne Eingabeparameter: enum", () => {
@@ -126,7 +156,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
   const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassArray")]);
   const res: ClassRessource[] = myAnalyser.parse();
 
-  console.log(JSON.stringify(res, null, 2));
   test("erkenne Eingabeparameter: array - string[]", () => {
     const expectedParam = {
       paramName: "stringArray",
@@ -312,8 +341,179 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
   });
 });
 
-describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () => {});
+describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () => {
+  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassUnion")]);
+  const res: ClassRessource[] = myAnalyser.parse();
 
-describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> FUNC", () => {});
+  console.log(JSON.stringify(res, null, 2));
+
+  test("erkenne Eingabeparameter: string | number", () => {
+    const expectedParam = {
+      paramName: "stringOrNumber",
+      typeInfo: {
+        typeAsString: "string | number",
+        paramType: "union",
+        unionValues: [
+          { typeAsString: "string", paramType: "basic" },
+          { typeAsString: "number", paramType: "basic" },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[0]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: number | boolean", () => {
+    const expectedParam = {
+      paramName: "numberOrBoolean",
+      typeInfo: {
+        typeAsString: "number | boolean",
+        paramType: "union",
+        unionValues: [
+          { typeAsString: "number", paramType: "basic" },
+          { typeAsString: "boolean", paramType: "basic" },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[1]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: string | string[]", () => {
+    const expectedParam = {
+      paramName: "stringOrArray",
+      typeInfo: {
+        typeAsString: "string | string[]",
+        paramType: "union",
+        unionValues: [
+          { typeAsString: "string", paramType: "basic" },
+          {
+            typeAsString: "string[]",
+            paramType: "array",
+            arrayType: { typeAsString: "string", paramType: "basic" },
+          },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[2]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: string[] | [number, number]", () => {
+    const expectedParam = {
+      paramName: "arrayOrTuple",
+      typeInfo: {
+        typeAsString: "string[] | [number, number]",
+        paramType: "union",
+        unionValues: [
+          {
+            typeAsString: "string[]",
+            paramType: "array",
+            arrayType: { typeAsString: "string", paramType: "basic" },
+          },
+          {
+            typeAsString: "[number, number]",
+            paramType: "tuple",
+            tupleElements: [
+              { typeAsString: "number", paramType: "basic" },
+              { typeAsString: "number", paramType: "basic" },
+            ],
+          },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[3]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: { name: string } | null", () => {
+    const expectedParam = {
+      paramName: "objectOrNull",
+      typeInfo: {
+        typeAsString: "{ name: string } | null",
+        paramType: "union",
+        unionValues: [
+          {
+            typeAsString: "{ name: string }",
+            paramType: "object",
+            objectParameters: [
+              {
+                paramName: "name",
+                typeInfo: {
+                  typeAsString: "string",
+                  paramType: "basic",
+                },
+                optional: false,
+              },
+            ],
+          },
+          { typeAsString: "null", paramType: "null" },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[4]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: 'start' | 'stop' | boolean", () => {
+    const expectedParam = {
+      paramName: "unionLiteral",
+      typeInfo: {
+        typeAsString: 'boolean | "start" | "stop"',
+        paramType: "union",
+        unionValues: [
+          { typeAsString: '"start"', paramType: "literal" },
+          { typeAsString: '"stop"', paramType: "literal" },
+          { typeAsString: "boolean", paramType: "basic" },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[5]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: string | (() => void)", () => {
+    const expectedParam = {
+      paramName: "unionFunctionOrValue",
+      typeInfo: {
+        typeAsString: "string | (() => void)",
+        paramType: "union",
+        unionValues: [
+          {
+            typeAsString: "string",
+            paramType: "basic",
+          },
+          {
+            typeAsString: "() => void",
+            paramType: "function",
+          },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[6]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: string | number | boolean | null | undefined", () => {
+    const expectedParam = {
+      paramName: "complexUnion",
+      typeInfo: {
+        typeAsString: "string | number | boolean | null | undefined",
+        paramType: "union",
+        unionValues: [
+          { typeAsString: "string", paramType: "basic" },
+          { typeAsString: "number", paramType: "basic" },
+          { typeAsString: "boolean", paramType: "basic" },
+          { typeAsString: "null", paramType: "null" },
+          { typeAsString: "undefined", paramType: "undefined" },
+        ],
+      },
+      optional: false,
+    };
+    expect(res[0].constructors[0].parameters[7]).toEqual(expectedParam);
+  });
+});
+
+describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> FUNCTION", () => {});
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", () => {});

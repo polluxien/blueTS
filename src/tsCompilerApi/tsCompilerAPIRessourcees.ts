@@ -11,9 +11,10 @@ export type TypeRessource = {
     | "tuple"
     | "enum"
     | "literal"
-    | "tupel"
     | "function"
     | "any"
+    | "null"
+    | "undefined"
     | "never"
     | "void"
     | "unknown";
