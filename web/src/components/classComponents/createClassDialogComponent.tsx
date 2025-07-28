@@ -127,7 +127,9 @@ function CreateClassDialogComponent({
           {constructors.length > 1 && (
             <p>Multiple constructors found. Please choose one:</p>
           )}
-          <p>
+          {
+            //zu groß
+            /*         <p>
             constructor(
             {currentConstructor.parameters
               ?.map(
@@ -139,7 +141,9 @@ function CreateClassDialogComponent({
               )
               .join(", ")}
             )
-          </p>{" "}
+          </p>{" "} */
+          }
+          {<p>new {cls.className + "("}</p>}
           {constructors.length > 0 && (
             <div className="mb-4">
               <Carousel
@@ -177,6 +181,7 @@ function CreateClassDialogComponent({
               </Carousel>
             </div>
           )}
+          <p>{")"}</p>
           <Modal.Footer>
             <Button variant="secondary" type="button" onClick={close}>
               Close

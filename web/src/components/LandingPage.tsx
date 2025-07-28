@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Badge from "react-bootstrap/Badge";
 import type {
   ClassRessource,
   InstanceCheckRessource,
   InstanceRessource,
 } from "../ressources/classRessources.ts";
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 
 import { vscode } from "../api/vscodeAPI.ts";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
@@ -113,9 +112,13 @@ function LandingPage() {
         <div>
           <h1>
             TS-Classes
-            <Badge bg="secondary" onClick={refreshClasses}>
-              reload
-            </Badge>
+            <Button variant="secondary">
+              <img
+                src="web/public/Refresh_icon.png"
+                alt="refresh"
+                onClick={refreshClasses}
+              />
+            </Button>
           </h1>
           <div>
             {!loading ? (
