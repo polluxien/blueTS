@@ -15,9 +15,10 @@ export type TypeRessource = {
     | "tuple"
     | "enum"
     | "literal"
-    | "tupel"
     | "function"
     | "any"
+    | "null"
+    | "undefined"
     | "never"
     | "void"
     | "unknown";
@@ -25,6 +26,7 @@ export type TypeRessource = {
   tupleElements?: TypeRessource[];
   unionValues?: TypeRessource[];
   arrayType?: TypeRessource;
+  literalValue?: string | number | boolean | undefined;
   objectParameters?: ParameterRessource[];
 };
 

@@ -1,17 +1,22 @@
 import Form from "react-bootstrap/Form";
-import {
-  Dropdown,
-  DropdownButton,
-  FormControl,
-  FormGroup,
-  InputGroup,
-} from "react-bootstrap";
-import { useState } from "react";
+import { FormControl, FormGroup } from "react-bootstrap";
 
 import type {
   ParameterRessource,
   TypeRessource,
 } from "../../ressources/classRessources";
+import ArrayParameterComponent from "./ArrayParamComponent";
+import UnionParameterFormControllComponent from "./UnionParamComponent";
+import ObjectParamComponent from "./ObjectParamComponent";
+
+export type ParamFormType = {
+  index: number;
+  param: ParameterRessource;
+  value: string;
+  validated: boolean;
+  error?: Error;
+  onChange: (paramName: string, value: string) => void;
+};
 
 function ParameterFormControllComponent({
   index,
@@ -28,54 +33,49 @@ function ParameterFormControllComponent({
   error?: Error;
   onChange: (paramName: string, value: string) => void;
 }) {
-  //Union Type selected Value
-  const [selectedUnionType, setSelectedUnionType] = useState<string | null>(
-    null
-  );
-
-  const handleSelectDropdownUnion = (value: string) => {
-    setSelectedUnionType(value);
-    //bei typänderung clear value
-    onChange(param.paramName, "");
-  };
-
   const typeRes: TypeRessource = param.typeInfo;
+
+  const paramFormType: ParamFormType = {
+    index,
+    param,
+    value,
+    validated,
+    error,
+    onChange,
+  };
 
   if (typeRes.paramType == "union") {
     return (
-      <FormGroup key={index}>
-        {getFormLabel(param)}
+      <UnionParameterFormControllComponent
+        paramFormType={paramFormType}
+      ></UnionParameterFormControllComponent>
+    );
+  }
 
-        <InputGroup className="mb-3">
-          <DropdownButton
-            drop="up"
-            variant="outline-secondary"
-            title={selectedUnionType ?? "select typ"}
-            id={`input-group-dropdown-${index}`}
-          >
-            {typeRes.unionValues &&
-              typeRes.unionValues.map((unionType, idx) => (
-                <Dropdown.Item
-                  key={idx}
-                  onClick={() =>
-                    handleSelectDropdownUnion(unionType.typeAsString)
-                  }
-                >
-                  {unionType.typeAsString}
-                </Dropdown.Item>
-              ))}
-          </DropdownButton>
+  if (typeRes.paramType == "tuple") {
+    return (
+      <></>
+      /*
+      <UnionParameterFormControllComponent
+        paramFormType={paramFormType}
+      ></UnionParameterFormControllComponent>
+          */
+    );
+  }
 
-          <Form.Control
-            type="text"
-            isInvalid={!!error}
-            disabled={!selectedUnionType}
-          />
-          <Form.Control.Feedback type="invalid">
-            {error + ""}
-          </Form.Control.Feedback>
-        </InputGroup>
-      </FormGroup>
+  if (typeRes.paramType === "object") {
+    return (
+      <ObjectParamComponent
+        paramFormType={paramFormType}
+      ></ObjectParamComponent>
+    );
+  }
+
+  if (typeRes.paramType === "array") {
+    return (
+      <ArrayParameterComponent
+        paramFormType={paramFormType}
+      ></ArrayParameterComponent>
     );
   }
 
@@ -103,7 +103,11 @@ function ParameterFormControllComponent({
     );
   }
 
-  if (typeRes.paramType === "void" || typeRes.paramType === "never") {
+  if (
+    typeRes.paramType === "void" ||
+    typeRes.paramType === "never" ||
+    typeRes.paramType === "undefined"
+  ) {
     return (
       <FormGroup key={index}>
         {getFormLabel(param)}
@@ -143,7 +147,10 @@ function getFormLabel(param: ParameterRessource) {
   return (
     <Form.Label>
       <strong>{param.paramName}</strong>
-      {param.optional && "?"}: {param.typeInfo.typeAsString}
+      {param.optional && "?"}:{" "}
+      {param.typeInfo.paramType === "object"
+        ? "{"
+        : param.typeInfo.typeAsString}
     </Form.Label>
   );
 }

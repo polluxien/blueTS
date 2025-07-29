@@ -6,8 +6,6 @@ import Container from "react-bootstrap/Container";
 import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
 
-import ParameterFormControllComponent from "./ParameterFormControllComponenet.tsx";
-
 import type {
   ClassRessource,
   ConstructorRessource,
@@ -20,6 +18,7 @@ import {
   validateFormControllType,
   type ValidationResult,
 } from "../../helper/validateType.ts";
+import ParameterFormControllComponent from "../paramComponents/ParameterFormControllComponenet.tsx";
 
 function CreateClassDialogComponent({
   cls,
