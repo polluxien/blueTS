@@ -19,8 +19,8 @@ export function validateFormControllType(
     return { err: new Error(`field is required`) };
   }
 
-  //wenn nichts gegeben aber nicht gefordert return undefined
-  if (!formValue && paramRes.optional) {
+  //wenn nichts gegeben aber nicht gefordert return undefined || speziel undefined angegebn bei optional
+  if ((paramRes.optional && !formValue) || formValue === "undefined") {
     return { parsedValue: undefined };
   }
 
@@ -32,7 +32,11 @@ export function validateFormControllType(
   //basic types
   if (typeRes.paramType === "basic") {
     if (typeRes.typeAsString === "string") {
-      if (formValue.startsWith('"') && formValue.endsWith('"')) {
+      if (
+        (formValue.startsWith('"') && formValue.endsWith('"')) ||
+        (formValue.startsWith("`") && formValue.endsWith("`")) ||
+        (formValue.startsWith("'") && formValue.endsWith("'"))
+      ) {
         const stripped = formValue.slice(1, -1);
         return { parsedValue: stripped };
       }
@@ -62,7 +66,7 @@ export function validateFormControllType(
   //enum type
   if (typeRes.paramType === "enum") {
     if (typeRes.enumValues?.includes(formValue)) {
-      return { parsedValue: formValue };
+      return { parsedValue: typeRes.typeAsString + "." + formValue };
     } else {
       return { err: new Error(`Invalid enum`) };
     }

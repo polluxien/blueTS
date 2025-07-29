@@ -18,32 +18,21 @@ function TupelParamComponent({
         {paramFormType.param.typeInfo.typeAsString}
       </Form.Label>
       <Row className="mb-3">
-        <Col>
-          <ParameterFormControllComponent
-            index={0}
-            param={{
-              ...paramFormType.param,
-              typeInfo: typeRes.tupleElements![0],
-            }}
-            value={paramFormType.value}
-            validated={paramFormType.validated}
-            error={paramFormType.error}
-            onChange={paramFormType.onChange}
-          />
-        </Col>
-        <Col>
-          <ParameterFormControllComponent
-            index={0}
-            param={{
-              ...paramFormType.param,
-              typeInfo: typeRes.tupleElements![1],
-            }}
-            value={paramFormType.value}
-            validated={paramFormType.validated}
-            error={paramFormType.error}
-            onChange={paramFormType.onChange}
-          />
-        </Col>
+        {typeRes.tupleElements!.map((tupelParam, index) => (
+          <Col>
+            <ParameterFormControllComponent
+              index={index}
+              param={{
+                ...paramFormType.param,
+                typeInfo: tupelParam,
+              }}
+              value={paramFormType.value}
+              validated={paramFormType.validated}
+              error={paramFormType.error}
+              onChange={paramFormType.onChange}
+            />
+          </Col>
+        ))}
       </Row>
     </>
   );
