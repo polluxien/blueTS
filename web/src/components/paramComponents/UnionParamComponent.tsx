@@ -8,7 +8,7 @@ import ParameterFormControllComponent, {
   type ParamFormType,
 } from "./ParameterFormControllComponenet";
 
-function UnionParameterFormControllComponent({
+function UnionParamComponent({
   paramFormType,
 }: {
   paramFormType: ParamFormType;
@@ -77,4 +77,4 @@ function getFormLabel(param: ParameterRessource) {
   );
 }
 
-export default UnionParameterFormControllComponent;
+export default UnionParamComponent;

@@ -2,10 +2,7 @@ import { Form, FormGroup } from "react-bootstrap";
 import ParameterFormControllComponent, {
   type ParamFormType,
 } from "./ParameterFormControllComponenet";
-import type {
-  ParameterRessource,
-  TypeRessource,
-} from "../../ressources/classRessources";
+import type { TypeRessource } from "../../ressources/classRessources";
 
 function ObjectParamComponent({
   paramFormType,
@@ -16,7 +13,11 @@ function ObjectParamComponent({
 
   return (
     <FormGroup key={paramFormType.index}>
-      {getFormLabel(paramFormType.param)}
+      <Form.Label>
+        <strong>{paramFormType.param.paramName}</strong>
+        {paramFormType.param.optional && "?"}:{" "}
+        {paramFormType.param.typeInfo.typeAsString}
+      </Form.Label>
       {typeRes.objectParameters && (
         <div
           className="mb-4"
@@ -26,6 +27,7 @@ function ObjectParamComponent({
             padding: "1.5rem",
           }}
         >
+          <p>{"{"}</p>
           {typeRes.objectParameters.map((objParam, i) => (
             <div key={i}>
               <ParameterFormControllComponent
@@ -41,23 +43,11 @@ function ObjectParamComponent({
               </Form.Control.Feedback>
             </div>
           ))}
+          <p>{"}"}</p>
         </div>
       )}
-      <p>{"}"}</p>
     </FormGroup>
   );
 }
 
 export default ObjectParamComponent;
-
-function getFormLabel(param: ParameterRessource) {
-  return (
-    <Form.Label>
-      <strong>{param.paramName}</strong>
-      {param.optional && "?"}:{" "}
-      {param.typeInfo.paramType === "object"
-        ? "{"
-        : param.typeInfo.typeAsString}
-    </Form.Label>
-  );
-}

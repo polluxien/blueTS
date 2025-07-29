@@ -5,9 +5,11 @@ import type {
   ParameterRessource,
   TypeRessource,
 } from "../../ressources/classRessources";
-import ArrayParameterComponent from "./ArrayParamComponent";
-import UnionParameterFormControllComponent from "./UnionParamComponent";
-import ObjectParamComponent from "./ObjectParamComponent";
+
+import ArrayParameterComponent from "./ArrayParamComponent.tsx";
+import ObjectParamComponent from "./ObjectParamComponent.tsx";
+import UnionParamComponent from "./UnionParamComponent.tsx";
+import TupelParamComponent from "./TupelParamComponent.tsx";
 
 export type ParamFormType = {
   index: number;
@@ -46,20 +48,13 @@ function ParameterFormControllComponent({
 
   if (typeRes.paramType == "union") {
     return (
-      <UnionParameterFormControllComponent
-        paramFormType={paramFormType}
-      ></UnionParameterFormControllComponent>
+      <UnionParamComponent paramFormType={paramFormType}></UnionParamComponent>
     );
   }
 
   if (typeRes.paramType == "tuple") {
     return (
-      <></>
-      /*
-      <UnionParameterFormControllComponent
-        paramFormType={paramFormType}
-      ></UnionParameterFormControllComponent>
-          */
+      <TupelParamComponent paramFormType={paramFormType}></TupelParamComponent>
     );
   }
 
@@ -91,7 +86,7 @@ function ParameterFormControllComponent({
         >
           <option value="">select enum value</option>
           {typeRes.enumValues?.map((enumValue, i) => (
-            <option key={i} value={enumValue}>
+            <option key={i} value={typeRes.typeAsString + "." + enumValue}>
               {typeRes.typeAsString + "." + enumValue}
             </option>
           ))}
@@ -147,10 +142,7 @@ function getFormLabel(param: ParameterRessource) {
   return (
     <Form.Label>
       <strong>{param.paramName}</strong>
-      {param.optional && "?"}:{" "}
-      {param.typeInfo.paramType === "object"
-        ? "{"
-        : param.typeInfo.typeAsString}
+      {param.optional && "?"}: {param.typeInfo.typeAsString}
     </Form.Label>
   );
 }

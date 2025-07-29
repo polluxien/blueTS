@@ -30,8 +30,8 @@ function ArrayParameterComponent({
       <Form.Label>
         <strong>{paramFormType.param.paramName}</strong>
         {paramFormType.param.optional && "?"}:{" "}
-        {paramFormType.param.typeInfo.typeAsString.replace("[]", "")}
-        {"["}
+        {paramFormType.param.typeInfo.typeAsString}
+        {/*paramFormType.param.typeInfo.typeAsString.replace("[]", "") */}
       </Form.Label>
 
       <div
@@ -42,14 +42,15 @@ function ArrayParameterComponent({
           padding: "1.5rem",
         }}
       >
+        <p>{"["}</p>
         {[...Array(arraySize)].map((_, i) => (
           <div key={i}>
-            {
-              (elementParam.paramName = `${paramFormType.param.paramName}[${i}]`)
-            }
             <ParameterFormControllComponent
               index={i}
-              param={elementParam}
+              param={{
+                ...elementParam,
+                paramName: `${paramFormType.param.paramName}[${i}]`,
+              }}
               value={paramFormType.value}
               validated={paramFormType.validated}
               error={paramFormType.error}
@@ -74,9 +75,8 @@ function ArrayParameterComponent({
             </Col>
           )}
         </Row>
+        <p>{"]"}</p>
       </div>
-
-      <p>{"]"}</p>
     </FormGroup>
   );
 }
