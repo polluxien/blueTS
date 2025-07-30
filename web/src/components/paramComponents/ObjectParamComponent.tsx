@@ -17,12 +17,11 @@ function ObjectParamComponent({
   ) => void;
 }) {
   const typeRes: TypeRessource = paramFormType.param.typeInfo;
+  const [internValues, setInternValues] = useState<Record<string, string>>({});
 
   const [paramValidations, setParamValidations] = useState<
     Record<string, ValidationType>
   >({});
-
-  const [internValues, setInternValues] = useState<Record<string, string>>({});
 
   function handleChildChange(
     paramName: string,

@@ -64,49 +64,51 @@ function ParameterFormControllComponent({
   }
 
   useEffect(() => {
-    if (!onValidationChange) return;
+    console.log(
+      "Effect triggered for",
+      param.paramName,
+      param.typeInfo.paramType,
+      value
+    );
+  }, [value, param.paramName, param.typeInfo.paramType]);
 
-    if (
-      typeRes.paramType == "union" ||
-      typeRes.paramType == "tuple" ||
-      typeRes.paramType == "object" ||
-      typeRes.paramType == "array"
-    ) {
-      //Nested types -> überprüfung schon stattgefunden und muss nur übernommen werden
+  const nestedTypes = ["union", "tuple", "object", "array"];
 
-      // Noch keine Child-Validierungen erhalten
-      if (Object.keys(paramValidations).length === 0) return;
+  //Nested types -> externe überprüfung schon stattgefunden und muss nur übernommen werden
+  useEffect(() => {
+    if (!onValidationChange || !nestedTypes.includes(typeRes.paramType)) return;
+    //console.log("nested type");
 
-      const allChildrenValid = Object.values(paramValidations).every(
-        (value) => value.isValid
-      );
-      const allErrors = Object.values(paramValidations).flatMap(
-        (value) => value.errors
-      );
+    // Noch keine Child-Validierungen erhalten
+    if (Object.keys(paramValidations).length === 0) return;
 
-      onValidationChange(param.paramName, {
-        isValid: allChildrenValid,
-        errors: allErrors,
-        parsedValue: paramValidations[param.paramName],
-      });
-    } else {
-      //Basic/primitiv oder enum types -> hier interene Überprüfung
-      console.log("primitive type");
+    const allChildrenValid = Object.values(paramValidations).every(
+      (value) => value.isValid
+    );
+    const allErrors = Object.values(paramValidations).flatMap(
+      (value) => value.errors
+    );
 
-      const { err, parsedValue } = validateFormControllType(param, value);
+    onValidationChange(param.paramName, {
+      isValid: allChildrenValid,
+      errors: allErrors,
+      parsedValue: paramValidations[param.paramName],
+    });
+  }, [paramValidations, param.paramName, onValidationChange]);
 
-      onValidationChange!(param.paramName, {
-        isValid: !err,
-        errors: err ? [err] : [],
-        parsedValue: parsedValue,
-      });
-    }
-  }, [
-    paramValidations,
-    typeRes.paramType,
-    param.paramName,
-    onValidationChange,
-  ]);
+  //Basic/primitiv oder enum types -> hier interene Überprüfung
+  useEffect(() => {
+    if (!onValidationChange || nestedTypes.includes(typeRes.paramType)) return;
+    //console.log("primitive type");
+
+    const { err, parsedValue } = validateFormControllType(param, value);
+
+    onValidationChange(param.paramName, {
+      isValid: !err,
+      errors: err ? [err] : [],
+      parsedValue,
+    });
+  }, [value, param.paramName, onValidationChange]);
 
   const paramFormType: ParamFormType = {
     index,
@@ -148,7 +150,7 @@ function ParameterFormControllComponent({
     return (
       <ArrayParameterComponent
         paramFormType={paramFormType}
-        //onValidationChange={handleChildChange}
+        onValidationChange={handleChildChange}
       ></ArrayParameterComponent>
     );
   }

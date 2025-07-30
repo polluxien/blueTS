@@ -1,29 +1,104 @@
 import Form from "react-bootstrap/Form";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ParameterRessource } from "../../ressources/classRessources";
 import { Button, Col, FormGroup, Row } from "react-bootstrap";
 import ParameterFormControllComponent, {
   type ParamFormType,
+  type ValidationType,
 } from "./ParameterFormControllComponenet";
 
 function ArrayParameterComponent({
   paramFormType,
+  onValidationChange,
 }: {
   paramFormType: ParamFormType;
+  onValidationChange: (
+    paramName: string,
+    validationInfo: ValidationType
+  ) => void;
 }) {
   const [arraySize, setArraySize] = useState<number>(1);
+  const [internValues, setInternValues] = useState<Record<string, string>>({});
+
+  const [paramValidations, setParamValidations] = useState<
+    Record<string, ValidationType>
+  >({});
+
+  function handleChildChange(
+    paramName: string,
+    validationType: ValidationType
+  ) {
+    setParamValidations((prev) => ({ ...prev, [paramName]: validationType }));
+  }
+
+  function handelInternChange(paramName: string, value: string) {
+    setInternValues((prev) => ({ ...prev, [paramName]: value }));
+  }
 
   const elementParam: ParameterRessource = {
     ...paramFormType.param,
     typeInfo: paramFormType.param.typeInfo.arrayType!,
   };
 
-  console.log(elementParam);
+  useEffect(() => {
+    //sammle alle Errors
+    const allErrors = Object.values(paramValidations).flatMap(
+      (value) => value.errors
+    );
+
+    const myArr: unknown[] = [];
+
+    //iterier über objParams und füge an jedem attribute geparsed value ein
+    for (let i = 0; i < arraySize; i++) {
+      const validation =
+        paramValidations[`${paramFormType.param.paramName}[${i}]`];
+      if (validation && validation.isValid) {
+        myArr.push(validation.parsedValue);
+      } else if (elementParam.optional) {
+        myArr.push(undefined);
+      } else {
+        //Fallback an dieser Stelle ist noch nicht valid
+        myArr.push("");
+      }
+    }
+
+    onValidationChange(paramFormType.param.paramName, {
+      isValid: allErrors.length === 0,
+      errors: allErrors,
+      parsedValue: myArr,
+    });
+  }, [
+    paramValidations,
+    arraySize,
+    paramFormType.param.paramName,
+    elementParam.optional,
+    onValidationChange,
+  ]);
+
+  const getElementName = (elementIndex: number) => {
+    return `${paramFormType.param.paramName}[${elementIndex}]`;
+  };
 
   const addToArray = () => setArraySize(arraySize + 1);
-  const minToArray = () =>
-    arraySize > 1 ? setArraySize(arraySize - 1) : new Error("");
+  const minToArray = () => {
+    if (arraySize <= 1) return;
+
+    const newSize = arraySize - 1;
+    setArraySize(newSize);
+
+    //pop die letezten werte
+    setInternValues((prevValues) => {
+      const newValues = { ...prevValues };
+      delete newValues[`${newSize}`];
+      return newValues;
+    });
+    setParamValidations((prevValidations) => {
+      const newValidations = { ...prevValidations };
+      delete newValidations[`${paramFormType.param.paramName}[${newSize}]`];
+      return newValidations;
+    });
+  };
 
   return (
     <FormGroup key={paramFormType.index}>
@@ -49,12 +124,13 @@ function ArrayParameterComponent({
               index={i}
               param={{
                 ...elementParam,
-                paramName: `${paramFormType.param.paramName}[${i}]`,
+                paramName: getElementName(i),
               }}
-              value={paramFormType.value}
+              value={internValues[getElementName(i)] || ""}
               validated={paramFormType.validated}
-              error={paramFormType.error}
-              onChange={paramFormType.onChange}
+              error={paramValidations[getElementName(i)]?.errors[0]}
+              onChange={handelInternChange}
+              onValidationChange={handleChildChange}
             />
             <Form.Control.Feedback type="invalid">
               {paramFormType.error?.message || "This field is required"}
