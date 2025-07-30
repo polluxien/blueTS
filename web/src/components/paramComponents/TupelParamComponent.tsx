@@ -2,6 +2,7 @@ import { Col, Form, Row } from "react-bootstrap";
 import type { TypeRessource } from "../../ressources/classRessources";
 import type { ParamFormType } from "./ParameterFormControllComponenet";
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
+//import { useState } from "react";
 
 function TupelParamComponent({
   paramFormType,
@@ -9,6 +10,7 @@ function TupelParamComponent({
   paramFormType: ParamFormType;
 }) {
   const typeRes: TypeRessource = paramFormType.param.typeInfo;
+ // const [tupelValues, setTupelValues] = useState<Record<number, any>>();
 
   return (
     <>

@@ -10,6 +10,8 @@ import ArrayParameterComponent from "./ArrayParamComponent.tsx";
 import ObjectParamComponent from "./ObjectParamComponent.tsx";
 import UnionParamComponent from "./UnionParamComponent.tsx";
 import TupelParamComponent from "./TupelParamComponent.tsx";
+import { useEffect, useState } from "react";
+import { validateFormControllType } from "../../helper/validateType.ts";
 
 export type ParamFormType = {
   index: number;
@@ -20,6 +22,12 @@ export type ParamFormType = {
   onChange: (paramName: string, value: string) => void;
 };
 
+export type ValidationType = {
+  isValid: boolean;
+  errors: Error[];
+  parsedValue?: unknown;
+};
+
 function ParameterFormControllComponent({
   index,
   param,
@@ -27,6 +35,7 @@ function ParameterFormControllComponent({
   validated,
   error,
   onChange,
+  onValidationChange,
 }: {
   index: number;
   param: ParameterRessource;
@@ -34,8 +43,70 @@ function ParameterFormControllComponent({
   validated: boolean;
   error?: Error;
   onChange: (paramName: string, value: string) => void;
+  onValidationChange?: (
+    paramName: string,
+    validationInfo: ValidationType
+  ) => void;
 }) {
   const typeRes: TypeRessource = param.typeInfo;
+
+  //in components müssden diese überprüften types in richtige syntax gebracht werden
+
+  const [paramValidations, setParamValidations] = useState<
+    Record<string, ValidationType>
+  >({});
+
+  function handleChildChange(
+    paramName: string,
+    validationType: ValidationType
+  ) {
+    setParamValidations((prev) => ({ ...prev, [paramName]: validationType }));
+  }
+
+  useEffect(() => {
+    if (!onValidationChange) return;
+
+    if (
+      typeRes.paramType == "union" ||
+      typeRes.paramType == "tuple" ||
+      typeRes.paramType == "object" ||
+      typeRes.paramType == "array"
+    ) {
+      //Nested types -> überprüfung schon stattgefunden und muss nur übernommen werden
+
+      // Noch keine Child-Validierungen erhalten
+      if (Object.keys(paramValidations).length === 0) return;
+
+      const allChildrenValid = Object.values(paramValidations).every(
+        (value) => value.isValid
+      );
+      const allErrors = Object.values(paramValidations).flatMap(
+        (value) => value.errors
+      );
+
+      onValidationChange(param.paramName, {
+        isValid: allChildrenValid,
+        errors: allErrors,
+        parsedValue: paramValidations[param.paramName],
+      });
+    } else {
+      //Basic/primitiv oder enum types -> hier interene Überprüfung
+      console.log("primitive type");
+
+      const { err, parsedValue } = validateFormControllType(param, value);
+
+      onValidationChange!(param.paramName, {
+        isValid: !err,
+        errors: err ? [err] : [],
+        parsedValue: parsedValue,
+      });
+    }
+  }, [
+    paramValidations,
+    typeRes.paramType,
+    param.paramName,
+    onValidationChange,
+  ]);
 
   const paramFormType: ParamFormType = {
     index,
@@ -48,13 +119,19 @@ function ParameterFormControllComponent({
 
   if (typeRes.paramType == "union") {
     return (
-      <UnionParamComponent paramFormType={paramFormType}></UnionParamComponent>
+      <UnionParamComponent
+        paramFormType={paramFormType}
+        // onValidationChange={handleChildChange}
+      ></UnionParamComponent>
     );
   }
 
   if (typeRes.paramType == "tuple") {
     return (
-      <TupelParamComponent paramFormType={paramFormType}></TupelParamComponent>
+      <TupelParamComponent
+        paramFormType={paramFormType}
+        // onValidationChange={handleChildChange}
+      ></TupelParamComponent>
     );
   }
 
@@ -62,6 +139,7 @@ function ParameterFormControllComponent({
     return (
       <ObjectParamComponent
         paramFormType={paramFormType}
+        onValidationChange={handleChildChange}
       ></ObjectParamComponent>
     );
   }
@@ -70,6 +148,7 @@ function ParameterFormControllComponent({
     return (
       <ArrayParameterComponent
         paramFormType={paramFormType}
+        //onValidationChange={handleChildChange}
       ></ArrayParameterComponent>
     );
   }

@@ -14,11 +14,10 @@ import type {
 } from "../../ressources/classRessources.ts";
 
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
-import {
-  validateFormControllType,
-  type ValidationResult,
-} from "../../helper/validateType.ts";
-import ParameterFormControllComponent from "../paramComponents/ParameterFormControllComponenet.tsx";
+import { validateFormControllType } from "../../helper/validateType.ts";
+import ParameterFormControllComponent, {
+  type ValidationType,
+} from "../paramComponents/ParameterFormControllComponenet.tsx";
 
 function CreateClassDialogComponent({
   cls,
@@ -38,6 +37,11 @@ function CreateClassDialogComponent({
   //form Values before parsing
   const [formValues, setFormValues] = useState<Record<string, string>>({});
 
+  //Validierungsstatus von allen Params
+  const [paramValidations, setParamValidations] = useState<
+    Record<string, ValidationType>
+  >({});
+
   const constructors: ConstructorRessource[] = cls.constructors || [];
   const currentConstructor = constructors[constructorIndex];
   const classVariables = currentConstructor?.parameters || [];
@@ -45,6 +49,16 @@ function CreateClassDialogComponent({
   function handleChange(paramName: string, value: string) {
     setFormValues((prev) => ({ ...prev, [paramName]: value }));
   }
+
+  const handleParameterValidation = (
+    paramName: string,
+    validationInfo: ValidationType
+  ) => {
+    setParamValidations((prev) => ({
+      ...prev,
+      [paramName]: validationInfo,
+    }));
+  };
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -59,16 +73,28 @@ function CreateClassDialogComponent({
     }
 
     for (const param of classVariables) {
-      const value = formValues[param.paramName];
-      const { err, parsedValue }: ValidationResult = validateFormControllType(
-        param,
-        value
-      );
+      const validation = paramValidations[param.paramName];
 
-      if (err) {
-        newErrors[param.paramName] = err;
+      if (!validation || !validation.isValid) {
+        // Fallback
+        if (!validation) {
+          const value = formValues[param.paramName];
+          const { err, parsedValue } = validateFormControllType(param, value);
+
+          if (err) {
+            newErrors[param.paramName] = err;
+          } else {
+            newParsedValues[param.paramName] = parsedValue;
+          }
+        } else {
+          // verwende gesammelte Validierungsfehler
+          if (validation.errors.length > 0) {
+            newErrors[param.paramName] = validation.errors[0];
+          }
+        }
       } else {
-        newParsedValues[param.paramName] = parsedValue;
+        // verwende den parsedValue
+        newParsedValues[param.paramName] = validation.parsedValue;
       }
     }
 
@@ -171,6 +197,7 @@ function CreateClassDialogComponent({
                             validated={validated}
                             error={errors[param.paramName]}
                             onChange={handleChange}
+                            onValidationChange={handleParameterValidation}
                           ></ParameterFormControllComponent>
                         ))}
                     </Container>
