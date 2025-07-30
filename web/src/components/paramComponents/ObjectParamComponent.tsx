@@ -1,31 +1,26 @@
 import { Form, FormGroup } from "react-bootstrap";
 import ParameterFormControllComponent, {
-  type ParamFormType,
-  type ValidationType,
+  type ParamFormTypeResource,
+  type ValidationTypeResource,
 } from "./ParameterFormControllComponenet";
 import type { TypeRessource } from "../../ressources/classRessources";
 import { useEffect, useState } from "react";
 
 function ObjectParamComponent({
   paramFormType,
-  onValidationChange,
 }: {
-  paramFormType: ParamFormType;
-  onValidationChange: (
-    paramName: string,
-    validationInfo: ValidationType
-  ) => void;
+  paramFormType: ParamFormTypeResource;
 }) {
   const typeRes: TypeRessource = paramFormType.param.typeInfo;
   const [internValues, setInternValues] = useState<Record<string, string>>({});
 
   const [paramValidations, setParamValidations] = useState<
-    Record<string, ValidationType>
+    Record<string, ValidationTypeResource>
   >({});
 
   function handleChildChange(
     paramName: string,
-    validationType: ValidationType
+    validationType: ValidationTypeResource
   ) {
     setParamValidations((prev) => ({ ...prev, [paramName]: validationType }));
   }
@@ -61,7 +56,7 @@ function ObjectParamComponent({
       }
     });
 
-    onValidationChange(paramFormType.param.paramName, {
+    paramFormType.onValidationChange!(paramFormType.param.paramName, {
       isValid: objIsValid,
       errors: allErrors,
       parsedValue: myObject,

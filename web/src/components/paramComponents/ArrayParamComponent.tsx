@@ -4,30 +4,25 @@ import { useEffect, useState } from "react";
 import type { ParameterRessource } from "../../ressources/classRessources";
 import { Button, Col, FormGroup, Row } from "react-bootstrap";
 import ParameterFormControllComponent, {
-  type ParamFormType,
-  type ValidationType,
+  type ParamFormTypeResource,
+  type ValidationTypeResource,
 } from "./ParameterFormControllComponenet";
 
 function ArrayParameterComponent({
   paramFormType,
-  onValidationChange,
 }: {
-  paramFormType: ParamFormType;
-  onValidationChange: (
-    paramName: string,
-    validationInfo: ValidationType
-  ) => void;
+  paramFormType: ParamFormTypeResource;
 }) {
   const [arraySize, setArraySize] = useState<number>(1);
   const [internValues, setInternValues] = useState<Record<string, string>>({});
 
   const [paramValidations, setParamValidations] = useState<
-    Record<string, ValidationType>
+    Record<string, ValidationTypeResource>
   >({});
 
   function handleChildChange(
     paramName: string,
-    validationType: ValidationType
+    validationType: ValidationTypeResource
   ) {
     setParamValidations((prev) => ({ ...prev, [paramName]: validationType }));
   }
@@ -63,7 +58,7 @@ function ArrayParameterComponent({
       }
     }
 
-    onValidationChange(paramFormType.param.paramName, {
+    paramFormType.onValidationChange!(paramFormType.param.paramName, {
       isValid: allErrors.length === 0,
       errors: allErrors,
       parsedValue: myArr,
@@ -73,7 +68,7 @@ function ArrayParameterComponent({
     arraySize,
     paramFormType.param.paramName,
     elementParam.optional,
-    onValidationChange,
+    paramFormType.onValidationChange!,
   ]);
 
   const getElementName = (elementIndex: number) => {

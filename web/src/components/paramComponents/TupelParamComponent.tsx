@@ -1,16 +1,16 @@
 import { Col, Form, Row } from "react-bootstrap";
 import type { TypeRessource } from "../../ressources/classRessources";
-import type { ParamFormType } from "./ParameterFormControllComponenet";
+import type { ParamFormTypeResource } from "./ParameterFormControllComponenet";
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 //import { useState } from "react";
 
 function TupelParamComponent({
   paramFormType,
 }: {
-  paramFormType: ParamFormType;
+  paramFormType: ParamFormTypeResource;
 }) {
   const typeRes: TypeRessource = paramFormType.param.typeInfo;
- // const [tupelValues, setTupelValues] = useState<Record<number, any>>();
+  // const [tupelValues, setTupelValues] = useState<Record<number, any>>();
 
   return (
     <>

@@ -16,7 +16,7 @@ import type {
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 import { validateFormControllType } from "../../helper/validateType.ts";
 import ParameterFormControllComponent, {
-  type ValidationType,
+  type ValidationTypeResource,
 } from "../paramComponents/ParameterFormControllComponenet.tsx";
 
 function CreateClassDialogComponent({
@@ -39,7 +39,7 @@ function CreateClassDialogComponent({
 
   //Validierungsstatus von allen Params
   const [paramValidations, setParamValidations] = useState<
-    Record<string, ValidationType>
+    Record<string, ValidationTypeResource>
   >({});
 
   const constructors: ConstructorRessource[] = cls.constructors || [];
@@ -52,7 +52,7 @@ function CreateClassDialogComponent({
 
   const handleParameterValidation = (
     paramName: string,
-    validationInfo: ValidationType
+    validationInfo: ValidationTypeResource
   ) => {
     setParamValidations((prev) => ({
       ...prev,
