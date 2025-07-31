@@ -12,6 +12,9 @@ import { vscode } from "../api/vscodeAPI.ts";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 
+//Icons
+import { ArrowClockwise } from "react-bootstrap-icons";
+
 function LandingPage() {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
   const [instances, setInstance] = useState<InstanceRessource[]>([]);
@@ -112,12 +115,8 @@ function LandingPage() {
         <div>
           <h1>
             TS-Classes
-            <Button variant="secondary">
-              <img
-                src="web/public/Refresh_icon.png"
-                alt="refresh"
-                onClick={refreshClasses}
-              />
+            <Button variant="secondary" onClick={refreshClasses}>
+              <ArrowClockwise className="me-2" />
             </Button>
           </h1>
           <div>
