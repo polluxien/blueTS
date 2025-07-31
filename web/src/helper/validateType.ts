@@ -72,14 +72,5 @@ export function validateFormControllType(
     }
   }
 
-  //
-  if (typeRes.paramType === "array") {
-    if (typeRes.enumValues?.includes(formValue)) {
-      return { parsedValue: formValue };
-    } else {
-      return { err: new Error(`Invalid enum`) };
-    }
-  }
-
   return { parsedValue: formValue };
 }
