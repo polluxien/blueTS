@@ -1,4 +1,4 @@
-import { TsFileResource } from "../tsCompilerApi/fileService/fileResources";
+import { TsFileResource } from "../fileService/fileResources";
 import { ParameterRessource } from "../tsCompilerApi/tsCompilerAPIRessourcees";
 
 export type CreateClassInstanceRessource = {

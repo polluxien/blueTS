@@ -8,14 +8,14 @@ import type {
 } from "../ressources/classRessources.ts";
 import { Button, Container } from "react-bootstrap";
 
-import { vscode } from "../api/vscodeAPI.ts";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 
 //Icons
 import { ArrowClockwise } from "react-bootstrap-icons";
+import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
 
-function LandingPage() {
+function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   const [classes, setClasses] = useState<ClassRessource[]>([]);
   const [instances, setInstance] = useState<InstanceRessource[]>([]);
 
@@ -113,12 +113,23 @@ function LandingPage() {
       <div>
         {/* Hier werden die gefunden TS-Klassen gezeigt*/}
         <div>
-          <h1>
-            TS-Classes
-            <Button variant="secondary" onClick={refreshClasses}>
-              <ArrowClockwise className="me-2" />
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h1 className="m-0">TS-Classes</h1>
+            <Button
+              onClick={refreshClasses}
+              style={{
+                background: "none",
+                border: "none",
+                color: "black",
+                fontSize: "2rem",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+              aria-label="Refresh"
+            >
+              <ArrowClockwise />
             </Button>
-          </h1>
+          </div>
           <div>
             {!loading ? (
               <Container>

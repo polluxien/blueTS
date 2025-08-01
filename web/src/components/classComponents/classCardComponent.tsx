@@ -91,6 +91,8 @@ function ClassCardComponent({
         <Card.Footer
           style={{
             border: "none",
+            borderBottomLeftRadius: "16px",
+            borderBottomRightRadius: "16px",
             background: "#26385D",
           }}
         >

@@ -4,7 +4,7 @@ import {
   MethodDeclaration,
   Project,
 } from "ts-morph";
-import { TsFileResource } from "./fileService/fileResources";
+import { TsFileResource } from "../fileService/fileResources";
 import {
   ClassRessource,
   ConstructorRessource,
