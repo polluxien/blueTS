@@ -41,7 +41,7 @@ export async function createClassVM(
       clearInterval: clearInterval,
 
       //global object
-      global: {}
+      global: {},
     };
 
     vm.createContext(context);
@@ -102,12 +102,16 @@ export async function compileClassMethod(
       if (!params || params.length === 0) {
         throw new Error(`Setter '${methodName}' benötigt einen Parameter`);
       }
+
+      //ich schaue noch nicht ob set exestiert
       instance[methodName] = params[0];
       return undefined;
     } else if (methodKind === "get") {
       if (params.length !== 0) {
         throw new Error(`Getter '${methodName}' benötigt keine Parameter`);
       }
+
+      //ich schaue noch nicht ob get exestiert
       result = instance[methodName];
       return result;
     } else {

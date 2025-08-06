@@ -49,6 +49,17 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(result).toEqual("40");
   });
 
+  test("teste get age(): number -> mit Parametern (Fehler)", async () => {
+    await expect(
+      compileMethodInClassObject({
+        instanceName: "testii",
+        methodName: "age",
+        params: [123],
+        specifics: { methodKind: "get", isAsync: false },
+      })
+    ).rejects.toThrow("Getter 'age' benötigt keine Parameter");
+  });
+
   test("teste set age(number): void", async () => {
     let myRunMethodeInInstanceType: RunMethodeInInstanceType = {
       instanceName: "testii",
@@ -78,6 +89,28 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(result).toEqual("70");
   });
 
+  test("teste set age(number): void -> mit negativem Wert (Fehler)", async () => {
+    await expect(
+      compileMethodInClassObject({
+        instanceName: "testii",
+        methodName: "age",
+        params: [-5],
+        specifics: { methodKind: "set", isAsync: false },
+      })
+    ).rejects.toThrow("Alter darf nicht negativ sein.");
+  });
+
+  test("teste set age(number): void -> ohne Parameter (Fehler)", async () => {
+    await expect(
+      compileMethodInClassObject({
+        instanceName: "testii",
+        methodName: "age",
+        params: [],
+        specifics: { methodKind: "set", isAsync: false },
+      })
+    ).rejects.toThrow("Setter 'age' benötigt einen Parameter");
+  });
+
   test("teste greet(string): string ", async () => {
     const myRunMethodeInInstanceType: RunMethodeInInstanceType = {
       instanceName: "testii",
@@ -94,6 +127,17 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(result).toEqual("Hallo Basti, mein Name ist Albert.");
   });
 
+  test("teste greet(string): string -> mit leerem String", async () => {
+    const result = await compileMethodInClassObject({
+      instanceName: "testii",
+      methodName: "greet",
+      params: [""],
+      specifics: { methodKind: "default", isAsync: false },
+    });
+
+    expect(result).toEqual("Hallo , mein Name ist Albert.");
+  });
+
   test("teste async fetchData(): Promise<string>", async () => {
     const myRunMethodeInInstanceType: RunMethodeInInstanceType = {
       instanceName: "testii",
@@ -108,5 +152,16 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
 
     expect(result).toBeDefined();
     expect(result).toEqual("Daten erfolgreich geladen!");
+  });
+
+  test("teste Zugriff auf nicht existierende Methode", async () => {
+    await expect(
+      compileMethodInClassObject({
+        instanceName: "testii",
+        methodName: "nonExistent",
+        params: [],
+        specifics: { methodKind: "default", isAsync: false },
+      })
+    ).rejects.toThrow("Methode 'nonExistent' konnte nicht gefunden werden");
   });
 });
