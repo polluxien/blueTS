@@ -9,11 +9,11 @@ import type {
 import { Button, Container } from "react-bootstrap";
 
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
-import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 
 //Icons
 import { ArrowClockwise } from "react-bootstrap-icons";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
+import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 
 function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   const [classes, setClasses] = useState<ClassRessource[]>([]);

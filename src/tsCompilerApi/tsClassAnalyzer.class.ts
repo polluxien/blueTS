@@ -109,13 +109,15 @@ export class TSClassAnalyzer {
 
     return {
       methodName: met.getName(),
-      methodKind,
-      visibility,
       parameters: this.extractParameters(met),
+      specs: {
+        methodKind,
+        visibility,
+        isStatic: met.isStatic(),
+        isAbstract: met.isAbstract(),
+        isAsync,
+      },
       returnType: met.getReturnType().getText(),
-      isStatic: met.isStatic(),
-      isAbstract: met.isAbstract(),
-      isAsync,
     };
   }
 

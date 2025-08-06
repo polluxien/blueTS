@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
-import CreateClassDialogComponent from "./createClassDialogComponent.tsx";
+import CreateClassInstanceDialogComponent from "./CreateClassInstanceDialogComponent.tsx";
 import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
@@ -100,12 +100,12 @@ function ClassCardComponent({
         </Card.Footer>
       </Card>
       {classDialogOpen && (
-        <CreateClassDialogComponent
+        <CreateClassInstanceDialogComponent
           cls={cls}
           close={closeDialog}
           addToInstanceWaitingList={addToInstanceWaitingList}
           vscode={vscode}
-        ></CreateClassDialogComponent>
+        ></CreateClassInstanceDialogComponent>
       )}
     </>
   );

@@ -19,7 +19,7 @@ import ParameterFormControllComponent, {
   type ValidationTypeResource,
 } from "../paramComponents/ParameterFormControllComponenet.tsx";
 
-function CreateClassDialogComponent({
+function CreateClassInstanceDialogComponent({
   cls,
   close,
   addToInstanceWaitingList,
@@ -222,4 +222,4 @@ function CreateClassDialogComponent({
   );
 }
 
-export default CreateClassDialogComponent;
+export default CreateClassInstanceDialogComponent;

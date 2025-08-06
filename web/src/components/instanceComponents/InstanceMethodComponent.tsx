@@ -11,8 +11,9 @@ import { validateFormControllType } from "../../helper/validateType.ts";
 import ParameterFormControllComponent, {
   type ValidationTypeResource,
 } from "../paramComponents/ParameterFormControllComponenet.tsx";
+import { Badge } from "react-bootstrap";
 
-function MethodComponent({
+function InstanceMethodComponent({
   met,
   insName,
   close,
@@ -97,40 +98,66 @@ function MethodComponent({
   }
 
   return (
-    <Form noValidate validated={validated} onSubmit={handleSubmit}>
-      {<p>{insName + "." + met.methodName + "("}</p>}
-      {metVariables.length > 0 && (
-        <div className="mb-4">
-          <Container
-            style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}
-          >
-            {metVariables.map((param, index) => (
-              <ParameterFormControllComponent
-                index={index}
-                param={param}
-                value={formValues[param.paramName] || ""}
-                validated={validated}
-                error={errors[param.paramName]}
-                onChange={handleChange}
-                onValidationChange={handleParameterValidation}
-              ></ParameterFormControllComponent>
-            ))}
-          </Container>
-          <Carousel.Caption></Carousel.Caption>
-        </div>
-      )}
-      <p>{")"}</p>
-      <Modal.Footer>
-        {/** // ! close sollte nicht ganzen dialog schließen  */}
-        <Button variant="secondary" type="button" onClick={close}>
-          Close
-        </Button>
-        <Button variant="primary" type="submit">
-          run method
-        </Button>
-      </Modal.Footer>
-    </Form>
+    <>
+      {/* Hier sind die ganzen specs Aufgelistet als tags zur  info */}
+      <div className="d-flex flex-wrap gap-2">
+        {met.specs.isStatic && <Badge bg="dark">static</Badge>}
+        {met.specs.isAbstract && <Badge bg="dark">abstract</Badge>}
+        {met.specs.isAsync && <Badge bg="dark"> async</Badge>}
+        <Badge bg="dark">{met.specs.visibility}</Badge>
+        {met.specs.methodKind !== "default" && (
+          <Badge bg="dark">{met.specs.methodKind}</Badge>
+        )}
+      </div>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        <p>
+          {insName +
+            "." +
+            met.methodName +
+            "(" +
+            (metVariables.length === 0 ? ")" : "")}
+        </p>{" "}
+        {metVariables.length > 0 && (
+          <div className="mb-4">
+            <Container
+              style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}
+            >
+              {metVariables.map((param, index) => (
+                <Container
+                  style={{
+                    backgroundColor: "#f7f9fb",
+                    padding: "1.5rem",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <ParameterFormControllComponent
+                    index={index}
+                    param={param}
+                    value={formValues[param.paramName] || ""}
+                    validated={validated}
+                    error={errors[param.paramName]}
+                    onChange={handleChange}
+                    onValidationChange={handleParameterValidation}
+                  ></ParameterFormControllComponent>
+                </Container>
+              ))}
+            </Container>
+            <Carousel.Caption></Carousel.Caption>
+          </div>
+        )}
+        {metVariables.length > 0 && <p>{")"}</p>}
+        <Modal.Footer>
+          {/** // ! close sollte nicht ganzen dialog schließen  */}
+          <Button variant="secondary" type="button" onClick={close}>
+            Close
+          </Button>
+          <Button variant="primary" type="submit">
+            run method
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </>
   );
 }
 
-export default MethodComponent;
+export default InstanceMethodComponent;
