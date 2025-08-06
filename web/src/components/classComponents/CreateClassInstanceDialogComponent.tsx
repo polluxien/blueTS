@@ -121,7 +121,7 @@ function CreateClassInstanceDialogComponent({
         constructorParameter,
         tsFile: cls.tsFile,
       };
-      console.log("Create instance with values:", creClsInRes);
+      console.log("Create instance with value:", creClsInRes);
       vscode.postMessage({
         command: "createInstance",
         data: creClsInRes,

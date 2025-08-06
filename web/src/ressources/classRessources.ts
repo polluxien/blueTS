@@ -80,3 +80,14 @@ export type InstanceCheckRessource = {
   isValid: boolean;
   error: unknown;
 };
+
+//method types
+export type RunMethodeInInstanceType = {
+  instanceName: string;
+  methodName: string;
+  params: unknown[];
+  specs: {
+    methodKind: "default" | "get" | "set";
+    isAsync: boolean;
+  };
+};

@@ -5,14 +5,15 @@ import { useState } from "react";
 import InstanceDialogComponent from "./InstanceDialog.tsx";
 import { Info } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
+import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 // import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 function InstanceCardComponent({
   ins,
-}: // vscode,
-{
+  vscode,
+}: {
   ins: InstanceRessource;
-  // vscode: VSCodeAPIWrapper;
+  vscode: VSCodeAPIWrapper;
 }) {
   const [instanceDialogOpen, setInstanceDialogOpen] = useState<boolean>(false);
 
@@ -66,6 +67,7 @@ function InstanceCardComponent({
         <InstanceDialogComponent
           ins={ins}
           close={closeDialog}
+          vscode={vscode}
         ></InstanceDialogComponent>
       )}
     </>

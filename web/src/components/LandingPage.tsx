@@ -166,7 +166,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             <Row>
               {instances.map((ins, index) => (
                 <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
-                  <InstanceCardComponent ins={ins} />
+                  <InstanceCardComponent ins={ins} vscode={vscode} />
                 </Col>
               ))}
             </Row>

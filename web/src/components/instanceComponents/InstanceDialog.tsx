@@ -4,18 +4,19 @@ import Button from "react-bootstrap/Button";
 import type { InstanceRessource } from "../../ressources/classRessources.js";
 import { Accordion } from "react-bootstrap";
 import InstanceMethodComponent from "./InstanceMethodComponent.js";
+import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
 //import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
 
 function InstanceDialogComponent({
   ins,
   close,
+  vscode
 }: //addToInstanceWaitingList,
-//vscode,
 {
   ins: InstanceRessource;
   close: () => void;
   //addToInstanceWaitingList: (instance: InstanceRessource) => void;
-  //vscode: VSCodeAPIWrapper;
+  vscode: VSCodeAPIWrapper;
 }) {
   return (
     <Modal show={true} onHide={close} size="lg" centered>
@@ -37,6 +38,7 @@ function InstanceDialogComponent({
                     met={method}
                     insName={ins.instanceName}
                     close={close}
+                    vscode={vscode}
                   ></InstanceMethodComponent>
                 </Accordion.Body>
               </Accordion.Item>

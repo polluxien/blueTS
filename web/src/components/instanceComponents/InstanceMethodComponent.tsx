@@ -1,28 +1,31 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Carousel from "react-bootstrap/Carousel";
 import Container from "react-bootstrap/Container";
 import { useState } from "react";
 
-import type { MethodRessource } from "../../ressources/classRessources.ts";
+import type {
+  MethodRessource,
+  RunMethodeInInstanceType,
+} from "../../ressources/classRessources.ts";
 
 import { validateFormControllType } from "../../helper/validateType.ts";
 import ParameterFormControllComponent, {
   type ValidationTypeResource,
 } from "../paramComponents/ParameterFormControllComponenet.tsx";
 import { Badge } from "react-bootstrap";
+import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 function InstanceMethodComponent({
   met,
   insName,
   close,
-}: //vscode,
-{
+  vscode,
+}: {
   met: MethodRessource;
   insName: string;
   close: () => void;
-  //vscode: VSCodeAPIWrapper;
+  vscode: VSCodeAPIWrapper;
 }) {
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
@@ -94,6 +97,26 @@ function InstanceMethodComponent({
 
     if (Object.keys(newErrors).length === 0) {
       //hier logik für Methode
+
+      //zum Prüfen ans Backend
+      const metParameter = met.parameters.map((param) => {
+        return newParsedValues[param.paramName];
+      });
+
+      const runMethodeInInstanceType: RunMethodeInInstanceType = {
+        instanceName: insName,
+        methodName: met.methodName,
+        params: metParameter,
+        specs: { methodKind: met.specs.methodKind, isAsync: met.specs.isAsync },
+      };
+      console.log(
+        `run ${met.methodName} in instance ${insName} with value: ${runMethodeInInstanceType}`
+      );
+
+      vscode.postMessage({
+        command: "runMethod",
+        data: runMethodeInInstanceType,
+      });
     }
   }
 
@@ -110,6 +133,7 @@ function InstanceMethodComponent({
         )}
       </div>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        {/* Hier methodName */}
         <p>
           {insName +
             "." +
@@ -117,6 +141,7 @@ function InstanceMethodComponent({
             "(" +
             (metVariables.length === 0 ? ")" : "")}
         </p>{" "}
+        {/* Hier methode Form controll Componenets */}
         {metVariables.length > 0 && (
           <div className="mb-4">
             <Container
@@ -142,10 +167,10 @@ function InstanceMethodComponent({
                 </Container>
               ))}
             </Container>
-            <Carousel.Caption></Carousel.Caption>
           </div>
         )}
         {metVariables.length > 0 && <p>{")"}</p>}
+        {/* // ! Hier methoden Rückgabe, muss noch implementiert werden */}
         <Modal.Footer>
           {/** // ! close sollte nicht ganzen dialog schließen  */}
           <Button variant="secondary" type="button" onClick={close}>
