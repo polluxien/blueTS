@@ -182,7 +182,7 @@ function ParameterFormControllComponent({
           >
             <option value="">select enum value</option>
             {typeRes.enumValues?.map((enumValue, i) => (
-              <option key={i} value={typeRes.typeAsString + "." + enumValue}>
+              <option key={i} value={enumValue}>
                 {typeRes.typeAsString + "." + enumValue}
               </option>
             ))}
@@ -202,9 +202,8 @@ function ParameterFormControllComponent({
           {getFormLabel(param)}
           <FormControl
             type="text"
-            required={!param.optional}
             placeholder="undefined"
-            value={"undefined"}
+            value={typeRes.typeAsString}
             disabled
             isInvalid={validated}
           />

@@ -26,7 +26,7 @@ function InstanceCardComponent({
         className="h-100 shadow-sm"
         style={{
           //width: "280px",
-          background: "#304674",
+          background: "#cfb98b",
           borderRadius: "16px",
           border: "none",
           width: "100%",
@@ -81,16 +81,7 @@ function InstanceCardComponent({
             </Col>
           </Row>
         </Card.Body>
-        <Card.Footer
-          style={{
-            border: "none",
-            borderBottomLeftRadius: "16px",
-            borderBottomRightRadius: "16px",
-            background: "#26385D",
-          }}
-        >
-          Class: <i>{ins.className}</i>
-        </Card.Footer>
+        <Card.Footer></Card.Footer>
       </Card>
       {instanceDialogOpen && (
         <InstanceDialogComponent
