@@ -43,9 +43,13 @@ export type ConstructorRessource = {
 
 export type MethodRessource = {
   methodName: string;
+  methodKind: "default" | "get" | "set";
+  visibility: "public" | "private" | "protected";
   parameters: ParameterRessource[];
   returnType: string;
   isStatic: boolean;
+  isAbstract: boolean;
+  isAsync: boolean;
 };
 
 export type ClassRessource = {

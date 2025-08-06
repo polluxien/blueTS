@@ -18,6 +18,7 @@ export function deleteInstanceInInstanceMap(instanceName: string) {
   }
 }
 
+//ehr zum testen
 export function clearInstanceMap() {
   instanceMap.clear();
 }
@@ -43,7 +44,7 @@ export async function addInstanceToInstanceMap(
     if (!instance) {
       throw new Error("Instance konnte nicht erstellt werden");
     }
-    instanceMap.set(createClsInstanceRes.className, instance);
+    instanceMap.set(createClsInstanceRes.instanceName, instance);
     result.isValid = true;
   } catch (err) {
     result.error = err;
@@ -51,15 +52,35 @@ export async function addInstanceToInstanceMap(
   return result;
 }
 
-export async function compileMethodInClassObject(instanceName: string) {
+export type RunMethodeInInstanceType = {
+  instanceName: string;
+  methodName: string;
+  params: unknown[];
+  specifics: {
+    methodKind: "default" | "get" | "set";
+    isAsync: boolean;
+  };
+};
+
+export async function compileMethodInClassObject(
+  runMethodeInInstanceType: RunMethodeInInstanceType
+): Promise<string | undefined> {
   try {
-    const instance = getInstanceFromInstanceMap(instanceName);
+    const instance = getInstanceFromInstanceMap(
+      runMethodeInInstanceType.instanceName
+    );
+
     if (!instance) {
-      throw new Error();
+      throw new Error("Instanz nicht gefunden.");
     }
 
-    const dotdotdot = compileClassMethod(instance, "", []);
+    const result = await compileClassMethod(instance, runMethodeInInstanceType);
+
+    return result !== undefined && result !== null
+      ? result.toString()
+      : undefined;
   } catch (err) {
+    console.error("Fehler bei compileMethodInClassObject:", err);
     throw err;
   }
 }

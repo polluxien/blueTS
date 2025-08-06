@@ -2,7 +2,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 import type { InstanceRessource } from "../../ressources/classRessources.js";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Badge } from "react-bootstrap";
 import MethodComponent from "./MethodComponent.js";
 //import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
 
@@ -31,9 +31,17 @@ function InstanceDialogComponent({
           <Accordion>
             {ins.methods.map((method, i) => (
               <Accordion.Item eventKey={i + ""}>
-                <Accordion.Header>{method.methodName}</Accordion.Header>
+                <Accordion.Header>
+                  {method.methodName}{" "}
+                  <Badge>{method.visibility}</Badge>{" "}
+                  <Badge>{method.methodKind}</Badge>
+                </Accordion.Header>
                 <Accordion.Body>
-                  <MethodComponent met={method} close={close}></MethodComponent>
+                  <MethodComponent
+                    met={method}
+                    insName={ins.instanceName}
+                    close={close}
+                  ></MethodComponent>
                 </Accordion.Body>
               </Accordion.Item>
             ))}

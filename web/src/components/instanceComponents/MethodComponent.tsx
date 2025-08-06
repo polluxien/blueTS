@@ -14,10 +14,12 @@ import ParameterFormControllComponent, {
 
 function MethodComponent({
   met,
+  insName,
   close,
 }: //vscode,
 {
   met: MethodRessource;
+  insName: string;
   close: () => void;
   //vscode: VSCodeAPIWrapper;
 }) {
@@ -96,10 +98,12 @@ function MethodComponent({
 
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
-      {<p>new {met.methodName + "("}</p>}
+      {<p>{insName + "." + met.methodName + "("}</p>}
       {metVariables.length > 0 && (
         <div className="mb-4">
-          <Container>
+          <Container
+            style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}
+          >
             {metVariables.map((param, index) => (
               <ParameterFormControllComponent
                 index={index}
@@ -117,11 +121,12 @@ function MethodComponent({
       )}
       <p>{")"}</p>
       <Modal.Footer>
+        {/** // ! close sollte nicht ganzen dialog schließen  */}
         <Button variant="secondary" type="button" onClick={close}>
           Close
         </Button>
         <Button variant="primary" type="submit">
-          create instance
+          run method
         </Button>
       </Modal.Footer>
     </Form>

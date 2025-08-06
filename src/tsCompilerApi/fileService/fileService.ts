@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Path } from "typescript";
-import { DirectoryResource, TsFileResource } from "./fileResources";
+import { DirectoryResource, TsFileResource } from "../../fileService/fileResources";
 
 export async function getCurrentFileDirectory(
   dirPath: string

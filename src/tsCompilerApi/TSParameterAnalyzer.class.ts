@@ -29,7 +29,7 @@ export class TSParameterAnalyzer {
   //default type-analyser (eine Ebene Tiefer)
   private typeAnalyzer(type: Type): TypeRessource {
     const typeAsString = type.getText();
-    console.log(typeAsString + ", " + type.isNullable().toString());
+    //console.log(typeAsString + ", " + type.isNullable().toString());
 
     if (["any", "unknown", "void", "never"].includes(typeAsString)) {
       return {

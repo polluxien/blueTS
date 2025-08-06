@@ -1,6 +1,7 @@
 import fs from "fs";
 import ts from "typescript";
 import { CreateClassInstanceRessource } from "./instanceResources";
+import { RunMethodeInInstanceType } from "./instanceManager";
 
 const vm = require("vm");
 
@@ -19,6 +20,9 @@ export async function createClassVM(
     const jsCode = transpiled.outputText;
 
     const context: any = {
+      //fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
+      //...globalThis,
+
       //debugging
       console,
 
@@ -27,11 +31,23 @@ export async function createClassVM(
       module: { exports: {} },
       require: require,
 
-      //setzte automatischen Timout nach 3 sekunden
-      setTimeout: 3000,
+      //für async functions
+      Promise: Promise,
+
+      //für  Timer functions
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout,
+      setInterval: setInterval,
+      clearInterval: clearInterval,
+
+      //global object
+      global: {}
     };
+
     vm.createContext(context);
-    vm.runInContext(jsCode, context);
+    vm.runInContext(jsCode, context, {
+      timeout: 5000, // nach 5 Sekunden Timeout für code
+    });
 
     //finde und identifiziere KLasse
     const classConstructor = identifyClass(
@@ -74,7 +90,44 @@ function identifyClass(context: any, className: string) {
 }
 
 export async function compileClassMethod(
-  classObj: object,
-  methodName: string,
-  parameter?: any[]
-) {}
+  instance: any,
+  runMethodeInInstanceType: RunMethodeInInstanceType
+) {
+  const { methodName, params } = runMethodeInInstanceType;
+  const { isAsync, methodKind } = runMethodeInInstanceType.specifics;
+  let result: unknown;
+
+  try {
+    if (methodKind === "set") {
+      if (!params || params.length === 0) {
+        throw new Error(`Setter '${methodName}' benötigt einen Parameter`);
+      }
+      instance[methodName] = params[0];
+      return undefined;
+    } else if (methodKind === "get") {
+      if (params.length !== 0) {
+        throw new Error(`Getter '${methodName}' benötigt keine Parameter`);
+      }
+      result = instance[methodName];
+      return result;
+    } else {
+      const method = instance[methodName];
+
+      if (!method) {
+        throw new Error(`Methode '${methodName}' konnte nicht gefunden werden`);
+      }
+
+      if (typeof method !== "function") {
+        throw new Error(`Methode '${methodName}' ist keine Funktion`);
+      }
+
+      result = isAsync
+        ? await method.apply(instance, params)
+        : method.apply(instance, params);
+    }
+
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}

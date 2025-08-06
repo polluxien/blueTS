@@ -1,8 +1,11 @@
 import {
   ClassDeclaration,
   ConstructorDeclaration,
+  GetAccessorDeclaration,
   MethodDeclaration,
   Project,
+  SetAccessorDeclaration,
+  SyntaxKind,
 } from "ts-morph";
 import { TsFileResource } from "../fileService/fileResources";
 import {
@@ -67,20 +70,61 @@ export class TSClassAnalyzer {
 
   private extractMethodes(cls: ClassDeclaration): MethodRessource[] {
     const methodRessourceArr: MethodRessource[] = [];
+
+    let myMethod;
     for (let met of cls.getMethods()) {
-      const myMethod: MethodRessource = {
-        methodName: met.getName(),
-        parameters: this.extractParameters(met),
-        returnType: met.getReturnType().getText(),
-        isStatic: met.isStatic(),
-      };
+      myMethod = this.methodRessourceBuilder(met, "default");
+      methodRessourceArr.push(myMethod);
+    }
+    for (let met of cls.getGetAccessors()) {
+      myMethod = this.methodRessourceBuilder(met, "get");
+      methodRessourceArr.push(myMethod);
+    }
+
+    for (let met of cls.getSetAccessors()) {
+      myMethod = this.methodRessourceBuilder(met, "set");
       methodRessourceArr.push(myMethod);
     }
     return methodRessourceArr;
   }
 
+  private methodRessourceBuilder(
+    met: MethodDeclaration | GetAccessorDeclaration | SetAccessorDeclaration,
+    methodKind: "default" | "get" | "set"
+  ): MethodRessource {
+    //Sichtbarkeit
+    let visibility: "public" | "private" | "protected" = "public";
+    if (met.hasModifier(SyntaxKind.PrivateKeyword)) {
+      visibility = "private";
+    } else if (met.hasModifier(SyntaxKind.ProtectedKeyword)) {
+      visibility = "protected";
+    }
+
+    //get und set können nicht async sein
+    //Async
+    let isAsync = false;
+    if (methodKind === "default") {
+      isAsync = (met as MethodDeclaration).isAsync();
+    }
+
+    return {
+      methodName: met.getName(),
+      methodKind,
+      visibility,
+      parameters: this.extractParameters(met),
+      returnType: met.getReturnType().getText(),
+      isStatic: met.isStatic(),
+      isAbstract: met.isAbstract(),
+      isAsync,
+    };
+  }
+
   private extractParameters(
-    foo: MethodDeclaration | ConstructorDeclaration
+    foo:
+      | MethodDeclaration
+      | GetAccessorDeclaration
+      | SetAccessorDeclaration
+      | ConstructorDeclaration
   ): ParameterRessource[] {
     const parameterRessourceArr: ParameterRessource[] = [];
     for (let param of foo.getParameters()) {

@@ -5,7 +5,7 @@ export type CreateClassInstanceRessource = {
   instanceName: string;
   className: string;
   tsFile: TsFileResource;
-  constructorParameter: any[];
+  constructorParameter: unknown[];
 };
 
 export type ClassInstanceConstructionFunctionRessource = {

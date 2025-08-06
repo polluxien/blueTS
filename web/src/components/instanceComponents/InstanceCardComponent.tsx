@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useState } from "react";
 import InstanceDialogComponent from "./InstanceDialog.tsx";
-import { PlayFill, Plus } from "react-bootstrap-icons";
+import { Info } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
 // import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
@@ -54,34 +54,13 @@ function InstanceCardComponent({
                 onClick={openDialog}
               >
                 <>
-                  <PlayFill className="me-2" />
-                  Check
-                </>
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="w-100 d-flex align-items-center justify-content-center gap-2"
-                variant="outline-primary"
-                size="sm"
-                style={{
-                  height: "44px",
-                  borderRadius: "12px",
-                  //border: "none",
-                }}
-                //style={baseStyle(hoveredAdd)}
-                // onMouseEnter={() => setHoveredAdd(true)}
-                //  onMouseLeave={() => setHoveredAdd(false)}
-                onClick={openDialog}
-              >
-                <>
-                  <Plus className="me-2" /> Add
+                  <Info className="me-2" />
+                  info
                 </>
               </Button>
             </Col>
           </Row>
         </Card.Body>
-        <Card.Footer></Card.Footer>
       </Card>
       {instanceDialogOpen && (
         <InstanceDialogComponent
