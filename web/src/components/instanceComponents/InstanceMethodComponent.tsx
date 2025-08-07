@@ -56,13 +56,14 @@ function InstanceMethodComponent({
   };
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    if (metVariables.length === 0) {
-      postMethodMessage();
-      return;
-    }
-
     event.preventDefault();
     event.stopPropagation();
+
+    if (metVariables.length === 0) {
+      postMethodMessage();
+      setValidated(true);
+      return;
+    }
 
     const newErrors: Record<string, Error> = {};
     const newParsedValues: Record<string, unknown> = {};
@@ -181,13 +182,13 @@ function InstanceMethodComponent({
         {metVariables.length > 0 && <p>{")"}</p>}
         {/* // ! Hier methoden Rückgabe, muss noch implementiert werden */}
         {methodResults && (
-          <div>
+          <div className="mb-4">
             {" "}
             <Form.Group>
               <Form.Label>return Value</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={1}
                 disabled
                 readOnly
                 value={methodResults as string}
