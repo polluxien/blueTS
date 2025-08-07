@@ -55,6 +55,16 @@ function UnionParamComponent({
     paramFormType.onValidationChange!,
   ]);
 
+  //die Unions beeinflussen sich gegenseitig wenn zu viele vorkommen
+  const uniqueId = () => {
+    let myID;
+    if (!myID) {
+      //erstelle art uuid
+      myID = `_${paramFormType.param.paramName}_${Date.now()}`;
+    }
+    return myID;
+  };
+
   return (
     <FormGroup key={paramFormType.index}>
       <Form.Label>
@@ -64,7 +74,8 @@ function UnionParamComponent({
       </Form.Label>
       <ToggleButtonGroup
         type="radio"
-        name={`union-select-${paramFormType.param.paramName}`}
+        /* ich hoffe damit genug einzigartigkeit */
+        name={uniqueId()}
         value={selectedUnionType?.typeAsString || ""}
         onChange={(val: string) => {
           const selectedType = typeRes.unionValues?.find(
@@ -77,10 +88,10 @@ function UnionParamComponent({
         }}
         className="mb-2 d-flex flex-wrap gap-2"
       >
-        {typeRes.unionValues?.map((type, idx) => (
+        {typeRes.unionValues?.map((type, i) => (
           <ToggleButton
-            key={`${idx}_${paramFormType.param.paramName}_${paramFormType.index}`}
-            id={`union-${type.typeAsString}`}
+            key={`${uniqueId}_${i}`}
+            id={`${uniqueId()}_${type.typeAsString}_${i}`}
             value={type.typeAsString}
             variant="outline-primary"
           >
