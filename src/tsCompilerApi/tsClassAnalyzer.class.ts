@@ -13,10 +13,8 @@ import {
   ConstructorRessource,
   MethodRessource,
   ParameterRessource,
-  TypeRessource,
 } from "./tsCompilerAPIRessourcees";
 import path from "path";
-import { PseudoBigInt } from "typescript";
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
 export class TSClassAnalyzer {

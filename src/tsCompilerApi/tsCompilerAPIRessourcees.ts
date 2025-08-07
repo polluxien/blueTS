@@ -1,4 +1,3 @@
-import { PseudoBigInt } from "typescript";
 import { TsFileResource } from "../fileService/fileResources";
 
 export type TypeRessource = {

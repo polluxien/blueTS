@@ -92,7 +92,7 @@ function identifyClass(context: any, className: string) {
 export async function compileClassMethod(
   instance: any,
   runMethodeInInstanceType: RunMethodeInInstanceType
-) {
+): Promise<unknown> {
   const { methodName, params } = runMethodeInInstanceType;
   const { isAsync, methodKind } = runMethodeInInstanceType.specs;
   let result: unknown;

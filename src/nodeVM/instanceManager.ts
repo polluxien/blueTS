@@ -90,7 +90,24 @@ export async function compileMethodInClassObject(
 
     const result = await compileClassMethod(instance, runMethodeInInstanceType);
     compiledResult.isValid = true;
-    compiledResult.returnValue = result ? result.toString() : "void";
+
+    let parsedValue = "";
+    if (result === undefined || result === null) {
+      parsedValue = "void";
+    } else if (typeof result === "object") {
+      try {
+        parsedValue = JSON.stringify(result, null, 2);
+      } catch {
+        parsedValue = "[Unserializable Object]";
+      }
+    } else {
+      try {
+        parsedValue = result!.toString();
+      } catch {
+        parsedValue = result as string;
+      }
+    }
+    compiledResult.returnValue = parsedValue;
   } catch (err) {
     console.error("Fehler bei compileMethodInClassObject:", err);
     compiledResult.error = err instanceof Error ? err : new Error(String(err));
