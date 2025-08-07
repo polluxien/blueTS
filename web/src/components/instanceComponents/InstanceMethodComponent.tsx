@@ -1,5 +1,4 @@
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import { useState } from "react";
@@ -21,11 +20,13 @@ function InstanceMethodComponent({
   insName,
   close,
   vscode,
+  methodResults,
 }: {
   met: MethodRessource;
   insName: string;
   close: () => void;
   vscode: VSCodeAPIWrapper;
+  methodResults: Error | string | undefined;
 }) {
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
@@ -55,16 +56,16 @@ function InstanceMethodComponent({
   };
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    if (metVariables.length === 0) {
+      postMethodMessage();
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
     const newErrors: Record<string, Error> = {};
     const newParsedValues: Record<string, unknown> = {};
-
-    const instanceName = formValues["__instanceName"];
-    if (!instanceName) {
-      newErrors["__instanceName"] = new Error("name is required");
-    }
 
     for (const param of metVariables) {
       const validation = paramValidations[param.paramName];
@@ -96,38 +97,46 @@ function InstanceMethodComponent({
     setValidated(true);
 
     if (Object.keys(newErrors).length === 0) {
-      //hier logik für Methode
-
-      //zum Prüfen ans Backend
-      const metParameter = met.parameters.map((param) => {
-        return newParsedValues[param.paramName];
-      });
-
-      const runMethodeInInstanceType: RunMethodeInInstanceType = {
-        instanceName: insName,
-        methodName: met.methodName,
-        params: metParameter,
-        specs: { methodKind: met.specs.methodKind, isAsync: met.specs.isAsync },
-      };
-      console.log(
-        `run ${met.methodName} in instance ${insName} with value: ${runMethodeInInstanceType}`
-      );
-
-      vscode.postMessage({
-        command: "runMethod",
-        data: runMethodeInInstanceType,
-      });
+      postMethodMessage(newParsedValues);
+    } else {
+      console.log("Ich habe folgende Errors: ", errors);
     }
   }
 
+  function postMethodMessage(newParsedValues?: Record<string, unknown>) {
+    let metParameter: unknown[] = [];
+
+    if (newParsedValues) {
+      metParameter = metVariables.map((param) => {
+        return newParsedValues[param.paramName];
+      });
+    }
+
+    const runMethodeInInstanceType: RunMethodeInInstanceType = {
+      instanceName: insName,
+      methodName: met.methodName,
+      params: metParameter,
+      specs: { methodKind: met.specs.methodKind, isAsync: met.specs.isAsync },
+    };
+    console.log(
+      `run ${met.methodName} in instance ${insName} with value: `,
+      JSON.stringify(runMethodeInInstanceType, null, 2)
+    );
+
+    vscode.postMessage({
+      command: "runMethodInInstance",
+      data: runMethodeInInstanceType,
+    });
+  }
+
   return (
-    <>
+    <div>
       {/* Hier sind die ganzen specs Aufgelistet als tags zur  info */}
-      <div className="d-flex flex-wrap gap-2">
+      <div className="d-flex flex-wrap gap-2 mb-2">
+        <Badge bg="dark">{met.specs.visibility}</Badge>
         {met.specs.isStatic && <Badge bg="dark">static</Badge>}
         {met.specs.isAbstract && <Badge bg="dark">abstract</Badge>}
         {met.specs.isAsync && <Badge bg="dark"> async</Badge>}
-        <Badge bg="dark">{met.specs.visibility}</Badge>
         {met.specs.methodKind !== "default" && (
           <Badge bg="dark">{met.specs.methodKind}</Badge>
         )}
@@ -171,17 +180,32 @@ function InstanceMethodComponent({
         )}
         {metVariables.length > 0 && <p>{")"}</p>}
         {/* // ! Hier methoden Rückgabe, muss noch implementiert werden */}
-        <Modal.Footer>
-          {/** // ! close sollte nicht ganzen dialog schließen  */}
+        {methodResults && (
+          <div>
+            {" "}
+            <Form.Group>
+              <Form.Label>return Value</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                disabled
+                readOnly
+                value={methodResults as string}
+              />
+            </Form.Group>
+          </div>
+        )}
+        {/** // ! close sollte nicht ganzen dialog schließen  */}
+        <div className="mb-4">
           <Button variant="secondary" type="button" onClick={close}>
             Close
           </Button>
           <Button variant="primary" type="submit">
             run method
           </Button>
-        </Modal.Footer>
+        </div>
       </Form>
-    </>
+    </div>
   );
 }
 

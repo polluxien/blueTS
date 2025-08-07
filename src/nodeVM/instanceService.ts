@@ -94,7 +94,7 @@ export async function compileClassMethod(
   runMethodeInInstanceType: RunMethodeInInstanceType
 ) {
   const { methodName, params } = runMethodeInInstanceType;
-  const { isAsync, methodKind } = runMethodeInInstanceType.specifics;
+  const { isAsync, methodKind } = runMethodeInInstanceType.specs;
   let result: unknown;
 
   try {

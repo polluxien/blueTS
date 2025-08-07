@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import type {
   ClassRessource,
+  CompiledRunMethodInInstanceTyp,
   InstanceCheckRessource,
   InstanceRessource,
 } from "../ressources/classRessources.ts";
@@ -16,11 +17,18 @@ import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
 import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 
 function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
+  // * Enstprechende Card Componets
   const [classes, setClasses] = useState<ClassRessource[]>([]);
   const [instances, setInstance] = useState<InstanceRessource[]>([]);
 
+  // * Instace stuff
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
   const instanceWaitingMap = useRef(new Map<string, InstanceRessource>([]));
+  //hier werden entsprechende methoden rückgaben vom Backend abgelegt
+  //Map<instanceName, <MethodeName, result>[]>
+  const [methodResults, setMethodResults] = useState<
+    Map<string, Record<string, Error | string>>
+  >(new Map([]));
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +91,30 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
           } else {
             throw Error();
           }
+          break;
+        }
+        case "postMethodCheck": {
+          const messageData: CompiledRunMethodInInstanceTyp = message.data;
+          console.log(
+            `Massage from command has CompiledRunMethodInInstanceTyp: `,
+            JSON.stringify(messageData, null, 2)
+          );
+
+          setMethodResults((prev) => {
+            const newMap = new Map(prev);
+
+            const methodResultRecord =
+              newMap.get(messageData.instanceName) ?? {};
+
+            methodResultRecord[messageData.methodName] = messageData.isValid
+              ? messageData.returnValue!
+              : messageData.error!;
+
+            newMap.set(messageData.instanceName, methodResultRecord);
+
+            return newMap;
+          });
+          console.log("methodResults: ", methodResults);
           break;
         }
         case "error":
@@ -166,7 +198,11 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             <Row>
               {instances.map((ins, index) => (
                 <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
-                  <InstanceCardComponent ins={ins} vscode={vscode} />
+                  <InstanceCardComponent
+                    ins={ins}
+                    vscode={vscode}
+                    methodResults={methodResults.get(ins.instanceName)}
+                  />
                 </Col>
               ))}
             </Row>

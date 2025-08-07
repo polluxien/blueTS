@@ -91,3 +91,11 @@ export type RunMethodeInInstanceType = {
     isAsync: boolean;
   };
 };
+
+export type CompiledRunMethodInInstanceTyp = {
+  instanceName: string;
+  methodName: string;
+  isValid: boolean;
+  returnValue?: string;
+  error?: Error;
+};

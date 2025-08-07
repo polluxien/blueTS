@@ -10,13 +10,13 @@ import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
 function InstanceDialogComponent({
   ins,
   close,
-  vscode
-}: //addToInstanceWaitingList,
-{
+  vscode,
+  methodResults,
+}: {
   ins: InstanceRessource;
   close: () => void;
-  //addToInstanceWaitingList: (instance: InstanceRessource) => void;
   vscode: VSCodeAPIWrapper;
+  methodResults: Record<string, Error | string> | undefined;
 }) {
   return (
     <Modal show={true} onHide={close} size="lg" centered>
@@ -39,6 +39,11 @@ function InstanceDialogComponent({
                     insName={ins.instanceName}
                     close={close}
                     vscode={vscode}
+                    methodResults={
+                      methodResults
+                        ? methodResults?.[method.methodName]
+                        : undefined
+                    }
                   ></InstanceMethodComponent>
                 </Accordion.Body>
               </Accordion.Item>

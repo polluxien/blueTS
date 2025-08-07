@@ -11,9 +11,11 @@ import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 function InstanceCardComponent({
   ins,
   vscode,
+  methodResults,
 }: {
   ins: InstanceRessource;
   vscode: VSCodeAPIWrapper;
+  methodResults: Record<string, string | Error> | undefined;
 }) {
   const [instanceDialogOpen, setInstanceDialogOpen] = useState<boolean>(false);
 
@@ -68,6 +70,7 @@ function InstanceCardComponent({
           ins={ins}
           close={closeDialog}
           vscode={vscode}
+          methodResults={methodResults}
         ></InstanceDialogComponent>
       )}
     </>

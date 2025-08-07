@@ -56,15 +56,29 @@ export type RunMethodeInInstanceType = {
   instanceName: string;
   methodName: string;
   params: unknown[];
-  specifics: {
+  specs: {
     methodKind: "default" | "get" | "set";
     isAsync: boolean;
   };
 };
 
+export type CompiledRunMethodInInstanceTyp = {
+  instanceName: string;
+  methodName: string;
+  isValid: boolean;
+  returnValue?: string;
+  error?: Error;
+};
+
 export async function compileMethodInClassObject(
   runMethodeInInstanceType: RunMethodeInInstanceType
-): Promise<string | undefined> {
+): Promise<CompiledRunMethodInInstanceTyp> {
+  const compiledResult: CompiledRunMethodInInstanceTyp = {
+    instanceName: runMethodeInInstanceType.instanceName,
+    methodName: runMethodeInInstanceType.methodName,
+    isValid: false,
+  };
+
   try {
     const instance = getInstanceFromInstanceMap(
       runMethodeInInstanceType.instanceName
@@ -75,12 +89,12 @@ export async function compileMethodInClassObject(
     }
 
     const result = await compileClassMethod(instance, runMethodeInInstanceType);
-
-    return result !== undefined && result !== null
-      ? result.toString()
-      : undefined;
+    compiledResult.isValid = true;
+    compiledResult.returnValue = result ? result.toString() : "void";
   } catch (err) {
     console.error("Fehler bei compileMethodInClassObject:", err);
-    throw err;
+    compiledResult.error = err instanceof Error ? err : new Error(String(err));
   }
+
+  return compiledResult;
 }

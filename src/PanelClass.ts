@@ -6,7 +6,7 @@ import {
   window,
   ViewColumn,
 } from "vscode";
-import { addInstanceToInstanceMap } from "./nodeVM/instanceManager";
+import { addInstanceToInstanceMap, compileMethodInClassObject } from "./nodeVM/instanceManager";
 import { getAllClasses } from "./tsCompilerApi/tsClassManager";
 
 /**
@@ -163,7 +163,14 @@ export class Panel {
               command: "postInstanceCheck",
               data: messageData,
             });
-
+            break;
+          }
+          case "runMethodInInstance": {
+            const messageData = await compileMethodInClassObject(message.data);
+            this.postMessage({
+              command: "postMethodCheck",
+              data: messageData,
+            });
             break;
           }
         }
