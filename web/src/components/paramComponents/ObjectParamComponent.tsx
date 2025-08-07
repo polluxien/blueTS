@@ -80,6 +80,32 @@ function ObjectParamComponent({
           }}
         >
           <p>{"{"}</p>
+          {/* // * Specal Case beim übergeben eines leeren objects als param -> {} */}
+          {typeRes.objectParameters.length === 0 && (
+            <div key={0}>
+              <ParameterFormControllComponent
+                index={0}
+                param={{
+                  paramName: `${typeRes.typeAsString}_BLANKTYPE`,
+                  typeInfo: { paramType: "basic", typeAsString: "emptyObjectType" },
+                  optional: paramFormType.param.optional,
+                }}
+                value={internValues[`${typeRes.typeAsString}_BLANKTYPE`] || ""}
+                validated={paramFormType.validated}
+                error={
+                  paramValidations[`${typeRes.typeAsString}_BLANKTYPE`]
+                    ?.errors[0]
+                }
+                onChange={handelInternChange}
+                onValidationChange={handleChildChange}
+                hideLabel={true}
+              />
+              <Form.Control.Feedback type="invalid">
+                {paramFormType.error?.message || "This field is required"}
+              </Form.Control.Feedback>
+            </div>
+          )}
+          {/* // * Default case */}
           {typeRes.objectParameters.map((objParam, i) => (
             <div key={i}>
               <ParameterFormControllComponent

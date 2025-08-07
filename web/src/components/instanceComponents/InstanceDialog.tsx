@@ -37,7 +37,6 @@ function InstanceDialogComponent({
                   <InstanceMethodComponent
                     met={method}
                     insName={ins.instanceName}
-                    close={close}
                     vscode={vscode}
                     methodResults={
                       methodResults

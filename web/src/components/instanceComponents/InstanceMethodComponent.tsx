@@ -18,13 +18,11 @@ import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 function InstanceMethodComponent({
   met,
   insName,
-  close,
   vscode,
   methodResults,
 }: {
   met: MethodRessource;
   insName: string;
-  close: () => void;
   vscode: VSCodeAPIWrapper;
   methodResults: Error | string | undefined;
 }) {
@@ -180,7 +178,7 @@ function InstanceMethodComponent({
           </div>
         )}
         {metVariables.length > 0 && <p>{")"}</p>}
-        {/* // ! Hier methoden Rückgabe, muss noch implementiert werden */}
+        {/* Hier letzte methoden Rückgaben */}
         {methodResults && (
           <div className="mb-4">
             {" "}
@@ -196,11 +194,7 @@ function InstanceMethodComponent({
             </Form.Group>
           </div>
         )}
-        {/** // ! close sollte nicht ganzen dialog schließen  */}
-        <div className="mb-4">
-          <Button variant="secondary" type="button" onClick={close}>
-            Close
-          </Button>
+        <div className="mb-4 text-end">
           <Button variant="primary" type="submit">
             run method
           </Button>

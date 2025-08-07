@@ -196,14 +196,16 @@ function ParameterFormControllComponent({
 
     case "void":
     case "never":
-    case "undefined": {
+    case "null": {
+      let placeholder = ""
+      if(typeRes.paramType === "null") placeholder = "null"
+      if(typeRes.paramType === "void") placeholder = "undefined"
       return (
         <FormGroup key={index}>
           {getFormLabel(param)}
           <FormControl
             type="text"
-            placeholder="undefined"
-            value={typeRes.typeAsString}
+            placeholder={placeholder}
             disabled
             isInvalid={validated}
           />
