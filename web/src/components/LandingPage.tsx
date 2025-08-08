@@ -29,6 +29,8 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   const [methodResults, setMethodResults] = useState<
     Map<string, Record<string, Error | string>>
   >(new Map([]));
+  //Set von Namen instances um sicherzustellen das name uniqe
+  const instanceNameSet = useRef(new Set<string>([]));
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,9 +88,12 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             );
           }
           instanceWaitingMap.current.delete(messageData.instanceName);
+
           if (messageData.isValid && myInstance) {
             setInstance((ins) => [...ins, myInstance]);
           } else {
+            //gebe wieder namen frei und throw error
+            instanceNameSet.current.delete(messageData.instanceName);
             throw Error();
           }
           break;
@@ -178,6 +183,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
                       <ClassCardComponent
                         cls={cls}
                         addToInstanceWaitingList={addToInstanceWaitingList}
+                        instanceNameSet={instanceNameSet}
                         vscode={vscode}
                       />
                     </Col>

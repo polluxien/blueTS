@@ -24,11 +24,13 @@ function CreateClassInstanceDialogComponent({
   close,
   addToInstanceWaitingList,
   vscode,
+  instanceNameSet,
 }: {
   cls: ClassRessource;
   close: () => void;
   addToInstanceWaitingList: (instance: InstanceRessource) => void;
   vscode: VSCodeAPIWrapper;
+  instanceNameSet: React.RefObject<Set<string>>;
 }) {
   const [constructorIndex, setConstructorIndex] = useState(0);
   const [validated, setValidated] = useState<boolean>(false);
@@ -69,7 +71,12 @@ function CreateClassInstanceDialogComponent({
 
     const instanceName = formValues["__instanceName"];
     if (!instanceName) {
-      newErrors["__instanceName"] = new Error("name is required");
+      newErrors["__instanceName"] = new Error("name for instance is required");
+    }
+    if (instanceNameSet.current.has(instanceName)) {
+      newErrors["__instanceName"] = new Error(
+        "name for instance is allready used"
+      );
     }
 
     for (const param of classVariables) {
@@ -109,6 +116,7 @@ function CreateClassInstanceDialogComponent({
         methods: cls.methods || [],
       };
       addToInstanceWaitingList(instRes);
+      instanceNameSet.current.add(instanceName);
 
       //zum Prüfen ans Backend
       const constructorParameter = classVariables.map((param) => {

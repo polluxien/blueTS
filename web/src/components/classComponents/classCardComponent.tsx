@@ -16,10 +16,12 @@ function ClassCardComponent({
   cls,
   addToInstanceWaitingList,
   vscode,
+  instanceNameSet,
 }: {
   cls: ClassRessource;
   addToInstanceWaitingList: (instance: InstanceRessource) => void;
   vscode: VSCodeAPIWrapper;
+  instanceNameSet: React.RefObject<Set<string>>;
 }) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
   // const [hoveredAdd, setHoveredAdd] = useState(false);
@@ -105,6 +107,7 @@ function ClassCardComponent({
           close={closeDialog}
           addToInstanceWaitingList={addToInstanceWaitingList}
           vscode={vscode}
+          instanceNameSet={instanceNameSet}
         ></CreateClassInstanceDialogComponent>
       )}
     </>
