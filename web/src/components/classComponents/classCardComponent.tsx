@@ -73,7 +73,7 @@ function ClassCardComponent({
             <Col>
               <Button
                 className="w-100 d-flex align-items-center justify-content-center gap-2"
-                variant="outline-primary"
+                variant="outline-light"
                 size="sm"
                 style={{
                   height: "44px",
@@ -86,7 +86,7 @@ function ClassCardComponent({
                 onClick={openDialog}
               >
                 <>
-                  <Plus className="me-2" /> Add
+                  <Plus className="me-2" /> Add Instance
                 </>
               </Button>
             </Col>

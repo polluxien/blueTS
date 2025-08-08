@@ -184,9 +184,11 @@ function InstanceMethodComponent({
         {/* Hier letzte methoden Rückgaben */}
         {methodResults && (
           <div className="mb-4">
-            {" "}
+            <hr></hr>{" "}
             <Form.Group>
-              <Form.Label>return Value</Form.Label>
+              <Form.Label>
+                <strong>return Value</strong>
+              </Form.Label>
               <Form.Control
                 as="textarea"
                 rows={1}

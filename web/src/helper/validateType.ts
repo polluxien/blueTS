@@ -72,7 +72,7 @@ export function validateFormControllType(
     //
   }
 
-  // für object als type  (exampleObj: object) 
+  // für object als type  (exampleObj: object)
   if (typeRes.typeAsString === "object") {
     try {
       const parsed = JSON.parse(formValue);
@@ -88,6 +88,19 @@ export function validateFormControllType(
   }
 
   if (typeRes.paramType === "function") {
+    try {
+      // ? Warscheinlich Nicht ganz sicher
+      const fn = new Function(formValue);
+
+      if (typeof fn === "function") {
+        return { parsedValue: fn };
+      }
+    } catch {
+      return { err: new Error("Invalid function") };
+    }
+  }
+
+  if (typeRes.paramType === "instance") {
     try {
       // ? Warscheinlich Nicht ganz sicher
       const fn = new Function(formValue);
