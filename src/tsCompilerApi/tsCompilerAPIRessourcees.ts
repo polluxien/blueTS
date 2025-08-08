@@ -11,6 +11,7 @@ export type TypeRessource = {
     | "enum"
     | "literal"
     | "function"
+    | "instance"
     | "any"
     | "null"
     | "undefined"
@@ -23,6 +24,9 @@ export type TypeRessource = {
   arrayType?: TypeRessource;
   literalValue?: string | number | undefined;
   objectParameters?: ParameterRessource[];
+  //ich galube erst mal ein bisschen lighter mit namer nur ohne 1 zu 1 prüfen ob identisch
+  // ! selbst damit könnte ich nicht feststellen ob 1 zu 1 identisch
+  //instanceClass?: ClassRessource;
 };
 
 export type ParameterRessource = {

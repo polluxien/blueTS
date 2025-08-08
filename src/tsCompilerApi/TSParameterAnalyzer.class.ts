@@ -11,6 +11,7 @@ export class TSParameterAnalyzer {
   }
   */
 
+
   //default param-analyser
   public paramAnalyzer(
     param: ParameterDeclaration = this.param
@@ -161,6 +162,13 @@ export class TSParameterAnalyzer {
       return {
         typeAsString,
         paramType: "function",
+      };
+    }
+
+    if (type.isClass()) {
+      return {
+        typeAsString,
+        paramType: "instance",
       };
     }
 

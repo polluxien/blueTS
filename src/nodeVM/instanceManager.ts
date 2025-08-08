@@ -27,8 +27,21 @@ export function getInstanceFromInstanceMap(instanceName: string) {
   try {
     return instanceMap.get(instanceName);
   } catch (err) {
-    throw err;
+    throw Error(`ìnstance with name ${instanceName} was not found`);
   }
+}
+
+export type InstanceParamType = {
+  className: string;
+  instanceName: string;
+};
+
+function isInstanceParamType(param: any): param is InstanceParamType {
+  return (
+    typeof param === "object" &&
+    typeof param.className === "string" &&
+    typeof param.instanceName === "string"
+  );
 }
 
 export async function addInstanceToInstanceMap(
@@ -40,7 +53,27 @@ export async function addInstanceToInstanceMap(
     error: undefined,
   };
   try {
-    const instance = await createClassVM(createClsInstanceRes);
+    let myCreateClsInstanceRes = createClsInstanceRes;
+
+    //erst mal nach übergebenen params nach instances checken
+    for (
+      let i = 0;
+      i < myCreateClsInstanceRes.constructorParameter.length;
+      i++
+    ) {
+      const param = myCreateClsInstanceRes.constructorParameter[i];
+      if (isInstanceParamType(param)) {
+        try {
+          const ins = getInstanceFromInstanceMap(param.instanceName);
+          myCreateClsInstanceRes.constructorParameter[i] = ins;
+        } catch (err) {
+          throw err;
+        }
+      }
+    }
+    console.log("zu übergebene ressource an node-vm: ", myCreateClsInstanceRes);
+
+    const instance = await createClassVM(myCreateClsInstanceRes);
     if (!instance) {
       throw new Error("Instance konnte nicht erstellt werden");
     }

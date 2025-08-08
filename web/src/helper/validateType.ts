@@ -8,6 +8,11 @@ export type ValidationResult = {
   parsedValue?: unknown;
 };
 
+type InstanceParamType = {
+  className: string;
+  instanceName: string;
+};
+
 export function validateFormControllType(
   paramRes: ParameterRessource,
   formValue: string
@@ -102,14 +107,15 @@ export function validateFormControllType(
 
   if (typeRes.paramType === "instance") {
     try {
-      // ? Warscheinlich Nicht ganz sicher
-      const fn = new Function(formValue);
-
-      if (typeof fn === "function") {
-        return { parsedValue: fn };
-      }
+      // ! erst einaml keine validierung da aus vorgegebenr auswahl, vlt noch anpassen
+      return {
+        parsedValue: {
+          className: typeRes.typeAsString,
+          instanceName: formValue,
+        } as InstanceParamType,
+      };
     } catch {
-      return { err: new Error("Invalid function") };
+      return { err: new Error("Invalid instance") };
     }
   }
 
