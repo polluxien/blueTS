@@ -24,6 +24,7 @@ export type ParamFormTypeResource = {
     paramName: string,
     validationRes: ValidationTypeResource
   ) => void;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 };
 
 export type ValidationTypeResource = {
@@ -40,6 +41,7 @@ function ParameterFormControllComponent({
   error,
   onChange,
   onValidationChange,
+  instancesAsParamsMap,
   hideLabel,
 }: {
   index: number;
@@ -52,6 +54,7 @@ function ParameterFormControllComponent({
     paramName: string,
     validationRes: ValidationTypeResource
   ) => void;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
   hideLabel?: boolean;
 }) {
   const typeRes: TypeRessource = param.typeInfo;
@@ -125,6 +128,7 @@ function ParameterFormControllComponent({
     error,
     onChange,
     onValidationChange: handleChildChange,
+    instancesAsParamsMap,
   };
 
   const getFormLabel = (param: ParameterRessource) => {
@@ -194,12 +198,49 @@ function ParameterFormControllComponent({
       );
     }
 
+    case "instance": {
+      const classInstanceArr =
+        instancesAsParamsMap.current.get(typeRes.typeAsString) || [];
+
+      const hasNoInstances = classInstanceArr.length === 0;
+      const showFeedback = validated && (!!error || hasNoInstances);
+
+      let feedbackMessage = "";
+      if (hasNoInstances && !param.optional) {
+        feedbackMessage = `No instances for class: ${typeRes.typeAsString} found and this field is required`;
+      } else if (error?.message) {
+        feedbackMessage = error.message;
+      }
+      return (
+        <FormGroup key={index}>
+          {getFormLabel(param)}
+          <Form.Select
+            required={!param.optional}
+            value={value}
+            disabled={hasNoInstances}
+            onChange={(e) => onChange(param.paramName, e.target.value)}
+            isInvalid={validated && !!error}
+          >
+            <option value="">select instance as value</option>
+            {classInstanceArr?.map((instance, i) => (
+              <option key={i} value={instance}>
+                {instance + ": " + typeRes.typeAsString}
+              </option>
+            ))}
+          </Form.Select>
+          <Form.Control.Feedback type="invalid">
+            {showFeedback && feedbackMessage}
+          </Form.Control.Feedback>
+        </FormGroup>
+      );
+    }
+
     case "void":
     case "never":
     case "null": {
-      let placeholder = ""
-      if(typeRes.paramType === "null") placeholder = "null"
-      if(typeRes.paramType === "void") placeholder = "undefined"
+      let placeholder = "";
+      if (typeRes.paramType === "null") placeholder = "null";
+      if (typeRes.paramType === "void") placeholder = "undefined";
       return (
         <FormGroup key={index}>
           {getFormLabel(param)}

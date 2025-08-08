@@ -25,12 +25,16 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
   const instanceWaitingMap = useRef(new Map<string, InstanceRessource>([]));
   //hier werden entsprechende methoden rückgaben vom Backend abgelegt
-  //Map<instanceName, <MethodeName, result>[]>
+  // ? Map<instanceName, <MethodeName, result>[]>
   const [methodResults, setMethodResults] = useState<
     Map<string, Record<string, Error | string>>
   >(new Map([]));
   //Set von Namen instances um sicherzustellen das name uniqe
   const instanceNameSet = useRef(new Set<string>([]));
+
+  //hier entsprechende instances als param übergabe
+  // ? Map<className, instances[]>
+  const instancesAsParamsMap = useRef<Map<string, string[]>>(new Map([]));
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -91,6 +95,23 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
           if (messageData.isValid && myInstance) {
             setInstance((ins) => [...ins, myInstance]);
+
+            //füge als value hinzu
+            const myMapValue: string[] | undefined =
+              instancesAsParamsMap.current.get(myInstance.className);
+            if (!myMapValue) {
+              //wenn klasse noch nicht exestiert füge hinzu
+              instancesAsParamsMap.current.set(myInstance.className, [
+                myInstance.instanceName,
+              ]);
+            } else {
+              //sonst push value
+              myMapValue!.push(myInstance.instanceName);
+              instancesAsParamsMap.current.set(
+                myInstance.className,
+                myMapValue
+              );
+            }
           } else {
             //gebe wieder namen frei und throw error
             instanceNameSet.current.delete(messageData.instanceName);
@@ -184,6 +205,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
                         cls={cls}
                         addToInstanceWaitingList={addToInstanceWaitingList}
                         instanceNameSet={instanceNameSet}
+                        instancesAsParamsMap={instancesAsParamsMap}
                         vscode={vscode}
                       />
                     </Col>
@@ -208,6 +230,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
                     ins={ins}
                     vscode={vscode}
                     methodResults={methodResults.get(ins.instanceName)}
+                    instancesAsParamsMap={instancesAsParamsMap}
                   />
                 </Col>
               ))}

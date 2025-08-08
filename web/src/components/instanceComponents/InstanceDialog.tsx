@@ -12,11 +12,13 @@ function InstanceDialogComponent({
   close,
   vscode,
   methodResults,
+  instancesAsParamsMap,
 }: {
   ins: InstanceRessource;
   close: () => void;
   vscode: VSCodeAPIWrapper;
   methodResults: Record<string, Error | string> | undefined;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 }) {
   return (
     <Modal show={true} onHide={close} size="lg" centered>
@@ -43,6 +45,7 @@ function InstanceDialogComponent({
                         ? methodResults?.[method.methodName]
                         : undefined
                     }
+                    instancesAsParamsMap={instancesAsParamsMap}
                   ></InstanceMethodComponent>
                 </Accordion.Body>
               </Accordion.Item>

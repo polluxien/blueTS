@@ -20,11 +20,13 @@ function InstanceMethodComponent({
   insName,
   vscode,
   methodResults,
+  instancesAsParamsMap,
 }: {
   met: MethodRessource;
   insName: string;
   vscode: VSCodeAPIWrapper;
   methodResults: Error | string | undefined;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 }) {
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
@@ -171,6 +173,7 @@ function InstanceMethodComponent({
                     error={errors[param.paramName]}
                     onChange={handleChange}
                     onValidationChange={handleParameterValidation}
+                    instancesAsParamsMap={instancesAsParamsMap}
                   ></ParameterFormControllComponent>
                 </Container>
               ))}

@@ -17,11 +17,13 @@ function ClassCardComponent({
   addToInstanceWaitingList,
   vscode,
   instanceNameSet,
+  instancesAsParamsMap,
 }: {
   cls: ClassRessource;
   addToInstanceWaitingList: (instance: InstanceRessource) => void;
   vscode: VSCodeAPIWrapper;
   instanceNameSet: React.RefObject<Set<string>>;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 }) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
   // const [hoveredAdd, setHoveredAdd] = useState(false);
@@ -108,6 +110,7 @@ function ClassCardComponent({
           addToInstanceWaitingList={addToInstanceWaitingList}
           vscode={vscode}
           instanceNameSet={instanceNameSet}
+          instancesAsParamsMap={instancesAsParamsMap}
         ></CreateClassInstanceDialogComponent>
       )}
     </>

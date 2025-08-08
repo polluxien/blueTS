@@ -16,6 +16,7 @@ export type TypeRessource = {
     | "enum"
     | "literal"
     | "function"
+    | "instance"
     | "any"
     | "null"
     | "undefined"

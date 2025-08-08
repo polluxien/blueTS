@@ -12,10 +12,12 @@ function InstanceCardComponent({
   ins,
   vscode,
   methodResults,
+  instancesAsParamsMap,
 }: {
   ins: InstanceRessource;
   vscode: VSCodeAPIWrapper;
   methodResults: Record<string, string | Error> | undefined;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 }) {
   const [instanceDialogOpen, setInstanceDialogOpen] = useState<boolean>(false);
 
@@ -71,6 +73,7 @@ function InstanceCardComponent({
           close={closeDialog}
           vscode={vscode}
           methodResults={methodResults}
+          instancesAsParamsMap={instancesAsParamsMap}
         ></InstanceDialogComponent>
       )}
     </>

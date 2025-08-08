@@ -126,6 +126,7 @@ function ArrayParameterComponent({
               error={paramValidations[getElementName(i)]?.errors[0]}
               onChange={handelInternChange}
               onValidationChange={handleChildChange}
+              instancesAsParamsMap={paramFormType.instancesAsParamsMap}
             />
             <Form.Control.Feedback type="invalid">
               {paramFormType.error?.message || "This field is required"}

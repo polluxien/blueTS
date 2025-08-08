@@ -112,6 +112,7 @@ function UnionParamComponent({
           onChange={handelInternChange}
           onValidationChange={handleChildChange}
           hideLabel={true}
+          instancesAsParamsMap={paramFormType.instancesAsParamsMap}
         />
       )}{" "}
       <Form.Control.Feedback type="invalid">

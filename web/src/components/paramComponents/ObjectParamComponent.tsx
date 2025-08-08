@@ -87,7 +87,10 @@ function ObjectParamComponent({
                 index={0}
                 param={{
                   paramName: `${typeRes.typeAsString}_BLANKTYPE`,
-                  typeInfo: { paramType: "basic", typeAsString: "emptyObjectType" },
+                  typeInfo: {
+                    paramType: "basic",
+                    typeAsString: "emptyObjectType",
+                  },
                   optional: paramFormType.param.optional,
                 }}
                 value={internValues[`${typeRes.typeAsString}_BLANKTYPE`] || ""}
@@ -98,6 +101,7 @@ function ObjectParamComponent({
                 }
                 onChange={handelInternChange}
                 onValidationChange={handleChildChange}
+                instancesAsParamsMap={paramFormType.instancesAsParamsMap}
                 hideLabel={true}
               />
               <Form.Control.Feedback type="invalid">
@@ -112,6 +116,7 @@ function ObjectParamComponent({
                 index={i}
                 param={objParam}
                 value={internValues[objParam.paramName] || ""}
+                instancesAsParamsMap={paramFormType.instancesAsParamsMap}
                 validated={paramFormType.validated}
                 error={paramValidations[objParam.paramName]?.errors[0]}
                 onChange={handelInternChange}

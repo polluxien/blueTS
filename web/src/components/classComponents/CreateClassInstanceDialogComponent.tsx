@@ -25,12 +25,14 @@ function CreateClassInstanceDialogComponent({
   addToInstanceWaitingList,
   vscode,
   instanceNameSet,
+  instancesAsParamsMap,
 }: {
   cls: ClassRessource;
   close: () => void;
   addToInstanceWaitingList: (instance: InstanceRessource) => void;
   vscode: VSCodeAPIWrapper;
   instanceNameSet: React.RefObject<Set<string>>;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 }) {
   const [constructorIndex, setConstructorIndex] = useState(0);
   const [validated, setValidated] = useState<boolean>(false);
@@ -206,6 +208,7 @@ function CreateClassInstanceDialogComponent({
                             error={errors[param.paramName]}
                             onChange={handleChange}
                             onValidationChange={handleParameterValidation}
+                            instancesAsParamsMap={instancesAsParamsMap}
                           ></ParameterFormControllComponent>
                         ))}
                     </Container>
