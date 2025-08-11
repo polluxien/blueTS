@@ -1,22 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import type {
   ClassRessource,
   CompiledRunMethodInInstanceTyp,
   InstanceCheckRessource,
   InstanceRessource,
 } from "../ressources/classRessources.ts";
-import { Button, Container } from "react-bootstrap";
-
-import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
+import Switch from "react-switch";
 
 //Icons
-import { ArrowClockwise } from "react-bootstrap-icons";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
-import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
+import ObjectViewComponent from "./ObjectViewComponet.tsx";
+import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
 
 function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
+  // * View Mode -> react switch select
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [viewMode, setViewMode] = useState<"object" | "function">("object");
+
   // * Enstprechende Card Componets
   const [classes, setClasses] = useState<ClassRessource[]>([]);
   const [instances, setInstance] = useState<InstanceRessource[]>([]);
@@ -196,76 +196,65 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   return (
     <>
-      <div>
-        {/* Hier werden die gefunden TS-Klassen gezeigt*/}
-        <div>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h1 className="m-0">TS-Classes</h1>
-            <Button
-              onClick={refreshClasses}
-              style={{
-                background: "none",
-                border: "none",
-                color: "black",
-                fontSize: "2rem",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-              aria-label="Refresh"
-            >
-              <ArrowClockwise />
-            </Button>
-          </div>
-          <div>
-            {!loading ? (
-              <Container>
-                <Row>
-                  {classes.map((cls, index) => (
-                    <Col
-                      key={index}
-                      xs={12}
-                      sm={6}
-                      md={4}
-                      lg={3}
-                      className="mb-4"
-                    >
-                      <ClassCardComponent
-                        cls={cls}
-                        addToInstanceWaitingList={addToInstanceWaitingList}
-                        instanceNameSet={instanceNameSet}
-                        instancesAsParamsMap={instancesAsParamsMap}
-                        vscode={vscode}
-                      />
-                    </Col>
-                  ))}
-                </Row>
-              </Container>
-            ) : (
-              <div className="loading-container">
-                <div>Loading...</div>
-              </div>
-            )}
-          </div>
-        </div>
-        {/* Hier werden die erstellten Klassen-Instances angezeigt*/}
-        <div>
-          <h1>Class-Instances</h1>
-          <Container>
-            <Row>
-              {instances.map((ins, index) => (
-                <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
-                  <InstanceCardComponent
-                    ins={ins}
-                    vscode={vscode}
-                    methodResults={methodResults.get(ins.instanceName)}
-                    instancesAsParamsMap={instancesAsParamsMap}
-                  />
-                </Col>
-              ))}
-            </Row>
-          </Container>
-        </div>
+      {/* Directory settings */}
+      <div className="mb-3">
+        <DirectorySettingsComponent
+          vscode={vscode}
+        ></DirectorySettingsComponent>
       </div>
+
+      {/* View settings */}
+      <div className="d-flex align-items-center gap-3 mb-3">
+        <span
+          className={`fw-bold ${
+            viewMode === "object" ? "text-primary" : "text-muted"
+          }`}
+        >
+          Object
+        </span>
+        <Switch
+          onChange={() =>
+            setViewMode(viewMode === "object" ? "function" : "object")
+          }
+          checked={viewMode === "function"}
+          onColor="#007bff"
+          onHandleColor="#ffffff"
+          handleDiameter={24}
+          uncheckedIcon={false}
+          checkedIcon={false}
+          boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+          activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+          height={20}
+          width={48}
+        />
+        <span
+          className={`fw-bold ${
+            viewMode === "function" ? "text-primary" : "text-muted"
+          }`}
+        >
+          Function
+        </span>
+      </div>
+      {/* View  */}
+      {viewMode === "object" ? (
+        <div>
+          <ObjectViewComponent
+            classes={classes}
+            instances={instances}
+            loading={loading}
+            methodResults={methodResults}
+            instanceNameSet={instanceNameSet}
+            instancesAsParamsMap={instancesAsParamsMap}
+            refreshClasses={refreshClasses}
+            addToInstanceWaitingList={addToInstanceWaitingList}
+            vscode={vscode}
+          ></ObjectViewComponent>
+        </div>
+      ) : (
+        <div>
+          <p>Soon to be implementet</p>
+        </div>
+      )}
     </>
   );
 }
