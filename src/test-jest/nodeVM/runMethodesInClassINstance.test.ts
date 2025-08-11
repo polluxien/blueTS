@@ -1,12 +1,11 @@
 import path from "path";
-import { CreateClassInstanceRessource } from "../../nodeVM/instanceResources";
+import { CreateClassInstanceRessource, RunMethodeInInstanceType } from "../../nodeVM/instanceResources";
 import { Path } from "typescript";
 import {
   addInstanceToInstanceMap,
   clearInstanceMap,
   compileMethodInClassObject,
   getInstanceFromInstanceMap,
-  RunMethodeInInstanceType,
 } from "../../nodeVM/instanceManager";
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
@@ -38,7 +37,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       methodName: "age",
       params: [],
-      specifics: {
+      specs: {
         methodKind: "get",
         isAsync: false,
       },
@@ -55,7 +54,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
         instanceName: "testii",
         methodName: "age",
         params: [123],
-        specifics: { methodKind: "get", isAsync: false },
+        specs: { methodKind: "get", isAsync: false },
       })
     ).rejects.toThrow("Getter 'age' benötigt keine Parameter");
   });
@@ -65,7 +64,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       methodName: "age",
       params: [70],
-      specifics: {
+      specs: {
         methodKind: "set",
         isAsync: false,
       },
@@ -78,7 +77,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       methodName: "age",
       params: [],
-      specifics: {
+      specs: {
         methodKind: "get",
         isAsync: false,
       },
@@ -95,7 +94,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
         instanceName: "testii",
         methodName: "age",
         params: [-5],
-        specifics: { methodKind: "set", isAsync: false },
+        specs: { methodKind: "set", isAsync: false },
       })
     ).rejects.toThrow("Alter darf nicht negativ sein.");
   });
@@ -106,7 +105,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
         instanceName: "testii",
         methodName: "age",
         params: [],
-        specifics: { methodKind: "set", isAsync: false },
+        specs: { methodKind: "set", isAsync: false },
       })
     ).rejects.toThrow("Setter 'age' benötigt einen Parameter");
   });
@@ -116,7 +115,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       methodName: "greet",
       params: ["Basti"],
-      specifics: {
+      specs: {
         methodKind: "default",
         isAsync: false,
       },
@@ -132,7 +131,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       methodName: "greet",
       params: [""],
-      specifics: { methodKind: "default", isAsync: false },
+      specs: { methodKind: "default", isAsync: false },
     });
 
     expect(result).toEqual("Hallo , mein Name ist Albert.");
@@ -143,7 +142,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       methodName: "fetchData",
       params: [],
-      specifics: {
+      specs: {
         methodKind: "default",
         isAsync: true,
       },
@@ -160,7 +159,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
         instanceName: "testii",
         methodName: "nonExistent",
         params: [],
-        specifics: { methodKind: "default", isAsync: false },
+        specs: { methodKind: "default", isAsync: false },
       })
     ).rejects.toThrow("Methode 'nonExistent' konnte nicht gefunden werden");
   });

@@ -1,21 +1,22 @@
 import {
+  CompiledRunMethodInInstanceTyp,
   CreateClassInstanceRessource,
   InstanceCheckRessource,
+  InstanceParamType,
+  PropInstanceType,
+  RunMethodeInInstanceType,
 } from "./instanceResources";
-import { compileClassMethod, createClassVM } from "./instanceService";
+import {
+  compileClassMethod,
+  createClassVM,
+  extractClassInstanceProps,
+} from "./instanceService";
 
-const instanceMap = new Map<string, object>();
-
-export function getInstanceMap() {
-  return instanceMap;
-}
+//Map<instanceName, [instanceObject, CurrentProps]>
+const instanceMap = new Map<string, [object, PropInstanceType[]]>([]);
 
 export function deleteInstanceInInstanceMap(instanceName: string) {
-  try {
-    instanceMap.delete(instanceName);
-  } catch (err) {
-    throw err;
-  }
+  instanceMap.delete(instanceName);
 }
 
 //ehr zum testen
@@ -23,25 +24,23 @@ export function clearInstanceMap() {
   instanceMap.clear();
 }
 
-export function getInstanceFromInstanceMap(instanceName: string) {
-  try {
-    return instanceMap.get(instanceName);
-  } catch (err) {
-    throw Error(`ìnstance with name ${instanceName} was not found`);
+function getInstanceFromInstanceMap(
+  instanceName: string,
+  getProps: boolean = false
+): object | [object, PropInstanceType[]] {
+  const tupelValue = instanceMap.get(instanceName);
+  if (!tupelValue) {
+    throw new Error(`Instance with name ${instanceName} was not found`);
   }
+  return getProps ? tupelValue : tupelValue[0];
 }
 
-export type InstanceParamType = {
-  className: string;
-  instanceName: string;
-};
-
-function isInstanceParamType(param: any): param is InstanceParamType {
-  return (
-    typeof param === "object" &&
-    typeof param.className === "string" &&
-    typeof param.instanceName === "string"
-  );
+function setNewProps(instanceName: string, newProps: PropInstanceType[]) {
+  const tupelValue = instanceMap.get(instanceName);
+  if (!tupelValue) {
+    throw new Error(`Instance with name ${instanceName} was not found`);
+  }
+  instanceMap.set(instanceName, [tupelValue[0], newProps]);
 }
 
 export async function addInstanceToInstanceMap(
@@ -49,13 +48,27 @@ export async function addInstanceToInstanceMap(
 ): Promise<InstanceCheckRessource> {
   let result: InstanceCheckRessource = {
     instanceName: createClsInstanceRes.instanceName,
+    props: [],
     isValid: false,
     error: undefined,
   };
   try {
-    let myCreateClsInstanceRes = createClsInstanceRes;
+    if (instanceMap.get(createClsInstanceRes.instanceName)) {
+      throw new Error(
+        `instance with name ${createClsInstanceRes.instanceName} allready exists`
+      );
+    }
 
-    //erst mal nach übergebenen params nach instances checken
+    let myCreateClsInstanceRes = createClsInstanceRes;
+    let isInstanceParamType = (param: any): param is InstanceParamType => {
+      return (
+        typeof param === "object" &&
+        typeof param.className === "string" &&
+        typeof param.instanceName === "string"
+      );
+    };
+
+    //übergebenen params nach instances checken
     for (
       let i = 0;
       i < myCreateClsInstanceRes.constructorParameter.length;
@@ -77,31 +90,21 @@ export async function addInstanceToInstanceMap(
     if (!instance) {
       throw new Error("Instance konnte nicht erstellt werden");
     }
-    instanceMap.set(createClsInstanceRes.instanceName, instance);
+
+    //hole Props
+    const myProps: PropInstanceType[] = await extractClassInstanceProps(
+      instance
+    );
+    console.log("My Props: ", JSON.stringify(myProps, null, 2));
+    result.props = myProps;
+
+    instanceMap.set(createClsInstanceRes.instanceName, [instance, myProps]);
     result.isValid = true;
   } catch (err) {
     result.error = err;
   }
   return result;
 }
-
-export type RunMethodeInInstanceType = {
-  instanceName: string;
-  methodName: string;
-  params: unknown[];
-  specs: {
-    methodKind: "default" | "get" | "set";
-    isAsync: boolean;
-  };
-};
-
-export type CompiledRunMethodInInstanceTyp = {
-  instanceName: string;
-  methodName: string;
-  isValid: boolean;
-  returnValue?: string;
-  error?: Error;
-};
 
 export async function compileMethodInClassObject(
   runMethodeInInstanceType: RunMethodeInInstanceType
@@ -113,15 +116,19 @@ export async function compileMethodInClassObject(
   };
 
   try {
-    const instance = getInstanceFromInstanceMap(
-      runMethodeInInstanceType.instanceName
-    );
+    const tupelInstanceValue = getInstanceFromInstanceMap(
+      runMethodeInInstanceType.instanceName,
+      true
+    ) as [object, PropInstanceType[]];
 
-    if (!instance) {
+    if (!tupelInstanceValue) {
       throw new Error("Instanz nicht gefunden.");
     }
 
-    const result = await compileClassMethod(instance, runMethodeInInstanceType);
+    const result = await compileClassMethod(
+      tupelInstanceValue[0],
+      runMethodeInInstanceType
+    );
     compiledResult.isValid = true;
 
     let parsedValue = "";
@@ -141,6 +148,30 @@ export async function compileMethodInClassObject(
       }
     }
     compiledResult.returnValue = parsedValue;
+
+    //hole aktuelle instance
+    const curIns = getInstanceFromInstanceMap(
+      runMethodeInInstanceType.instanceName
+    );
+    const newProps: PropInstanceType[] = await extractClassInstanceProps(
+      curIns
+    );
+
+    //vergleiche alten props mit aktuellen props und gebe bei bedarf die neuen props mit
+    const propsChanged =
+      tupelInstanceValue[1].length !== newProps.length ||
+      tupelInstanceValue[1].some(
+        (oldProp, i) =>
+          oldProp.name !== newProps[i].name ||
+          oldProp.type !== newProps[i].type ||
+          oldProp.value !== newProps[i].value
+      );
+
+    if (propsChanged) {
+      console.log("New Props: ", JSON.stringify(newProps, null, 2));
+      setNewProps(runMethodeInInstanceType.instanceName, newProps);
+      compiledResult.newProps = newProps;
+    }
   } catch (err) {
     console.error("Fehler bei compileMethodInClassObject:", err);
     compiledResult.error = err instanceof Error ? err : new Error(String(err));

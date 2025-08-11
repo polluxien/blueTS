@@ -62,87 +62,14 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
       switch (message.command) {
         case "postAllClasses":
-          console.log(
-            `Massage from command has data: ${JSON.stringify(
-              message.data,
-              null,
-              2
-            )}`
-          );
-
-          setClasses(message.data);
-          console.log("Received postAllClasses, length:", message.data.length);
-          message.data.map((cls: ClassRessource) =>
-            console.log("Class names:", cls.className)
-          );
-
-          setLoading(false);
+          handelPostAllClasses(message.data);
           break;
-        case "postInstanceCheck": {
-          const messageData: InstanceCheckRessource = message.data;
-          console.log(
-            `Massage from command has InstanceCheckRessource: ${messageData}`
-          );
-
-          const myInstance: InstanceRessource | undefined =
-            instanceWaitingMap.current.get(messageData.instanceName);
-          if (!myInstance) {
-            console.log(
-              `Instance with name: ${messageData.instanceName} was not found`
-            );
-          }
-          instanceWaitingMap.current.delete(messageData.instanceName);
-
-          if (messageData.isValid && myInstance) {
-            setInstance((ins) => [...ins, myInstance]);
-
-            //füge als value hinzu
-            const myMapValue: string[] | undefined =
-              instancesAsParamsMap.current.get(myInstance.className);
-            if (!myMapValue) {
-              //wenn klasse noch nicht exestiert füge hinzu
-              instancesAsParamsMap.current.set(myInstance.className, [
-                myInstance.instanceName,
-              ]);
-            } else {
-              //sonst push value
-              myMapValue!.push(myInstance.instanceName);
-              instancesAsParamsMap.current.set(
-                myInstance.className,
-                myMapValue
-              );
-            }
-          } else {
-            //gebe wieder namen frei und throw error
-            instanceNameSet.current.delete(messageData.instanceName);
-            throw Error();
-          }
+        case "postInstanceCheck":
+          handelPostInstanceCheck(message.data);
           break;
-        }
-        case "postMethodCheck": {
-          const messageData: CompiledRunMethodInInstanceTyp = message.data;
-          console.log(
-            `Massage from command has CompiledRunMethodInInstanceTyp: `,
-            JSON.stringify(messageData, null, 2)
-          );
-
-          setMethodResults((prev) => {
-            const newMap = new Map(prev);
-
-            const methodResultRecord =
-              newMap.get(messageData.instanceName) ?? {};
-
-            methodResultRecord[messageData.methodName] = messageData.isValid
-              ? messageData.returnValue!
-              : messageData.error!;
-
-            newMap.set(messageData.instanceName, methodResultRecord);
-
-            return newMap;
-          });
-          console.log("methodResults: ", methodResults);
+        case "postMethodCheck":
+          handelpostMethodCheck(message.data);
           break;
-        }
         case "error":
           setError(message.error);
           setLoading(false);
@@ -157,6 +84,107 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
       window.removeEventListener("message", handleMessage);
     };
   }, []);
+
+  // ? Message handler ----------------------------
+
+  function handelPostAllClasses(data: ClassRessource[]) {
+    console.log(
+      `Massage from command has data: ${JSON.stringify(data, null, 2)}`
+    );
+
+    setClasses(data);
+    console.log("Received postAllClasses, length:", data);
+    data.map((cls: ClassRessource) =>
+      console.log("Class names:", cls.className)
+    );
+
+    setLoading(false);
+  }
+
+  function handelPostInstanceCheck(data: InstanceCheckRessource) {
+    console.log(`Massage from command has InstanceCheckRessource: ${data}`);
+
+    const myInstance: InstanceRessource | undefined =
+      instanceWaitingMap.current.get(data.instanceName);
+    if (!myInstance) {
+      console.log(`Instance with name: ${data.instanceName} was not found`);
+    }
+    instanceWaitingMap.current.delete(data.instanceName);
+
+    //füge props hinzu
+    myInstance!.props = data.props;
+
+    if (data.isValid && myInstance) {
+      setInstance((ins) => [...ins, myInstance]);
+
+      //füge als value hinzu
+      const myMapValue: string[] | undefined = instancesAsParamsMap.current.get(
+        myInstance.className
+      );
+      if (!myMapValue) {
+        //wenn klasse noch nicht exestiert füge hinzu
+        instancesAsParamsMap.current.set(myInstance.className, [
+          myInstance.instanceName,
+        ]);
+      } else {
+        //sonst push value
+        myMapValue!.push(myInstance.instanceName);
+        instancesAsParamsMap.current.set(myInstance.className, myMapValue);
+      }
+    } else {
+      //gebe wieder namen frei und throw error
+      instanceNameSet.current.delete(data.instanceName);
+      throw Error();
+    }
+  }
+
+  function handelpostMethodCheck(data: CompiledRunMethodInInstanceTyp) {
+    console.log(
+      `Massage from command has CompiledRunMethodInInstanceTyp: `,
+      JSON.stringify(data, null, 2)
+    );
+
+    //setzte rückgabe an richtige steller
+    setMethodResults((prev) => {
+      const newMap = new Map(prev);
+
+      const methodResultRecord = newMap.get(data.instanceName) ?? {};
+
+      methodResultRecord[data.methodName] = data.isValid
+        ? data.returnValue!
+        : data.error!;
+
+      newMap.set(data.instanceName, methodResultRecord);
+      return newMap;
+    });
+    console.log("methodResults: ", methodResults);
+
+    //überschreibe bei bedarf instance props
+    if (data.newProps) {
+      setInstance((prevInstances) => {
+        const updatedInstances = prevInstances.map((ins) =>
+          ins.instanceName === data.instanceName
+            ? { ...ins, props: data.newProps }
+            : ins
+        );
+
+        const foundInstance = prevInstances.find(
+          (ins) => ins.instanceName === data.instanceName
+        );
+
+        if (!foundInstance) {
+          console.error(
+            `Instance ${data.instanceName} was not found to give new props to`
+          );
+          return prevInstances;
+        }
+
+        return updatedInstances;
+      });
+    }
+  }
+
+  // ? ----------------------------
 
   const addToInstanceWaitingList = (instance: InstanceRessource) => {
     instanceWaitingMap.current.set(instance.instanceName, instance);

@@ -2,7 +2,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 import type { InstanceRessource } from "../../ressources/classRessources.js";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Alert, Table } from "react-bootstrap";
 import InstanceMethodComponent from "./InstanceMethodComponent.js";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
 //import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
@@ -23,14 +23,51 @@ function InstanceDialogComponent({
   return (
     <Modal show={true} onHide={close} size="lg" centered>
       <Modal.Header closeButton>
-        <Modal.Title>{ins.instanceName}</Modal.Title>
+        <Modal.Title>
+          {ins.instanceName}: {ins.className}
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         {/* hier werden die Variablen im inspect angezeigt */}
+        <h5 className="mt-4 mb-3">Instance Properties</h5>
+        {ins.props && ins.props.length > 0 ? (
+          <Table
+            responsive="sm"
+            striped
+            bordered
+            hover
+            className="align-middle text-center"
+          >
+            {/*   
+            <thead className="table-dark">
+              <tr>
+                <th>name</th>
+                <th>type</th>
+                <th>value</th>
+              </tr>
+            </thead>
+            */}
+            <tbody>
+              {ins.props.map((prop, i) => (
+                <tr key={i}>
+                  <td>
+                    {prop.name}: {prop.type}{" "}
+                  </td>
+                  <td>{prop.value} </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        ) : (
+          <Alert variant="light">
+            The class <strong>{ins.className}</strong> has no properties.
+          </Alert>
+        )}
 
         {/* hier werden die ausführbaren Methoden angezeigt */}
-        {ins.methods.length > 0 && (
+        <h5 className="mt-4 mb-3">Instance Methods</h5>
+        {ins.methods.length > 0 ? (
           <Accordion>
             {ins.methods.map((method, i) => (
               <Accordion.Item eventKey={i + ""}>
@@ -51,6 +88,10 @@ function InstanceDialogComponent({
               </Accordion.Item>
             ))}
           </Accordion>
+        ) : (
+          <Alert variant="light">
+            The class <strong>{ins.className}</strong> has no callable methods.
+          </Alert>
         )}
       </Modal.Body>
       <Modal.Footer>

@@ -1,7 +1,6 @@
 import fs from "fs";
 import ts from "typescript";
-import { CreateClassInstanceRessource } from "./instanceResources";
-import { RunMethodeInInstanceType } from "./instanceManager";
+import { CreateClassInstanceRessource, RunMethodeInInstanceType } from "./instanceResources";
 
 const vm = require("vm");
 
@@ -87,6 +86,115 @@ function identifyClass(context: any, className: string) {
   }
 
   throw Error("Klasse in File nicht gefunden");
+}
+
+//checke ob der kompilierte code koreckt ist
+export type verifyContext = {
+  context: string;
+  isValid: boolean;
+  error?: Error;
+};
+export async function runContext() {}
+
+//liefe alle props von instance zurück
+export type InstancePropsType = {
+  instanceName: string;
+  classNAme: string;
+  props: PropType[];
+};
+
+export type PropType = {
+  name: string;
+  type: string;
+  value?: string;
+  specs?: {
+    visibility: "public" | "private" | "protected";
+    isStatic: boolean;
+  };
+};
+
+export async function extractClassInstanceProps(
+  instance: any
+): Promise<PropType[]> {
+  let propTypeArr: PropType[] = [];
+
+  try {
+    // Hole alle props der Instanz
+    const propNames = Object.getOwnPropertyNames(instance);
+    for (let propName of propNames) {
+      try {
+        let value: any;
+        let type: string;
+
+        // ! visabilility wird nicht richtgig erkannt
+        /*
+        let visibility: "public" | "private" | "protected" = "public";
+
+        // Bestimme Sichtbarkeit anhand des Namens
+        if (propName.startsWith("_")) {
+          visibility = propName.startsWith("__") ? "private" : "protected";
+        } else if (instance[propName]) {
+        }
+        */
+
+        // get prop value
+        try {
+          if (propName in instance) {
+            value = instance[propName];
+          } else {
+            // Falls Property nur im Prototyp existiert
+            value = Object.getPrototypeOf(instance)[propName];
+          }
+        } catch (err) {
+          value = "[Nicht zugreifbar]";
+        }
+
+        // Bestimme Typ
+        if (typeof value === "function") {
+          type = "function";
+        } else if (value === null) {
+          type = "null";
+        } else if (Array.isArray(value)) {
+          type = "array";
+        } else {
+          type = typeof value;
+        }
+
+        // Konvertiere Wert zu String
+        let valueStr: string;
+        try {
+          if (typeof value === "function") {
+            valueStr = `[Function: ${propName}]`;
+          } else if (typeof value === "object" && value !== null) {
+            valueStr =
+              JSON.stringify(value, null, 2).substring(0, 100) +
+              (JSON.stringify(value).length > 100 ? "..." : "");
+          } else {
+            valueStr = String(value);
+          }
+        } catch (err) {
+          valueStr = "[Nicht serialisierbar]";
+        }
+
+        propTypeArr.push({
+          name: propName,
+          type,
+          value: valueStr,
+          /*
+          specs: {
+            visibility,
+            isStatic,
+          },
+          */
+        });
+      } catch {
+        propTypeArr.push({ name: propName, type: "unknown" });
+      }
+    }
+  } catch (err: any) {
+    throw new Error("Fehler beim Extrahieren der Properties: ", err.message);
+  }
+  return propTypeArr;
 }
 
 export async function compileClassMethod(

@@ -73,12 +73,14 @@ export type CreateClassInstanceRessource = {
 export type InstanceRessource = {
   instanceName: string;
   className: string;
+  props?: PropInstanceType[];
   methods: MethodRessource[];
 };
 
 export type InstanceCheckRessource = {
   instanceName: string;
   isValid: boolean;
+  props: PropInstanceType[];
   error: unknown;
 };
 
@@ -96,7 +98,19 @@ export type RunMethodeInInstanceType = {
 export type CompiledRunMethodInInstanceTyp = {
   instanceName: string;
   methodName: string;
+  newProps?: PropInstanceType[];
   isValid: boolean;
   returnValue?: string;
   error?: Error;
+};
+
+//type für interene props von Instanz
+export type PropInstanceType = {
+  name: string;
+  type: string;
+  value?: string;
+  specs?: {
+    visibility: "public" | "private" | "protected";
+    isStatic: boolean;
+  };
 };

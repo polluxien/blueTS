@@ -60,7 +60,7 @@ function InstanceCardComponent({
               >
                 <>
                   <Info className="me-2" />
-                  info
+                  inspect
                 </>
               </Button>
             </Col>
