@@ -21,7 +21,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
         name: `testClassMethods.ts`,
         path: path.resolve(
           __dirname,
-          `../mockCode/nodeVM/testClassMethods.ts`
+          `../mockCode/nodeVM/ClassMethodsTest.ts`
         ) as Path,
       },
       constructorParameter: ["Albert", 40],

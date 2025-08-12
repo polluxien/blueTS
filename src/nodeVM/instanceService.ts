@@ -1,6 +1,9 @@
 import fs from "fs";
 import ts from "typescript";
-import { CreateClassInstanceRessource, RunMethodeInInstanceType } from "./instanceResources";
+import {
+  CreateClassInstanceRessource,
+  RunMethodeInInstanceType,
+} from "./instanceResources";
 
 const vm = require("vm");
 
@@ -169,6 +172,8 @@ export async function extractClassInstanceProps(
             valueStr =
               JSON.stringify(value, null, 2).substring(0, 100) +
               (JSON.stringify(value).length > 100 ? "..." : "");
+          } else if (typeof value === "string") {
+            valueStr = `"${String(value)}"`;
           } else {
             valueStr = String(value);
           }
