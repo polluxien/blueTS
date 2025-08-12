@@ -18,6 +18,7 @@ type ObjectViewComponentProps = {
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 
   reLoad: (type: "classes" | "functions") => void;
+  dropInstance: (insName: string) => void;
   addToInstanceWaitingList: (instance: InstanceResource) => void;
 
   vscode: VSCodeAPIWrapper;
@@ -33,6 +34,7 @@ function ObjectViewComponent({
   reLoad,
   addToInstanceWaitingList,
   vscode,
+  dropInstance,
 }: ObjectViewComponentProps) {
   const reLoadClasses = () => reLoad("classes");
 
@@ -100,6 +102,7 @@ function ObjectViewComponent({
                     ins={ins}
                     vscode={vscode}
                     methodResults={methodResults.get(ins.instanceName)}
+                    dropInstance={dropInstance}
                     instancesAsParamsMap={instancesAsParamsMap}
                   />
                 </Col>

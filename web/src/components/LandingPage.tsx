@@ -219,6 +219,23 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     instanceWaitingMap.current.set(instance.instanceName, instance);
   };
 
+  function dropInstance(insName: string) {
+    try {
+      instanceNameSet.current.delete(insName);
+
+      setInstance((prev) => {
+        const found = prev.find((ins) => ins.instanceName === insName);
+        if (!found) {
+          console.error("Something went wrong deleting in instances");
+          return prev;
+        }
+        return prev.filter((ins) => ins.instanceName !== insName);
+      });
+    } catch {
+      console.error("Something went wrong deleting");
+    }
+  }
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -276,6 +293,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             instancesAsParamsMap={instancesAsParamsMap}
             reLoad={reLoad}
             addToInstanceWaitingList={addToInstanceWaitingList}
+            dropInstance={dropInstance}
             vscode={vscode}
           ></ObjectViewComponent>
         </div>

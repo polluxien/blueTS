@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useState } from "react";
 import InstanceDialogComponent from "./InstanceDialog.tsx";
-import { Info } from "react-bootstrap-icons";
+import { Info, X } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 // import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
@@ -13,6 +13,8 @@ type InstanceCardComponentProps = {
   vscode: VSCodeAPIWrapper;
   methodResults: Record<string, string | Error> | undefined;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+
+  dropInstance: (insName: string) => void;
 };
 
 function InstanceCardComponent({
@@ -20,11 +22,22 @@ function InstanceCardComponent({
   vscode,
   methodResults,
   instancesAsParamsMap,
+  dropInstance,
 }: InstanceCardComponentProps) {
   const [instanceDialogOpen, setInstanceDialogOpen] = useState<boolean>(false);
 
   const openDialog = () => setInstanceDialogOpen(true);
   const closeDialog = () => setInstanceDialogOpen(false);
+
+  const deleteInstance = () => {
+    //entferne instance aus backend instanceMap
+    vscode.postMessage({
+      command: "deleteInstance",
+      data: ins.instanceName,
+    });
+    //entferne instance aus frontend
+    dropInstance(ins.instanceName);
+  };
 
   return (
     <>
@@ -41,8 +54,23 @@ function InstanceCardComponent({
       >
         <Card.Body>
           <Card.Title>
-            {ins.instanceName}: {ins.className}
+            {ins.instanceName}: {ins.className}{" "}
+            <Button
+              onClick={deleteInstance}
+              style={{
+                background: "none",
+                border: "none",
+                color: "white",
+                fontSize: "1.7rem",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+              aria-label="Delete"
+            >
+              <X />
+            </Button>
           </Card.Title>
+
           <Row className="gap-2">
             <Col>
               <Button
