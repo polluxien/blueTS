@@ -95,6 +95,12 @@ function ParameterFormControllComponent({
       parsedValue: paramValidations[param.paramName],
     });
 
+    if (!paramValidations[param.paramName]) {
+      console.error(
+        "param zur Validation übergabe konnte nicht gefunden werden"
+      );
+    }
+
     onValidationChange(param.paramName, {
       isValid: allChildrenValid,
       errors: allErrors,
