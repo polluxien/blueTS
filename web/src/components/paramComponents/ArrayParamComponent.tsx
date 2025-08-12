@@ -58,18 +58,18 @@ function ArrayParameterComponent({
       }
     }
 
+    console.log("ARRAY COMPONENT: ", {
+      isValid: allErrors.length === 0,
+      errors: allErrors,
+      parsedValue: myArr,
+    });
+
     paramFormType.onValidationChange!(paramFormType.param.paramName, {
       isValid: allErrors.length === 0,
       errors: allErrors,
       parsedValue: myArr,
     });
-  }, [
-    paramValidations,
-    arraySize,
-    paramFormType.param.paramName,
-    elementParam.optional,
-    paramFormType.onValidationChange!,
-  ]);
+  }, [paramValidations, arraySize]);
 
   const getElementName = (elementIndex: number) => {
     return `${paramFormType.param.paramName}[${elementIndex}]`;

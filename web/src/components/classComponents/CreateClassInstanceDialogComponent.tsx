@@ -89,6 +89,7 @@ function CreateClassInstanceDialogComponent({
       if (!validation || !validation.isValid) {
         // Fallback
         if (!validation) {
+          
           const value = formValues[param.paramName];
           const { err, parsedValue } = validateFormControllType(param, value);
 
