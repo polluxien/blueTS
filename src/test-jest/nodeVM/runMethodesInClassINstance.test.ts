@@ -3,7 +3,7 @@ import {
   CompiledRunMethodInInstanceTyp,
   CreateClassInstanceRessource,
   RunMethodeInInstanceType,
-} from "../../nodeVM/instanceResources";
+} from "../../_resources/nodeVMResources";
 import { Path } from "typescript";
 import {
   addInstanceToInstanceMap,

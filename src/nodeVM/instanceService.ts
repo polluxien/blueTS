@@ -3,7 +3,7 @@ import ts from "typescript";
 import {
   CreateClassInstanceRessource,
   RunMethodeInInstanceType,
-} from "./instanceResources";
+} from "../_resources/nodeVMResources";
 
 const vm = require("vm");
 

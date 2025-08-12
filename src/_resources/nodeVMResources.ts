@@ -1,5 +1,5 @@
-import { TsFileResource } from "../fileService/fileResources";
-import { ParameterRessource } from "../tsCompilerApi/tsCompilerAPIRessourcees";
+import { TsFileResource } from "./fileResources";
+import { ParameterResource } from "./tsCompilerAPIResources";
 
 export type CreateClassInstanceRessource = {
   instanceName: string;
@@ -10,7 +10,7 @@ export type CreateClassInstanceRessource = {
 
 export type ClassInstanceConstructionFunctionRessource = {
   functionName: string;
-  parameter: ParameterRessource;
+  parameter: ParameterResource;
 };
 
 export type ClassInstanceConstructionRessource = {

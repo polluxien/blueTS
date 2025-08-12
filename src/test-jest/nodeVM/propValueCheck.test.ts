@@ -3,7 +3,7 @@ import {
   CreateClassInstanceRessource,
   InstanceCheckRessource,
   PropInstanceType,
-} from "../../nodeVM/instanceResources";
+} from "../../_resources/nodeVMResources";
 import {
   addInstanceToInstanceMap,
   clearInstanceMap,

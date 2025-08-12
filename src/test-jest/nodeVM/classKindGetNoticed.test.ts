@@ -1,7 +1,7 @@
 import { Path } from "typescript";
 import path from "path";
 import { addInstanceToInstanceMap } from "../../nodeVM/instanceManager";
-import { InstanceCheckRessource } from "../../nodeVM/instanceResources";
+import { InstanceCheckRessource } from "../../_resources/nodeVMResources";
 
 const tsFile = {
   name: "classKinds.ts",

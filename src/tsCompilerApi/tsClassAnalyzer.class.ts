@@ -1,3 +1,4 @@
+//Libarys
 import {
   ClassDeclaration,
   ConstructorDeclaration,
@@ -7,27 +8,29 @@ import {
   SetAccessorDeclaration,
   SyntaxKind,
 } from "ts-morph";
-import { TsFileResource } from "../fileService/fileResources";
-import {
-  ClassRessource,
-  ConstructorRessource,
-  MethodRessource,
-  ParameterRessource,
-} from "./tsCompilerAPIRessourcees";
 import path from "path";
+
+//eigene Imports
+import { TsFileResource } from "../_resources/fileResources";
+import {
+  ClassResource,
+  ConstructorResource,
+  MethodResource,
+  ParameterResource,
+} from "../_resources/tsCompilerAPIResources";
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
 export class TSClassAnalyzer {
   private tsFiles: TsFileResource[];
   private project: Project;
-  private classRessourceArr: ClassRessource[] = [];
+  private classResourceArr: ClassResource[] = [];
 
   constructor(tsFiles: TsFileResource[]) {
     this.tsFiles = tsFiles;
     this.project = new Project();
   }
 
-  public parse(): ClassRessource[] {
+  public parse(): ClassResource[] {
     this.project.addSourceFilesAtPaths(this.tsFiles.map((f) => f.path));
 
     for (let sourceFile of this.project.getSourceFiles()) {
@@ -43,22 +46,22 @@ export class TSClassAnalyzer {
             path.normalize(sourceFile.getFilePath())
           );
         }
-        const myClass: ClassRessource = {
+        const myClass: ClassResource = {
           className: cls.getName()!,
           tsFile: tsFile!,
           constructors: this.extractConstructors(cls),
           methods: this.extractMethodes(cls),
         };
-        this.classRessourceArr.push(myClass);
+        this.classResourceArr.push(myClass);
       }
     }
-    return this.classRessourceArr;
+    return this.classResourceArr;
   }
 
-  private extractConstructors(cls: ClassDeclaration): ConstructorRessource[] {
-    const constructorRessourceArr: ConstructorRessource[] = [];
+  private extractConstructors(cls: ClassDeclaration): ConstructorResource[] {
+    const constructorRessourceArr: ConstructorResource[] = [];
     for (let con of cls.getConstructors()) {
-      const myConstructor: ConstructorRessource = {
+      const myConstructor: ConstructorResource = {
         parameters: this.extractParameters(con),
       };
       constructorRessourceArr.push(myConstructor);
@@ -66,8 +69,8 @@ export class TSClassAnalyzer {
     return constructorRessourceArr;
   }
 
-  private extractMethodes(cls: ClassDeclaration): MethodRessource[] {
-    const methodRessourceArr: MethodRessource[] = [];
+  private extractMethodes(cls: ClassDeclaration): MethodResource[] {
+    const methodRessourceArr: MethodResource[] = [];
 
     let myMethod;
     for (let met of cls.getMethods()) {
@@ -89,7 +92,7 @@ export class TSClassAnalyzer {
   private methodRessourceBuilder(
     met: MethodDeclaration | GetAccessorDeclaration | SetAccessorDeclaration,
     methodKind: "default" | "get" | "set"
-  ): MethodRessource {
+  ): MethodResource {
     //Sichtbarkeit
     let visibility: "public" | "private" | "protected" = "public";
     if (met.hasModifier(SyntaxKind.PrivateKeyword)) {
@@ -125,8 +128,8 @@ export class TSClassAnalyzer {
       | GetAccessorDeclaration
       | SetAccessorDeclaration
       | ConstructorDeclaration
-  ): ParameterRessource[] {
-    const parameterRessourceArr: ParameterRessource[] = [];
+  ): ParameterResource[] {
+    const parameterRessourceArr: ParameterResource[] = [];
     for (let param of foo.getParameters()) {
       const myParameter = new TSParameterAnalyzer(param);
       parameterRessourceArr.push(myParameter.paramAnalyzer());

@@ -1,7 +1,7 @@
 import { Path } from "typescript";
-import { TSClassAnalyzer } from "../../tsCompilerApi/tsClassAnalyzer.class";
+import { TSClassAnalyzer } from "../../tsCompilerApi/TSClassAnalyzer.class";
 import path from "path";
-import { ClassRessource } from "../../tsCompilerApi/tsCompilerAPIRessourcees";
+import { ClassResource } from "../../_resources/tsCompilerAPIResources";
 
 const giveMeTSResource = (fileName: string) => ({
   name: `${fileName}.ts`,
@@ -14,7 +14,7 @@ const giveMeTSResource = (fileName: string) => ({
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () => {
   test("erkenne Eingabeparameter: string", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassString")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -29,7 +29,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
 
   test("erkenne Eingabeparameter: number", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassNumber")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -44,7 +44,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
 
   test("erkenne Eingabeparameter: boolean", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassBoolean")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -61,7 +61,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () => {
   test("erkenne Eingabeparameter: never", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassNever")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -76,7 +76,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
 
   test("erkenne Eingabeparameter: any", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassAny")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -91,7 +91,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
 
   test("erkenne Eingabeparameter: unknown", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassUnknown")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -106,7 +106,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
 
   test("erkenne Eingabeparameter: undefined", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassUndefined")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -121,7 +121,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
 
   test("erkenne Eingabeparameter: null", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassNull")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -137,7 +137,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ENUM", () => {
   test("erkenne Eingabeparameter: enum", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassEnum")]);
-    const res: ClassRessource[] = myAnalyser.parse();
+    const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
@@ -154,7 +154,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ENUM", () =
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () => {
   const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassArray")]);
-  const res: ClassRessource[] = myAnalyser.parse();
+  const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: array - string[]", () => {
     const expectedParam = {
@@ -343,7 +343,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () => {
   const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassUnion")]);
-  const res: ClassRessource[] = myAnalyser.parse();
+  const res: ClassResource[] = myAnalyser.parse();
 
   console.log(JSON.stringify(res, null, 2));
 

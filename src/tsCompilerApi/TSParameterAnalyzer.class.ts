@@ -1,5 +1,5 @@
 import { ParameterDeclaration, Type, Node } from "ts-morph";
-import { ParameterRessource, TypeRessource } from "./tsCompilerAPIRessourcees";
+import { ParameterResource, TypeResource } from "../_resources/tsCompilerAPIResources";
 
 export class TSParameterAnalyzer {
   constructor(private param: ParameterDeclaration) {}
@@ -15,7 +15,7 @@ export class TSParameterAnalyzer {
   //default param-analyser
   public paramAnalyzer(
     param: ParameterDeclaration = this.param
-  ): ParameterRessource {
+  ): ParameterResource {
     return {
       paramName: param.getName(),
       typeInfo: this.typeAnalyzer(param.getType()),
@@ -28,7 +28,7 @@ export class TSParameterAnalyzer {
   }
 
   //default type-analyser (eine Ebene Tiefer)
-  private typeAnalyzer(type: Type): TypeRessource {
+  private typeAnalyzer(type: Type): TypeResource {
     const typeAsString = type.getText();
     //console.log(typeAsString + ", " + type.isNullable().toString());
 
@@ -105,7 +105,7 @@ export class TSParameterAnalyzer {
         }
       });
 
-      const unionValues: TypeRessource[] = [];
+      const unionValues: TypeResource[] = [];
 
       otherTypes.forEach((unionType) => {
         unionValues.push(this.typeAnalyzer(unionType));
@@ -175,7 +175,7 @@ export class TSParameterAnalyzer {
     if (type.isObject()) {
       const props = type.getProperties();
 
-      const paramArr: ParameterRessource[] = [];
+      const paramArr: ParameterResource[] = [];
       for (let prop of props) {
         const propType = prop.getTypeAtLocation(this.param);
         paramArr.push({

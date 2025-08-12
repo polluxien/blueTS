@@ -5,7 +5,7 @@ import {
   InstanceParamType,
   PropInstanceType,
   RunMethodeInInstanceType,
-} from "./instanceResources";
+} from "../_resources/nodeVMResources";
 import {
   compileClassMethod,
   createClassVM,
