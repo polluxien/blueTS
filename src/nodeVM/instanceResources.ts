@@ -47,6 +47,7 @@ export type RunMethodeInInstanceType = {
 export type CompiledRunMethodInInstanceTyp = {
   instanceName: string;
   methodName: string;
+  methodKind: "default" | "get" | "set";
   newProps?: PropInstanceType[];
   isValid: boolean;
   returnValue?: string;

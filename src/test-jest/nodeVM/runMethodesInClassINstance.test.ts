@@ -1,11 +1,13 @@
 import path from "path";
-import { CreateClassInstanceRessource, RunMethodeInInstanceType } from "../../nodeVM/instanceResources";
+import {
+  CreateClassInstanceRessource,
+  RunMethodeInInstanceType,
+} from "../../nodeVM/instanceResources";
 import { Path } from "typescript";
 import {
   addInstanceToInstanceMap,
   clearInstanceMap,
   compileMethodInClassObject,
-  getInstanceFromInstanceMap,
 } from "../../nodeVM/instanceManager";
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
@@ -45,7 +47,12 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     const result = await compileMethodInClassObject(myRunMethodeInInstanceType);
 
     expect(result).toBeDefined();
-    expect(result).toEqual("40");
+    expect(result).toEqual({
+      instanceName: "testii",
+      isValid: true,
+      methodName: "age",
+      returnValue: "40",
+    });
   });
 
   test("teste get age(): number -> mit Parametern (Fehler)", async () => {
@@ -71,7 +78,13 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     };
     let result = await compileMethodInClassObject(myRunMethodeInInstanceType);
 
-    expect(result).not.toBeDefined();
+    expect(result).toBeDefined();
+    expect(result).toEqual({
+      instanceName: "testii",
+      isValid: true,
+      methodName: "age",
+      returnValue: "void",
+    });
 
     myRunMethodeInInstanceType = {
       instanceName: "testii",
@@ -85,7 +98,12 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     result = await compileMethodInClassObject(myRunMethodeInInstanceType);
 
     expect(result).toBeDefined();
-    expect(result).toEqual("70");
+    expect(result).toEqual({
+      instanceName: "testii",
+      isValid: true,
+      methodName: "age",
+      returnValue: "70",
+    });
   });
 
   test("teste set age(number): void -> mit negativem Wert (Fehler)", async () => {

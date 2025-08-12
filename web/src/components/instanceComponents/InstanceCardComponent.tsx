@@ -8,17 +8,19 @@ import { Col, Row } from "react-bootstrap";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 // import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
+type InstanceCardComponentProps = {
+  ins: InstanceRessource;
+  vscode: VSCodeAPIWrapper;
+  methodResults: Record<string, string | Error> | undefined;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+};
+
 function InstanceCardComponent({
   ins,
   vscode,
   methodResults,
   instancesAsParamsMap,
-}: {
-  ins: InstanceRessource;
-  vscode: VSCodeAPIWrapper;
-  methodResults: Record<string, string | Error> | undefined;
-  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-}) {
+}: InstanceCardComponentProps) {
   const [instanceDialogOpen, setInstanceDialogOpen] = useState<boolean>(false);
 
   const openDialog = () => setInstanceDialogOpen(true);

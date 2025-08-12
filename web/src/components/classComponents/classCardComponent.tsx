@@ -12,19 +12,21 @@ import { Col, Row } from "react-bootstrap";
 //Bootstrap Icons
 import { PlayFill, Plus } from "react-bootstrap-icons"; // Bootstrap Icons
 
+type ClassCardComponentProps = {
+  cls: ClassRessource;
+  addToInstanceWaitingList: (instance: InstanceRessource) => void;
+  vscode: VSCodeAPIWrapper;
+  instanceNameSet: React.RefObject<Set<string>>;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+};
+
 function ClassCardComponent({
   cls,
   addToInstanceWaitingList,
   vscode,
   instanceNameSet,
   instancesAsParamsMap,
-}: {
-  cls: ClassRessource;
-  addToInstanceWaitingList: (instance: InstanceRessource) => void;
-  vscode: VSCodeAPIWrapper;
-  instanceNameSet: React.RefObject<Set<string>>;
-  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-}) {
+}: ClassCardComponentProps) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
   // const [hoveredAdd, setHoveredAdd] = useState(false);
   // const [hoveredRun, setHoveredRun] = useState(false);

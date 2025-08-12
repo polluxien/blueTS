@@ -19,6 +19,15 @@ import ParameterFormControllComponent, {
   type ValidationTypeResource,
 } from "../paramComponents/ParameterFormControllComponenet.tsx";
 
+type CreateClassInstanceDialogComponentProps = {
+  cls: ClassRessource;
+  close: () => void;
+  addToInstanceWaitingList: (instance: InstanceRessource) => void;
+  vscode: VSCodeAPIWrapper;
+  instanceNameSet: React.RefObject<Set<string>>;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+};
+
 function CreateClassInstanceDialogComponent({
   cls,
   close,
@@ -26,14 +35,7 @@ function CreateClassInstanceDialogComponent({
   vscode,
   instanceNameSet,
   instancesAsParamsMap,
-}: {
-  cls: ClassRessource;
-  close: () => void;
-  addToInstanceWaitingList: (instance: InstanceRessource) => void;
-  vscode: VSCodeAPIWrapper;
-  instanceNameSet: React.RefObject<Set<string>>;
-  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-}) {
+}: CreateClassInstanceDialogComponentProps) {
   const [constructorIndex, setConstructorIndex] = useState(0);
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});

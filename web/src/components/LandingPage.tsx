@@ -11,6 +11,7 @@ import Switch from "react-switch";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
 import ObjectViewComponent from "./ObjectViewComponet.tsx";
 import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
+import FunctionViewComponent from "./FunctionViewComponent.tsx";
 
 function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * View Mode -> react switch select
@@ -25,7 +26,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
   const instanceWaitingMap = useRef(new Map<string, InstanceRessource>([]));
   //hier werden entsprechende methoden rückgaben vom Backend abgelegt
-  // ? Map<instanceName, <MethodeName, result>[]>
+  // ? Map<instanceName, <MethodeName.METHODETYPE, result>[]>
   const [methodResults, setMethodResults] = useState<
     Map<string, Record<string, Error | string>>
   >(new Map([]));
@@ -150,7 +151,11 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
       const methodResultRecord = newMap.get(data.instanceName) ?? {};
 
-      methodResultRecord[data.methodName] = data.isValid
+      console.log(
+        `Setting method return at ${data.methodName}.${data.methodKind}`
+      );
+      //da es dopplungen geben kann vom method (get, set, default) namen speichere ich die results unter MethodName.MethodeType ab
+      methodResultRecord[`${data.methodName}.${data.methodKind}`] = data.isValid
         ? data.returnValue!
         : data.error!;
 
@@ -252,6 +257,9 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
         </div>
       ) : (
         <div>
+          <FunctionViewComponent
+            refreshFunctions={() => {}}
+          ></FunctionViewComponent>
           <p>Soon to be implementet</p>
         </div>
       )}

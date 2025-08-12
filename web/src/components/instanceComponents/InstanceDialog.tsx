@@ -5,21 +5,24 @@ import type { InstanceRessource } from "../../ressources/classRessources.js";
 import { Accordion, Alert, Table } from "react-bootstrap";
 import InstanceMethodComponent from "./InstanceMethodComponent.js";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
-//import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
 
+type InstanceDialogComponentProps = {
+  ins: InstanceRessource;
+
+  close: () => void;
+
+  methodResults: Record<string, Error | string> | undefined;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+
+  vscode: VSCodeAPIWrapper;
+};
 function InstanceDialogComponent({
   ins,
   close,
   vscode,
   methodResults,
   instancesAsParamsMap,
-}: {
-  ins: InstanceRessource;
-  close: () => void;
-  vscode: VSCodeAPIWrapper;
-  methodResults: Record<string, Error | string> | undefined;
-  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-}) {
+}: InstanceDialogComponentProps) {
   return (
     <Modal show={true} onHide={close} size="lg" centered>
       <Modal.Header closeButton>
@@ -79,7 +82,9 @@ function InstanceDialogComponent({
                     vscode={vscode}
                     methodResults={
                       methodResults
-                        ? methodResults?.[method.methodName]
+                        ? methodResults?.[
+                            `${method.methodName}.${method.specs.methodKind}`
+                          ]
                         : undefined
                     }
                     instancesAsParamsMap={instancesAsParamsMap}

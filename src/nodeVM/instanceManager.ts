@@ -111,7 +111,11 @@ export async function compileMethodInClassObject(
 ): Promise<CompiledRunMethodInInstanceTyp> {
   const compiledResult: CompiledRunMethodInInstanceTyp = {
     instanceName: runMethodeInInstanceType.instanceName,
-    methodName: runMethodeInInstanceType.methodName,
+    methodName: runMethodeInInstanceType.methodName as
+      | "default"
+      | "get"
+      | "set",
+    methodKind: runMethodeInInstanceType.specs.methodKind,
     isValid: false,
   };
 
@@ -176,6 +180,6 @@ export async function compileMethodInClassObject(
     console.error("Fehler bei compileMethodInClassObject:", err);
     compiledResult.error = err instanceof Error ? err : new Error(String(err));
   }
-
+  console.log("Compile Result Backend: ", compiledResult);
   return compiledResult;
 }

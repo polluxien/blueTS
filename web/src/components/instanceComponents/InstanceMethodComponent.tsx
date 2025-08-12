@@ -15,19 +15,21 @@ import ParameterFormControllComponent, {
 import { Badge } from "react-bootstrap";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
+type InstanceMethodComponentProps = {
+  met: MethodRessource;
+  insName: string;
+  vscode: VSCodeAPIWrapper;
+  methodResults: Error | string | undefined;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+};
+
 function InstanceMethodComponent({
   met,
   insName,
   vscode,
   methodResults,
   instancesAsParamsMap,
-}: {
-  met: MethodRessource;
-  insName: string;
-  vscode: VSCodeAPIWrapper;
-  methodResults: Error | string | undefined;
-  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-}) {
+}: InstanceMethodComponentProps) {
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
 

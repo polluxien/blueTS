@@ -27,6 +27,23 @@ export type ParamFormTypeResource = {
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 };
 
+type ParameterFormControllComponentProps = {
+  index: number;
+  param: ParameterRessource;
+  value: string;
+  validated: boolean;
+  error?: Error;
+
+  onChange: (paramName: string, value: string) => void;
+  onValidationChange?: (
+    paramName: string,
+    validationRes: ValidationTypeResource
+  ) => void;
+
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+  hideLabel?: boolean;
+};
+
 export type ValidationTypeResource = {
   isValid: boolean;
   errors: Error[];
@@ -43,20 +60,7 @@ function ParameterFormControllComponent({
   onValidationChange,
   instancesAsParamsMap,
   hideLabel,
-}: {
-  index: number;
-  param: ParameterRessource;
-  value: string;
-  validated: boolean;
-  error?: Error;
-  onChange: (paramName: string, value: string) => void;
-  onValidationChange?: (
-    paramName: string,
-    validationRes: ValidationTypeResource
-  ) => void;
-  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-  hideLabel?: boolean;
-}) {
+}: ParameterFormControllComponentProps) {
   const typeRes: TypeRessource = param.typeInfo;
 
   //in components müssden diese überprüften types in richtige syntax gebracht werden
