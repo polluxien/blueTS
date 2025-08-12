@@ -1,4 +1,4 @@
-import type { InstanceRessource } from "../../ressources/classRessources";
+import type { InstanceResource } from "../../ressources/classRessources";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 // import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 type InstanceCardComponentProps = {
-  ins: InstanceRessource;
+  ins: InstanceResource;
   vscode: VSCodeAPIWrapper;
   methodResults: Record<string, string | Error> | undefined;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;

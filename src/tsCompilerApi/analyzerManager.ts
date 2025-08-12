@@ -1,12 +1,16 @@
 import ts, { Path } from "typescript";
 import * as vscode from "vscode";
 import { getAllTsFilesFromDirectory } from "../fileService/fileService";
-import { ClassResource } from "../_resources/tsCompilerAPIResources";
+import {
+  ClassResource,
+  FunctionResource,
+} from "../_resources/tsCompilerAPIResources";
 import { TSClassAnalyzer } from "./TSClassAnalyzer.class";
+import { TSFunctionAnalyzer } from "./TSFunctionAnalyzer.class";
 
 let myWorkingPath = "";
 
-export async function getAllClasses(path?: Path): Promise<ClassResource[]> {
+export async function getAlltsClasses(path?: Path): Promise<ClassResource[]> {
   //benutzte aktuellen Workspace oder ausgewählten Workspace
   let currentWorkspace = !path
     ? vscode.workspace.workspaceFolders?.[0].uri.fsPath
@@ -20,7 +24,9 @@ export async function getAllClasses(path?: Path): Promise<ClassResource[]> {
   return tsClasses.parse();
 }
 
-export async function getAllFunctions(path?: Path): Promise<ClassResource[]> {
+export async function getAlltsFunctions(
+  path?: Path
+): Promise<FunctionResource[]> {
   //benutzte aktuellen Workspace oder ausgewählten Workspace
   let currentWorkspace = !path
     ? vscode.workspace.workspaceFolders?.[0].uri.fsPath
@@ -30,6 +36,6 @@ export async function getAllFunctions(path?: Path): Promise<ClassResource[]> {
   const scrFiles = await getAllTsFilesFromDirectory(currentWorkspace!);
 
   //Erstelle ClasenRessources
-  const tsClasses = new TSClassAnalyzer(scrFiles);
-  return tsClasses.parse();
+  const tsfunctions = new TSFunctionAnalyzer(scrFiles);
+  return tsfunctions.parse();
 }

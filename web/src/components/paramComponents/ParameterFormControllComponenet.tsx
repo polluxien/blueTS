@@ -2,8 +2,8 @@ import Form from "react-bootstrap/Form";
 import { FormControl, FormGroup } from "react-bootstrap";
 
 import type {
-  ParameterRessource,
-  TypeRessource,
+  ParameterResource,
+  TypeResource,
 } from "../../ressources/classRessources";
 
 import ArrayParameterComponent from "./ArrayParamComponent.tsx";
@@ -15,7 +15,7 @@ import ObjectParamComponent from "./ObjectParamComponent.tsx";
 
 export type ParamFormTypeResource = {
   index: number;
-  param: ParameterRessource;
+  param: ParameterResource;
   value: string;
   validated: boolean;
   error?: Error;
@@ -47,7 +47,7 @@ function ParameterFormControllComponent({
   instancesAsParamsMap,
   hideLabel,
 }: ParamFormTypeResource) {
-  const typeRes: TypeRessource = param.typeInfo;
+  const typeRes: TypeResource = param.typeInfo;
 
   //in components müssden diese überprüften types in richtige syntax gebracht werden
 
@@ -133,7 +133,7 @@ function ParameterFormControllComponent({
     instancesAsParamsMap,
   };
 
-  const getFormLabel = (param: ParameterRessource) => {
+  const getFormLabel = (param: ParameterResource) => {
     return (
       <Form.Label>
         <strong>{param.paramName}</strong>

@@ -5,7 +5,7 @@ export type TsFileResource = {
   path: Path;
 };
 
-export type TypeRessource = {
+export type TypeResource = {
   typeAsString: string;
   paramType:
     | "basic"
@@ -24,27 +24,27 @@ export type TypeRessource = {
     | "void"
     | "unknown";
   enumValues?: string[];
-  tupleElements?: TypeRessource[];
-  unionValues?: TypeRessource[];
-  arrayType?: TypeRessource;
+  tupleElements?: TypeResource[];
+  unionValues?: TypeResource[];
+  arrayType?: TypeResource;
   literalValue?: string | number | boolean | undefined;
-  objectParameters?: ParameterRessource[];
+  objectParameters?: ParameterResource[];
 };
 
-export type ParameterRessource = {
+export type ParameterResource = {
   paramName: string;
-  typeInfo: TypeRessource;
+  typeInfo: TypeResource;
   optional: boolean;
 };
 
-export type ConstructorRessource = {
-  parameters: ParameterRessource[];
+export type ConstructorResource = {
+  parameters: ParameterResource[];
   returnType?: string;
 };
 
-export type MethodRessource = {
+export type MethodResource = {
   methodName: string;
-  parameters: ParameterRessource[];
+  parameters: ParameterResource[];
   specs: {
     methodKind: "default" | "get" | "set";
     visibility: "public" | "private" | "protected";
@@ -55,29 +55,29 @@ export type MethodRessource = {
   returnType: string;
 };
 
-export type ClassRessource = {
+export type ClassResource = {
   className: string;
   tsFile: TsFileResource;
-  constructors: ConstructorRessource[];
-  methods: MethodRessource[];
+  constructors: ConstructorResource[];
+  methods: MethodResource[];
 };
 
 //Zum versenden zur Extension
-export type CreateClassInstanceRessource = {
+export type CreateClassInstanceResource = {
   instanceName: string;
   className: string;
   tsFile: TsFileResource;
   constructorParameter: unknown[];
 };
 
-export type InstanceRessource = {
+export type InstanceResource = {
   instanceName: string;
   className: string;
   props?: PropInstanceType[];
-  methods: MethodRessource[];
+  methods: MethodResource[];
 };
 
-export type InstanceCheckRessource = {
+export type InstanceCheckResource = {
   instanceName: string;
   isValid: boolean;
   props: PropInstanceType[];
@@ -114,4 +114,23 @@ export type PropInstanceType = {
     visibility: "public" | "private" | "protected";
     isStatic: boolean;
   };
+};
+
+export type FunctionResource = {
+  functionName: string;
+  tsFile: TsFileResource;
+  parameters: ParameterResource[];
+  specs: {
+    isDefault: boolean;
+    isExported: boolean;
+    isAsync: boolean;
+    //Keine ahnung wie ich das ermitteln soll
+    //isDeclare: boolean;
+    functionType:
+      | "function-declaration"
+      | "arrow-function"
+      | "function-expression"
+      | "generator-function";
+  };
+  returnType: string;
 };

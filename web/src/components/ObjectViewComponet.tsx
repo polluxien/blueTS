@@ -4,21 +4,21 @@ import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 import type {
-  ClassRessource,
-  InstanceRessource,
+  ClassResource,
+  InstanceResource,
 } from "../ressources/classRessources";
 
 type ObjectViewComponentProps = {
-  classes: ClassRessource[];
-  instances: InstanceRessource[];
+  classes: ClassResource[];
+  instances: InstanceResource[];
   loading: boolean;
   methodResults: Map<string, Record<string, Error | string>>;
 
   instanceNameSet: React.RefObject<Set<string>>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 
-  refreshClasses: () => void;
-  addToInstanceWaitingList: (instance: InstanceRessource) => void;
+  reLoad: (type: "classes" | "functions") => void;
+  addToInstanceWaitingList: (instance: InstanceResource) => void;
 
   vscode: VSCodeAPIWrapper;
 };
@@ -30,10 +30,12 @@ function ObjectViewComponent({
   methodResults,
   instanceNameSet,
   instancesAsParamsMap,
-  refreshClasses,
+  reLoad,
   addToInstanceWaitingList,
   vscode,
 }: ObjectViewComponentProps) {
+  const reLoadClasses = () => reLoad("classes");
+
   return (
     <>
       <div className="mb-2">
@@ -42,7 +44,7 @@ function ObjectViewComponent({
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h1 className="m-0">TS-Classes</h1>
             <Button
-              onClick={refreshClasses}
+              onClick={reLoadClasses}
               style={{
                 background: "none",
                 border: "none",

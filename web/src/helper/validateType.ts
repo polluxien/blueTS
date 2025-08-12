@@ -1,6 +1,6 @@
 import type {
-  ParameterRessource,
-  TypeRessource,
+  ParameterResource,
+  TypeResource,
 } from "../ressources/classRessources";
 
 export type ValidationResult = {
@@ -14,10 +14,10 @@ type InstanceParamType = {
 };
 
 export function validateFormControllType(
-  paramRes: ParameterRessource,
+  paramRes: ParameterResource,
   formValue: string
 ): ValidationResult {
-  const typeRes: TypeRessource = paramRes.typeInfo;
+  const typeRes: TypeResource = paramRes.typeInfo;
 
   //wenn field garnicht benutzt aber required return sofort
   if (!formValue && !paramRes.optional) {

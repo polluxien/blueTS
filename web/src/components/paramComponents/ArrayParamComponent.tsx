@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 
 import { useEffect, useState } from "react";
-import type { ParameterRessource } from "../../ressources/classRessources";
+import type { ParameterResource } from "../../ressources/classRessources";
 import { Button, Col, FormGroup, Row } from "react-bootstrap";
 import ParameterFormControllComponent, {
   type ParamFormTypeResource,
@@ -31,7 +31,7 @@ function ArrayParameterComponent({
     setInternValues((prev) => ({ ...prev, [paramName]: value }));
   }
 
-  const elementParam: ParameterRessource = {
+  const elementParam: ParameterResource = {
     ...paramFormType.param,
     typeInfo: paramFormType.param.typeInfo.arrayType!,
   };

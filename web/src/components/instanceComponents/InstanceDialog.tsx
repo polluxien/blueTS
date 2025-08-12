@@ -1,13 +1,13 @@
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-import type { InstanceRessource } from "../../ressources/classRessources.js";
+import type { InstanceResource } from "../../ressources/classRessources.js";
 import { Accordion, Alert, Table } from "react-bootstrap";
 import InstanceMethodComponent from "./InstanceMethodComponent.js";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
 
 type InstanceDialogComponentProps = {
-  ins: InstanceRessource;
+  ins: InstanceResource;
 
   close: () => void;
 

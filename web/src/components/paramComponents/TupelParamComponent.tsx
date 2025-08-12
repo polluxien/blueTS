@@ -1,5 +1,5 @@
 import { Col, Form, Row } from "react-bootstrap";
-import type { TypeRessource } from "../../ressources/classRessources";
+import type { TypeResource } from "../../ressources/classRessources";
 import type {
   ParamFormTypeResource,
   ValidationTypeResource,
@@ -13,7 +13,7 @@ function TupelParamComponent({
 }: {
   paramFormType: ParamFormTypeResource;
 }) {
-  const typeRes: TypeRessource = paramFormType.param.typeInfo;
+  const typeRes: TypeResource = paramFormType.param.typeInfo;
   const [internValues, setInternValues] = useState<Record<string, string>>({});
   const [paramValidations, setParamValidations] = useState<
     Record<string, ValidationTypeResource>

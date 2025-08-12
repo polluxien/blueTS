@@ -1,15 +1,18 @@
+//Libarys
 import {
   ArrowFunction,
   FunctionDeclaration,
   FunctionExpression,
   Project,
 } from "ts-morph";
+import path from "path";
+
+//eigene Imports
 import { TsFileResource } from "../_resources/fileResources";
 import {
   FunctionResource,
   ParameterResource,
 } from "../_resources/tsCompilerAPIResources";
-import path from "path";
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
 export class TSFunctionAnalyzer {
@@ -24,7 +27,7 @@ export class TSFunctionAnalyzer {
     this.project = new Project();
   }
 
-  public parse() {
+  public parse(): FunctionResource[] {
     this.project.addSourceFilesAtPaths(this.tsFiles.map((f) => f.path));
 
     for (let sourceFile of this.project.getSourceFiles()) {
@@ -127,5 +130,3 @@ export class TSFunctionAnalyzer {
     return { isDefault, isExported, isAsync, functionType };
   }
 }
-
-export function lali() {}

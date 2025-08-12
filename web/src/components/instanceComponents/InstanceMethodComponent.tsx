@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import { useState } from "react";
 
 import type {
-  MethodRessource,
+  MethodResource,
   RunMethodeInInstanceType,
 } from "../../ressources/classRessources.ts";
 
@@ -16,7 +16,7 @@ import { Badge } from "react-bootstrap";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 type InstanceMethodComponentProps = {
-  met: MethodRessource;
+  met: MethodResource;
   insName: string;
   vscode: VSCodeAPIWrapper;
   methodResults: Error | string | undefined;

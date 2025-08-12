@@ -1,6 +1,6 @@
 import type {
-  ClassRessource,
-  InstanceRessource,
+  ClassResource,
+  InstanceResource,
 } from "../../ressources/classRessources.ts";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -13,8 +13,8 @@ import { Col, Row } from "react-bootstrap";
 import { PlayFill, Plus } from "react-bootstrap-icons"; // Bootstrap Icons
 
 type ClassCardComponentProps = {
-  cls: ClassRessource;
-  addToInstanceWaitingList: (instance: InstanceRessource) => void;
+  cls: ClassResource;
+  addToInstanceWaitingList: (instance: InstanceResource) => void;
   vscode: VSCodeAPIWrapper;
   instanceNameSet: React.RefObject<Set<string>>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;

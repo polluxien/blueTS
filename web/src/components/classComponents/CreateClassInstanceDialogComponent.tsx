@@ -7,10 +7,10 @@ import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
 
 import type {
-  ClassRessource,
-  ConstructorRessource,
-  CreateClassInstanceRessource,
-  InstanceRessource,
+  ClassResource,
+  ConstructorResource,
+  CreateClassInstanceResource,
+  InstanceResource,
 } from "../../ressources/classRessources.ts";
 
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
@@ -20,9 +20,9 @@ import ParameterFormControllComponent, {
 } from "../paramComponents/ParameterFormControllComponenet.tsx";
 
 type CreateClassInstanceDialogComponentProps = {
-  cls: ClassRessource;
+  cls: ClassResource;
   close: () => void;
-  addToInstanceWaitingList: (instance: InstanceRessource) => void;
+  addToInstanceWaitingList: (instance: InstanceResource) => void;
   vscode: VSCodeAPIWrapper;
   instanceNameSet: React.RefObject<Set<string>>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
@@ -48,7 +48,7 @@ function CreateClassInstanceDialogComponent({
     Record<string, ValidationTypeResource>
   >({});
 
-  const constructors: ConstructorRessource[] = cls.constructors || [];
+  const constructors: ConstructorResource[] = cls.constructors || [];
   const currentConstructor = constructors[constructorIndex];
   const classVariables = currentConstructor?.parameters || [];
 
@@ -115,7 +115,7 @@ function CreateClassInstanceDialogComponent({
 
     if (Object.keys(newErrors).length === 0) {
       //internes erstellen einer Instanz-Component
-      const instRes: InstanceRessource = {
+      const instRes: InstanceResource = {
         instanceName,
         className: cls.className,
         methods: cls.methods || [],
@@ -128,7 +128,7 @@ function CreateClassInstanceDialogComponent({
         return newParsedValues[param.paramName];
       });
 
-      const creClsInRes: CreateClassInstanceRessource = {
+      const creClsInRes: CreateClassInstanceResource = {
         instanceName,
         className: cls.className,
         constructorParameter,

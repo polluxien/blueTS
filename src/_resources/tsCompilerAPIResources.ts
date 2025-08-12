@@ -75,7 +75,8 @@ export type FunctionResource = {
     isDefault: boolean;
     isExported: boolean;
     isAsync: boolean;
-    isDeclare: boolean;
+    //Keine ahnung wie ich das ermitteln soll
+    //isDeclare: boolean;
     functionType:
       | "function-declaration"
       | "arrow-function"

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import type {
-  ClassRessource,
+  ClassResource,
   CompiledRunMethodInInstanceTyp,
-  InstanceCheckRessource,
-  InstanceRessource,
+  FunctionResource,
+  InstanceCheckResource,
+  InstanceResource,
 } from "../ressources/classRessources.ts";
 import Switch from "react-switch";
 
-//Icons
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
 import ObjectViewComponent from "./ObjectViewComponet.tsx";
 import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
@@ -19,12 +19,16 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   const [viewMode, setViewMode] = useState<"object" | "function">("object");
 
   // * Enstprechende Card Componets
-  const [classes, setClasses] = useState<ClassRessource[]>([]);
-  const [instances, setInstance] = useState<InstanceRessource[]>([]);
+  // ? Object-View
+  const [classes, setClasses] = useState<ClassResource[]>([]);
+  const [instances, setInstance] = useState<InstanceResource[]>([]);
+
+  // ? Function-View
+  const [functions, setFunctions] = useState<FunctionResource[]>([]);
 
   // * Instace stuff
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
-  const instanceWaitingMap = useRef(new Map<string, InstanceRessource>([]));
+  const instanceWaitingMap = useRef(new Map<string, InstanceResource>([]));
   //hier werden entsprechende methoden rückgaben vom Backend abgelegt
   // ? Map<instanceName, <MethodeName.METHODETYPE, result>[]>
   const [methodResults, setMethodResults] = useState<
@@ -45,13 +49,16 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     vscode.postMessage({
       command: "getAllTsClasses",
     });
+    vscode.postMessage({
+      command: "getAllTsFunctions",
+    });
   }, []);
 
   //
-  const refreshClasses = () => {
+  const reLoad = (type: "classes" | "functions") => {
     setLoading(true);
     vscode.postMessage({
-      command: "getAllTsClasses",
+      command: type === "classes" ? "getAllTsClasses" : "getAllTsFunctions",
     });
   };
 
@@ -64,6 +71,9 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
       switch (message.command) {
         case "postAllClasses":
           handelPostAllClasses(message.data);
+          break;
+        case "postAllFunctions":
+          handelPostAllFunctions(message.data);
           break;
         case "postInstanceCheck":
           handelPostInstanceCheck(message.data);
@@ -88,24 +98,38 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   // ? Message handler ----------------------------
 
-  function handelPostAllClasses(data: ClassRessource[]) {
+  function handelPostAllClasses(data: ClassResource[]) {
     console.log(
       `Massage from command has data: ${JSON.stringify(data, null, 2)}`
     );
 
     setClasses(data);
     console.log("Received postAllClasses, length:", data);
-    data.map((cls: ClassRessource) =>
+    data.map((cls: ClassResource) =>
       console.log("Class names:", cls.className)
     );
 
     setLoading(false);
   }
 
-  function handelPostInstanceCheck(data: InstanceCheckRessource) {
+  function handelPostAllFunctions(data: FunctionResource[]) {
+    console.log(
+      `Massage from command has data: ${JSON.stringify(data, null, 2)}`
+    );
+
+    setFunctions(data);
+    console.log("Received postAllClasses, length:", data);
+    data.map((foo: FunctionResource) =>
+      console.log("Class names:", foo.functionName)
+    );
+
+    setLoading(false);
+  }
+
+  function handelPostInstanceCheck(data: InstanceCheckResource) {
     console.log(`Massage from command has InstanceCheckRessource: ${data}`);
 
-    const myInstance: InstanceRessource | undefined =
+    const myInstance: InstanceResource | undefined =
       instanceWaitingMap.current.get(data.instanceName);
     if (!myInstance) {
       console.log(`Instance with name: ${data.instanceName} was not found`);
@@ -191,7 +215,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   // ? ----------------------------
 
-  const addToInstanceWaitingList = (instance: InstanceRessource) => {
+  const addToInstanceWaitingList = (instance: InstanceResource) => {
     instanceWaitingMap.current.set(instance.instanceName, instance);
   };
 
@@ -250,7 +274,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             methodResults={methodResults}
             instanceNameSet={instanceNameSet}
             instancesAsParamsMap={instancesAsParamsMap}
-            refreshClasses={refreshClasses}
+            reLoad={reLoad}
             addToInstanceWaitingList={addToInstanceWaitingList}
             vscode={vscode}
           ></ObjectViewComponent>
@@ -258,9 +282,11 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
       ) : (
         <div>
           <FunctionViewComponent
-            refreshFunctions={() => {}}
+            functions={functions}
+            loading={loading}
+            reLoad={reLoad}
+            //  vscode={vscode}
           ></FunctionViewComponent>
-          <p>Soon to be implementet</p>
         </div>
       )}
     </>

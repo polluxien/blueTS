@@ -1,4 +1,4 @@
-import type { TypeRessource } from "../../ressources/classRessources";
+import type { TypeResource } from "../../ressources/classRessources";
 import {
   Form,
   FormGroup,
@@ -17,10 +17,10 @@ function UnionParamComponent({
 }: {
   paramFormType: ParamFormTypeResource;
 }) {
-  const typeRes: TypeRessource = paramFormType.param.typeInfo;
+  const typeRes: TypeResource = paramFormType.param.typeInfo;
   const [internValues, setInternValues] = useState<Record<string, string>>({});
   const [selectedUnionType, setSelectedUnionType] =
-    useState<TypeRessource | null>(null);
+    useState<TypeResource | null>(null);
 
   const [paramValidations, setParamValidations] = useState<
     Record<string, ValidationTypeResource>

@@ -6,8 +6,14 @@ import {
   window,
   ViewColumn,
 } from "vscode";
-import { addInstanceToInstanceMap, compileMethodInClassObject } from "./nodeVM/instanceManager";
-import { getAllClasses } from "./tsCompilerApi/analyzerManager";
+import {
+  addInstanceToInstanceMap,
+  compileMethodInClassObject,
+} from "./nodeVM/instanceManager";
+import {
+  getAlltsClasses,
+  getAlltsFunctions,
+} from "./tsCompilerApi/analyzerManager";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -144,19 +150,32 @@ export class Panel {
     webview.onDidReceiveMessage(
       async (message: any) => {
         switch (message.command) {
-          case "getAllTsClasses":
-            const messageData = await getAllClasses();
+          case "getAllTsClasses": {
+            const messageData = await getAlltsClasses();
             console.log(
               "Sending postAllClasses message with",
               messageData.length,
               "classes"
             );
-
             this.postMessage({
               command: "postAllClasses",
               data: messageData,
             });
             break;
+          }
+          case "getAllTsFunctions": {
+            const messageData = await getAlltsFunctions();
+            console.log(
+              "Sending postAllFunctions message with",
+              messageData.length,
+              "functions"
+            );
+            this.postMessage({
+              command: "postAllFunctions",
+              data: messageData,
+            });
+            break;
+          }
           case "createInstance": {
             const messageData = await addInstanceToInstanceMap(message.data);
             this.postMessage({
