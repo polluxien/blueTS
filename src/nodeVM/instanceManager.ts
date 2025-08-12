@@ -111,11 +111,11 @@ export async function compileMethodInClassObject(
 ): Promise<CompiledRunMethodInInstanceTyp> {
   const compiledResult: CompiledRunMethodInInstanceTyp = {
     instanceName: runMethodeInInstanceType.instanceName,
-    methodName: runMethodeInInstanceType.methodName as
+    methodName: runMethodeInInstanceType.methodName,
+    methodKind: runMethodeInInstanceType.specs.methodKind as
       | "default"
       | "get"
       | "set",
-    methodKind: runMethodeInInstanceType.specs.methodKind,
     isValid: false,
   };
 

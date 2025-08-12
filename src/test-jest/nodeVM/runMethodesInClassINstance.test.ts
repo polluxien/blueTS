@@ -1,5 +1,6 @@
 import path from "path";
 import {
+  CompiledRunMethodInInstanceTyp,
   CreateClassInstanceRessource,
   RunMethodeInInstanceType,
 } from "../../nodeVM/instanceResources";
@@ -51,19 +52,25 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       isValid: true,
       methodName: "age",
+      methodKind: "get",
       returnValue: "40",
-    });
+    } as CompiledRunMethodInInstanceTyp);
   });
 
   test("teste get age(): number -> mit Parametern (Fehler)", async () => {
-    await expect(
-      compileMethodInClassObject({
-        instanceName: "testii",
-        methodName: "age",
-        params: [123],
-        specs: { methodKind: "get", isAsync: false },
-      })
-    ).rejects.toThrow("Getter 'age' benötigt keine Parameter");
+    const result = await compileMethodInClassObject({
+      instanceName: "testii",
+      methodName: "age",
+      params: [123],
+      specs: { methodKind: "get", isAsync: false },
+    });
+
+    expect(result).toBeDefined();
+    expect(result.isValid).toBeFalsy();
+
+    expect(result.error).toBeDefined();
+    expect(result.error).toBeInstanceOf(Error);
+    expect(result.error!.message).toBe("Getter 'age' benötigt keine Parameter");
   });
 
   test("teste set age(number): void", async () => {
@@ -83,7 +90,20 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       isValid: true,
       methodName: "age",
+      methodKind: "set",
       returnValue: "void",
+      newProps: [
+        {
+          name: "name",
+          type: "string",
+          value: "Albert",
+        },
+        {
+          name: "_age",
+          type: "number",
+          value: "70",
+        },
+      ],
     });
 
     myRunMethodeInInstanceType = {
@@ -102,30 +122,40 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       instanceName: "testii",
       isValid: true,
       methodName: "age",
+      methodKind: "get",
       returnValue: "70",
     });
   });
 
   test("teste set age(number): void -> mit negativem Wert (Fehler)", async () => {
-    await expect(
-      compileMethodInClassObject({
-        instanceName: "testii",
-        methodName: "age",
-        params: [-5],
-        specs: { methodKind: "set", isAsync: false },
-      })
-    ).rejects.toThrow("Alter darf nicht negativ sein.");
+    const result = await compileMethodInClassObject({
+      instanceName: "testii",
+      methodName: "age",
+      params: [-5],
+      specs: { methodKind: "set", isAsync: false },
+    });
+
+    expect(result).toBeDefined();
+    expect(result.isValid).toBeFalsy();
+
+    expect(result.error).toBeDefined();
+    expect(result.error).toBeInstanceOf(Error);
+    expect(result.error!.message).toBe("Error: Alter darf nicht negativ sein.");
   });
 
   test("teste set age(number): void -> ohne Parameter (Fehler)", async () => {
-    await expect(
-      compileMethodInClassObject({
-        instanceName: "testii",
-        methodName: "age",
-        params: [],
-        specs: { methodKind: "set", isAsync: false },
-      })
-    ).rejects.toThrow("Setter 'age' benötigt einen Parameter");
+    const result = await compileMethodInClassObject({
+      instanceName: "testii",
+      methodName: "age",
+      params: [],
+      specs: { methodKind: "set", isAsync: false },
+    });
+    expect(result).toBeDefined();
+    expect(result.isValid).toBeFalsy();
+
+    expect(result.error).toBeDefined();
+    expect(result.error).toBeInstanceOf(Error);
+    expect(result.error!.message).toBe("Setter 'age' benötigt einen Parameter");
   });
 
   test("teste greet(string): string ", async () => {
@@ -141,7 +171,13 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     const result = await compileMethodInClassObject(myRunMethodeInInstanceType);
 
     expect(result).toBeDefined();
-    expect(result).toEqual("Hallo Basti, mein Name ist Albert.");
+    expect(result).toEqual({
+      instanceName: "testii",
+      isValid: true,
+      methodName: "greet",
+      methodKind: "default",
+      returnValue: "Hallo Basti, mein Name ist Albert.",
+    });
   });
 
   test("teste greet(string): string -> mit leerem String", async () => {
@@ -152,7 +188,14 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       specs: { methodKind: "default", isAsync: false },
     });
 
-    expect(result).toEqual("Hallo , mein Name ist Albert.");
+    expect(result).toBeDefined();
+    expect(result).toEqual({
+      instanceName: "testii",
+      isValid: true,
+      methodName: "greet",
+      methodKind: "default",
+      returnValue: "Hallo , mein Name ist Albert.",
+    });
   });
 
   test("teste async fetchData(): Promise<string>", async () => {
@@ -168,17 +211,29 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     const result = await compileMethodInClassObject(myRunMethodeInInstanceType);
 
     expect(result).toBeDefined();
-    expect(result).toEqual("Daten erfolgreich geladen!");
+    expect(result).toEqual({
+      instanceName: "testii",
+      isValid: true,
+      methodName: "fetchData",
+      methodKind: "default",
+      returnValue: "Daten erfolgreich geladen!",
+    });
   });
 
   test("teste Zugriff auf nicht existierende Methode", async () => {
-    await expect(
-      compileMethodInClassObject({
-        instanceName: "testii",
-        methodName: "nonExistent",
-        params: [],
-        specs: { methodKind: "default", isAsync: false },
-      })
-    ).rejects.toThrow("Methode 'nonExistent' konnte nicht gefunden werden");
+    const result = await compileMethodInClassObject({
+      instanceName: "testii",
+      methodName: "nonExistent",
+      params: [],
+      specs: { methodKind: "default", isAsync: false },
+    });
+    expect(result).toBeDefined();
+    expect(result.isValid).toBeFalsy();
+
+    expect(result.error).toBeDefined();
+    expect(result.error).toBeInstanceOf(Error);
+    expect(result.error!.message).toBe(
+      "Methode 'nonExistent' konnte nicht gefunden werden"
+    );
   });
 });
