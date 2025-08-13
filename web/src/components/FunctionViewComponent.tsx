@@ -1,6 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import type { FunctionResource } from "../ressources/classRessources";
+import LoadingComponent from "./LoadingComponent";
 //import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 
 type FunctionViewComponentProps = {
@@ -52,9 +53,7 @@ function FunctionViewComponent({
             </Row>
           </Container>
         ) : (
-          <div className="loading-container">
-            <div>Loading...</div>
-          </div>
+          <LoadingComponent compPart="functions"></LoadingComponent>
         )}
       </div>
     </div>

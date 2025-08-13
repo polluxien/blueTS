@@ -1,12 +1,13 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
-import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 import type {
   ClassResource,
   InstanceResource,
 } from "../ressources/classRessources";
+import LoadingComponent from "./LoadingComponent.tsx";
+import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 
 type ObjectViewComponentProps = {
   classes: ClassResource[];
@@ -42,7 +43,7 @@ function ObjectViewComponent({
     <>
       <div className="mb-2">
         {/* Hier werden die gefunden TS-Klassen gezeigt*/}
-        <div>
+        <div className="w-100">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h1 className="m-0">TS-Classes</h1>
             <Button
@@ -85,9 +86,7 @@ function ObjectViewComponent({
                 </Row>
               </Container>
             ) : (
-              <div className="loading-container">
-                <div>Loading...</div>
-              </div>
+              <LoadingComponent compPart="classes"></LoadingComponent>
             )}
           </div>
         </div>
