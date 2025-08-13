@@ -10,7 +10,9 @@ import {
   compileClassMethod,
   createClassVM,
   extractClassInstanceProps,
-} from "./instanceService";
+} from "./nodeVMService";
+
+// ! eventuell hier ehr Map<string, {VM-Objectobject, MorphInstanceAnalyse[] ,PropInstanceType[]}>
 
 //Map<instanceName, [instanceObject, CurrentProps]>
 const instanceMap = new Map<string, [object, PropInstanceType[]]>([]);

@@ -2,12 +2,12 @@ import { Path } from "typescript";
 
 export type TsFileResource = {
   name: string;
-  path: Path;
+  path: string;
 };
 
 export type DirectoryResource = {
   name: string;
-  path: Path;
+  path: string;
   tsFiles: TsFileResource[];
   directorys: DirectoryResource[];
 };
