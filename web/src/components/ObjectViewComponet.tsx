@@ -1,12 +1,13 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
-import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 import type {
   ClassResource,
   InstanceResource,
 } from "../ressources/classRessources";
+import type { TsCodeCheckResource } from "./LandingPage.tsx";
+import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 
 type ObjectViewComponentProps = {
   classes: ClassResource[];
@@ -16,6 +17,7 @@ type ObjectViewComponentProps = {
 
   instanceNameSet: React.RefObject<Set<string>>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+  testedTsFileMap: React.RefObject<Map<string, TsCodeCheckResource>>;
 
   reLoad: (type: "classes" | "functions") => void;
   dropInstance: (insName: string) => void;
@@ -31,12 +33,16 @@ function ObjectViewComponent({
   methodResults,
   instanceNameSet,
   instancesAsParamsMap,
+  testedTsFileMap,
   reLoad,
   addToInstanceWaitingList,
   vscode,
   dropInstance,
 }: ObjectViewComponentProps) {
   const reLoadClasses = () => reLoad("classes");
+  const getTsCodeValidation = (tsFilePath: string) => {
+    return testedTsFileMap.current.get(tsFilePath);
+  };
 
   return (
     <>
@@ -78,6 +84,7 @@ function ObjectViewComponent({
                         addToInstanceWaitingList={addToInstanceWaitingList}
                         instanceNameSet={instanceNameSet}
                         instancesAsParamsMap={instancesAsParamsMap}
+                        tsCodeValidation={getTsCodeValidation(cls.tsFile.path)}
                         vscode={vscode}
                       />
                     </Col>

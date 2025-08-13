@@ -13,6 +13,11 @@ import ObjectViewComponent from "./ObjectViewComponet.tsx";
 import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
 import FunctionViewComponent from "./FunctionViewComponent.tsx";
 
+export type TsCodeCheckResource = {
+  isValid: boolean;
+  errors: string[];
+};
+
 function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * View Mode -> react switch select
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -41,6 +46,9 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // ? Map<className, instances[]>
   const instancesAsParamsMap = useRef<Map<string, string[]>>(new Map([]));
 
+  // * File stuff
+  const testedTsFileMap = useRef(new Map<string, TsCodeCheckResource>([]));
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,20 +74,24 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
+      const data = message.data;
       console.log(`Recived message with command: ${message.command}`);
 
       switch (message.command) {
         case "postAllClasses":
-          handelPostAllClasses(message.data);
+          handelPostAllClasses(data);
           break;
         case "postAllFunctions":
-          handelPostAllFunctions(message.data);
+          handelPostAllFunctions(data);
           break;
         case "postInstanceCheck":
-          handelPostInstanceCheck(message.data);
+          handelPostInstanceCheck(data);
           break;
         case "postMethodCheck":
-          handelpostMethodCheck(message.data);
+          handelPostMethodCheck(data);
+          break;
+        case "postTsCodeCheckMap":
+          handelPostTsCodeCheckMap(data);
           break;
         case "error":
           setError(message.error);
@@ -163,7 +175,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     }
   }
 
-  function handelpostMethodCheck(data: CompiledRunMethodInInstanceTyp) {
+  function handelPostMethodCheck(data: CompiledRunMethodInInstanceTyp) {
     console.log(
       `Massage from command has CompiledRunMethodInInstanceTyp: `,
       JSON.stringify(data, null, 2)
@@ -211,6 +223,10 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
         return updatedInstances;
       });
     }
+  }
+
+  function handelPostTsCodeCheckMap(data: Map<string, TsCodeCheckResource>) {
+    testedTsFileMap.current = data;
   }
 
   // ? ----------------------------
@@ -294,6 +310,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             reLoad={reLoad}
             addToInstanceWaitingList={addToInstanceWaitingList}
             dropInstance={dropInstance}
+            testedTsFileMap={testedTsFileMap}
             vscode={vscode}
           ></ObjectViewComponent>
         </div>
@@ -303,6 +320,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             functions={functions}
             loading={loading}
             reLoad={reLoad}
+            // testedTsFileMap={testedTsFileMap}
             //  vscode={vscode}
           ></FunctionViewComponent>
         </div>

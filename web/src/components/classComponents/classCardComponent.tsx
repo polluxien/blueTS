@@ -4,16 +4,19 @@ import type {
 } from "../../ressources/classRessources.ts";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 import CreateClassInstanceDialogComponent from "./CreateClassInstanceDialogComponent.tsx";
 import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
 import { PlayFill, Plus } from "react-bootstrap-icons"; // Bootstrap Icons
+import type { TsCodeCheckResource } from "../LandingPage.tsx";
 
 type ClassCardComponentProps = {
   cls: ClassResource;
+  tsCodeValidation: TsCodeCheckResource | undefined;
+
   addToInstanceWaitingList: (instance: InstanceResource) => void;
   vscode: VSCodeAPIWrapper;
   instanceNameSet: React.RefObject<Set<string>>;
@@ -22,17 +25,31 @@ type ClassCardComponentProps = {
 
 function ClassCardComponent({
   cls,
+  tsCodeValidation,
   addToInstanceWaitingList,
   vscode,
   instanceNameSet,
   instancesAsParamsMap,
 }: ClassCardComponentProps) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState(tsCodeValidation?.isValid ?? false);
+
+  useEffect(() => {
+    setIsValid(tsCodeValidation?.isValid ?? false);
+  }, [tsCodeValidation]);
+
   // const [hoveredAdd, setHoveredAdd] = useState(false);
   // const [hoveredRun, setHoveredRun] = useState(false);
 
   const openDialog = () => setClassDialogOpen(true);
   const closeDialog = () => setClassDialogOpen(false);
+
+  const sendTsPathForTsCodeChecking = () => {
+    const message = { message: "testTsFiles", data: [cls.tsFile.path] };
+    console.log("check pressed sending message: ", message);
+
+    vscode.postMessage(message);
+  };
 
   return (
     <>
@@ -48,6 +65,11 @@ function ClassCardComponent({
         }}
       >
         <Card.Body>
+          <p>
+            {tsCodeValidation
+              ? JSON.stringify(tsCodeValidation)
+              : `No check for file: ${cls.tsFile.path}`}
+          </p>
           <Card.Title>{cls.className}</Card.Title>
           <Row className="gap-2">
             <Col>
@@ -64,7 +86,7 @@ function ClassCardComponent({
                 //style={baseStyle(hoveredRun)}
                 // onMouseEnter={() => setHoveredRun(true)}
                 //  onMouseLeave={() => setHoveredRun(false)}
-                onClick={openDialog}
+                onClick={sendTsPathForTsCodeChecking}
               >
                 <>
                   <PlayFill className="me-2" />
@@ -82,6 +104,7 @@ function ClassCardComponent({
                   borderRadius: "12px",
                   //border: "none",
                 }}
+                disabled={!isValid}
                 //style={baseStyle(hoveredAdd)}
                 // onMouseEnter={() => setHoveredAdd(true)}
                 //  onMouseLeave={() => setHoveredAdd(false)}
