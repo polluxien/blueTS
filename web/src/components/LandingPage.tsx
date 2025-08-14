@@ -13,6 +13,16 @@ import ObjectViewComponent from "./ObjectViewComponet.tsx";
 import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
 import FunctionViewComponent from "./FunctionViewComponent.tsx";
 
+export type TsCodeCheckResource = {
+  isValid: boolean;
+  errors: string[];
+};
+
+export type DirectoryResource = {
+  currentWorkspace: string;
+  fileCount: number;
+};
+
 function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * View Mode -> react switch select
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -25,6 +35,10 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   // ? Function-View
   const [functions, setFunctions] = useState<FunctionResource[]>([]);
+
+  // ? Directory-Componet
+  const [currentDirectoryRes, setCurrentDirectoryRes] =
+    useState<DirectoryResource>();
 
   // * Instace stuff
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
@@ -41,16 +55,31 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // ? Map<className, instances[]>
   const instancesAsParamsMap = useRef<Map<string, string[]>>(new Map([]));
 
+  // * File stuff
+  const [testedTsFileMap, setTestedTsFileMap] = useState(
+    new Map<string, TsCodeCheckResource>([])
+  );
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  //wenn Webview ready hole alle KLassen
+  //wenn Webview ready hole alle Klassen, Functions, CodeChecks und aktuelle Directory informationen
   useEffect(() => {
+    //checke ob alle TS-Files
+    vscode.postMessage({
+      command: "getAllTsFileChecks",
+    });
+    //holle alle KLassen
     vscode.postMessage({
       command: "getAllTsClasses",
     });
+    //holle alle Funktionen
     vscode.postMessage({
       command: "getAllTsFunctions",
+    });
+    //holle aktuelle directory
+    vscode.postMessage({
+      command: "getCurrentDirectory",
     });
   }, []);
 
@@ -60,27 +89,39 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     vscode.postMessage({
       command: type === "classes" ? "getAllTsClasses" : "getAllTsFunctions",
     });
+    vscode.postMessage({
+      command: "getAllTsFileChecks",
+    });
   };
 
   //api - alle erhaltenen messages vom backend
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
+      const data = message.data;
       console.log(`Recived message with command: ${message.command}`);
 
       switch (message.command) {
         case "postAllClasses":
-          handelPostAllClasses(message.data);
+          handelPostAllClasses(data);
           break;
         case "postAllFunctions":
-          handelPostAllFunctions(message.data);
+          handelPostAllFunctions(data);
           break;
         case "postInstanceCheck":
-          handelPostInstanceCheck(message.data);
+          handelPostInstanceCheck(data);
           break;
         case "postMethodCheck":
-          handelpostMethodCheck(message.data);
+          handelPostMethodCheck(data);
           break;
+        case "postTsCodeCheckMap":
+          handelPostTsCodeCheckMap(data);
+          break;
+        case "postCurrentDirectoryRes":
+          handelCurrentDirectoryRes(data);
+          //hier implemnetieung directory
+          break;
+
         case "error":
           setError(message.error);
           setLoading(false);
@@ -163,7 +204,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     }
   }
 
-  function handelpostMethodCheck(data: CompiledRunMethodInInstanceTyp) {
+  function handelPostMethodCheck(data: CompiledRunMethodInInstanceTyp) {
     console.log(
       `Massage from command has CompiledRunMethodInInstanceTyp: `,
       JSON.stringify(data, null, 2)
@@ -213,6 +254,15 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     }
   }
 
+  function handelPostTsCodeCheckMap(data: [string, TsCodeCheckResource][]) {
+    const myTsCodeCheckMap = new Map(data);
+    setTestedTsFileMap(myTsCodeCheckMap);
+  }
+
+  function handelCurrentDirectoryRes(data: DirectoryResource) {
+    setCurrentDirectoryRes(data);
+  }
+
   // ? ----------------------------
 
   const addToInstanceWaitingList = (instance: InstanceResource) => {
@@ -245,6 +295,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
       {/* Directory settings */}
       <div className="mb-3">
         <DirectorySettingsComponent
+          currentDirectoryRes={currentDirectoryRes}
           vscode={vscode}
         ></DirectorySettingsComponent>
       </div>
@@ -294,6 +345,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             reLoad={reLoad}
             addToInstanceWaitingList={addToInstanceWaitingList}
             dropInstance={dropInstance}
+            testedTsFileMap={testedTsFileMap}
             vscode={vscode}
           ></ObjectViewComponent>
         </div>
@@ -303,6 +355,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
             functions={functions}
             loading={loading}
             reLoad={reLoad}
+            // testedTsFileMap={testedTsFileMap}
             //  vscode={vscode}
           ></FunctionViewComponent>
         </div>

@@ -9,11 +9,21 @@ import {
 import {
   addInstanceToInstanceMap,
   compileMethodInClassObject,
+  deleteInstanceInInstanceMap,
 } from "./nodeVM/instanceManager";
 import {
   getAlltsClasses,
   getAlltsFunctions,
 } from "./tsCompilerApi/analyzerManager";
+import {
+  addAllFilesToTestedFilesMap,
+  addFilesToTestedFilesMap,
+} from "./nodeVM/checkTsCodeManager";
+import {
+  getWorkspace,
+  getWorkspaceRessourceForMessage,
+  setWorkspace,
+} from "./workspaceService";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -150,6 +160,7 @@ export class Panel {
     webview.onDidReceiveMessage(
       async (message: any) => {
         switch (message.command) {
+          // ? ts Compiler Messages
           case "getAllTsClasses": {
             const messageData = await getAlltsClasses();
             console.log(
@@ -176,6 +187,7 @@ export class Panel {
             });
             break;
           }
+          // ? Instance Messages
           case "createInstance": {
             const messageData = await addInstanceToInstanceMap(message.data);
             this.postMessage({
@@ -184,12 +196,52 @@ export class Panel {
             });
             break;
           }
+          case "deleteInstance": {
+            await deleteInstanceInInstanceMap(message.data);
+            break;
+          }
           case "runMethodInInstance": {
             const messageData = await compileMethodInClassObject(message.data);
             this.postMessage({
               command: "postMethodCheck",
               data: messageData,
             });
+            break;
+          }
+          // ? File Messages
+          case "testTsFile": {
+            const messageData = await addFilesToTestedFilesMap(message.data);
+            this.postMessage({
+              command: "postTsCodeCheckMap",
+              data: messageData,
+            });
+            break;
+          }
+          case "getAllTsFileChecks": {
+            const messageData = await addAllFilesToTestedFilesMap();
+            this.postMessage({
+              command: "postTsCodeCheckMap",
+              data: messageData,
+            });
+            break;
+          }
+          // ? File Messages
+          case "getCurrentDirectory": {
+            const messageData = await getWorkspaceRessourceForMessage();
+            this.postMessage({
+              command: "postCurrentDirectoryRes",
+              data: messageData,
+            });
+            //console.log("getCurrentDirectory: ", JSON.stringify(messageData));
+            break;
+          }
+          case "setCurrentDirectory": {
+            const messageData = setWorkspace(message.data);
+            this.postMessage({
+              command: "postCurrentDirectory",
+              data: messageData,
+            });
+
             break;
           }
         }

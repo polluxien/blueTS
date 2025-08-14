@@ -5,9 +5,17 @@ import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { Gear } from "react-bootstrap-icons";
+import type { DirectoryResource } from "./LandingPage";
 
-function DirectorySettingsComponent({ vscode }: { vscode: VSCodeAPIWrapper }) {
-  const [tsFilesCount, setTsFilesCount] = useState<number>(0);
+type DirectorySettingsComponentType = {
+  currentDirectoryRes: DirectoryResource | undefined;
+
+  vscode: VSCodeAPIWrapper;
+};
+function DirectorySettingsComponent({
+  currentDirectoryRes,
+  vscode,
+}: DirectorySettingsComponentType) {
   const [directory, setDirectory] = useState<string>();
   const [useDefaultDirectory, setUseDefaultDirectory] = useState<boolean>(true);
 
@@ -17,42 +25,28 @@ function DirectorySettingsComponent({ vscode }: { vscode: VSCodeAPIWrapper }) {
     useState<boolean>(false);
 
   useEffect(() => {
+    console.log("sending Directory message: ", {
+      useDefault: useDefaultDirectory,
+      directory: directory,
+    });
     vscode.postMessage({
       command: "setCurrentDirectoryPath",
       data: { useDefault: useDefaultDirectory, directory: directory },
     });
   }, [directory]);
 
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const message = event.data;
-      console.log(`Recived message with command: ${message.command}`);
-
-      switch (message.command) {
-        case "postcurPath": {
-          console.log(JSON.stringify(message.data, null, 2));
-
-          setDirectory(message.data.path);
-          setTsFilesCount(message.data.tsFilesCount);
-          break;
-        }
-      }
-    };
-    window.addEventListener("message", handleMessage);
-
-    return () => {
-      console.log("Removing message event listener");
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
-
   const handleDirectoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+    console.log("Path 111: ", files);
+
     if (files && files.length > 0) {
       // Extrahiere den Directory-Pfad aus dem ersten File
       const firstFile = files[0];
       const path = firstFile.webkitRelativePath;
-      const directoryPath = path.split("/")[0]; // Nimm nur den ersten Teil (Directory-Name)
+      //?  Nimm nur den ersten Teil (Directory-Name)
+      const directoryPath = path.split("/")[0];
+      console.log("Path 222: ", directoryPath);
+
       setDirectory(directoryPath);
     }
   };
@@ -80,9 +74,11 @@ function DirectorySettingsComponent({ vscode }: { vscode: VSCodeAPIWrapper }) {
               <h6 className="mb-0 fw-semibold text-dark">
                 Directory Configuration
               </h6>
-              <span className="badge bg-secondary ms-2">
-                {tsFilesCount} files
-              </span>
+              {currentDirectoryRes && (
+                <span className="badge bg-secondary ms-2">
+                  {currentDirectoryRes.fileCount} files
+                </span>
+              )}
             </div>
             <Button
               onClick={toggelShowDirectorySettings}
@@ -109,6 +105,12 @@ function DirectorySettingsComponent({ vscode }: { vscode: VSCodeAPIWrapper }) {
                           setUseDefaultDirectory(e.target.checked)
                         }
                       />
+                      {currentDirectoryRes && (
+                        <Form.Text className="text-muted">
+                          current directory:{" "}
+                          {currentDirectoryRes.currentWorkspace}
+                        </Form.Text>
+                      )}
                     </Form.Group>{" "}
                   </Col>
                   <Col>
@@ -121,6 +123,7 @@ function DirectorySettingsComponent({ vscode }: { vscode: VSCodeAPIWrapper }) {
                         {...{ webkitdirectory: "", mozdirectory: "" }}
                         onChange={handleDirectoryChange}
                         disabled={useDefaultDirectory}
+                        //value={currentDirectoryPath ?? "Kein path"}
                       />
                       {directory && !useDefaultDirectory && (
                         <Form.Text className="text-muted">

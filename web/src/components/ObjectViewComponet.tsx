@@ -8,10 +8,13 @@ import type {
 } from "../ressources/classRessources";
 import LoadingComponent from "./LoadingComponent.tsx";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
+import type { TsCodeCheckResource } from "./LandingPage.tsx";
 
 type ObjectViewComponentProps = {
   classes: ClassResource[];
   instances: InstanceResource[];
+  testedTsFileMap: Map<string, TsCodeCheckResource>;
+
   loading: boolean;
   methodResults: Map<string, Record<string, Error | string>>;
 
@@ -32,12 +35,16 @@ function ObjectViewComponent({
   methodResults,
   instanceNameSet,
   instancesAsParamsMap,
+  testedTsFileMap,
   reLoad,
   addToInstanceWaitingList,
   vscode,
   dropInstance,
 }: ObjectViewComponentProps) {
   const reLoadClasses = () => reLoad("classes");
+  const getTsCodeValidation = (tsFilePath: string) => {
+    return testedTsFileMap.get(tsFilePath);
+  };
 
   return (
     <>
@@ -79,6 +86,7 @@ function ObjectViewComponent({
                         addToInstanceWaitingList={addToInstanceWaitingList}
                         instanceNameSet={instanceNameSet}
                         instancesAsParamsMap={instancesAsParamsMap}
+                        tsCodeValidation={getTsCodeValidation(cls.tsFile.path)}
                         vscode={vscode}
                       />
                     </Col>

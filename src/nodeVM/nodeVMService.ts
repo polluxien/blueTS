@@ -4,8 +4,88 @@ import {
   CreateClassInstanceRessource,
   RunMethodeInInstanceType,
 } from "../_resources/nodeVMResources";
+import { TsFileResource } from "../_resources/fileResources";
+import { TsCodeCheckResource } from "./checkTsCodeManager";
 
-const vm = require("vm");
+const vm = require("node:vm");
+
+//context für node-vm
+// ? Module können nicht doppelt vorkommen im gleichen context
+function createNewContext() {
+  return {
+    //fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
+    //...globalThis,
+
+    //debugging
+    console,
+
+    //hole alle module
+    exports: {},
+    module: { exports: {} },
+    require: require,
+
+    //für async functions
+    Promise: Promise,
+
+    //für  Timer functions
+    setTimeout: setTimeout,
+    clearTimeout: clearTimeout,
+    setInterval: setInterval,
+    clearInterval: clearInterval,
+
+    //global object
+    global: {},
+  };
+}
+
+export async function checkTsCode(
+  filePath: string
+): Promise<TsCodeCheckResource> {
+  const errors: string[] = [];
+
+  try {
+    const tsCode = fs.readFileSync(filePath, {
+      encoding: "utf8",
+    });
+
+    /**
+     * es ist mir leider nicht möglich spezifische teile (KLassen, Funktionen, Module) zu testen
+     * ganze Datei -> immer als einheit kompiliert
+     */
+    // Syntaxcheck
+    const transpiled = ts.transpileModule(tsCode, {
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2020,
+      },
+      reportDiagnostics: true,
+    });
+
+    if (transpiled.diagnostics && transpiled.diagnostics.length > 0) {
+      for (let err of transpiled.diagnostics) {
+        /**
+         * https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API/38206fde051e37bcf0cb11a29068a1e9f9cc8a14
+         * füge bei Funden den errors hinzu
+         */
+        errors.push(ts.flattenDiagnosticMessageText(err.messageText, "\n"));
+      }
+    }
+
+    // Laufzeit-Check
+    try {
+      const script = new vm.Script(transpiled.outputText, {
+        filePath: filePath,
+      });
+      script.runInNewContext(createNewContext());
+    } catch (runtimeErr: any) {
+      errors.push(runtimeErr.message || String(runtimeErr));
+    }
+
+    return { isValid: errors.length === 0, errors: errors };
+  } catch (err: any) {
+    return { isValid: false, errors: err.message || String(err) };
+  }
+}
 
 export async function createClassVM(
   createClsInstanceRes: CreateClassInstanceRessource
@@ -21,31 +101,7 @@ export async function createClassVM(
     });
     const jsCode = transpiled.outputText;
 
-    const context: any = {
-      //fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
-      //...globalThis,
-
-      //debugging
-      console,
-
-      //hole alle module
-      exports: {},
-      module: { exports: {} },
-      require: require,
-
-      //für async functions
-      Promise: Promise,
-
-      //für  Timer functions
-      setTimeout: setTimeout,
-      clearTimeout: clearTimeout,
-      setInterval: setInterval,
-      clearInterval: clearInterval,
-
-      //global object
-      global: {},
-    };
-
+    const context = createNewContext();
     vm.createContext(context);
     vm.runInContext(jsCode, context, {
       timeout: 5000, // nach 5 Sekunden Timeout für code

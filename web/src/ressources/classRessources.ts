@@ -1,8 +1,6 @@
-import type { Path } from "react-router-dom";
-
 export type TsFileResource = {
   name: string;
-  path: Path;
+  path: string;
 };
 
 export type TypeResource = {
