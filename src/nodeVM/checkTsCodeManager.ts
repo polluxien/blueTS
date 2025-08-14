@@ -23,11 +23,13 @@ export async function addAllFilesToTestedFilesMap() {
     const result = await checkTsCode(filePath);
     myTestedFileMap.set(filePath, result);
   }
-
+  
+  /*
   console.log("myTested FileMap:");
   for (const [key, value] of myTestedFileMap.entries()) {
     console.log(key, JSON.stringify(value));
   }
+  */
 
   return Array.from(myTestedFileMap.entries());
 }

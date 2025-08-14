@@ -19,6 +19,11 @@ import {
   addAllFilesToTestedFilesMap,
   addFilesToTestedFilesMap,
 } from "./nodeVM/checkTsCodeManager";
+import {
+  getWorkspace,
+  getWorkspaceRessourceForMessage,
+  setWorkspace,
+} from "./workspaceService";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -157,8 +162,6 @@ export class Panel {
         switch (message.command) {
           // ? ts Compiler Messages
           case "getAllTsClasses": {
-            console.log("ich bekomme message bahhhh");
-
             const messageData = await getAlltsClasses();
             console.log(
               "Sending postAllClasses message with",
@@ -207,7 +210,6 @@ export class Panel {
           }
           // ? File Messages
           case "testTsFile": {
-            console.log("ich bekomme message yayyyy");
             const messageData = await addFilesToTestedFilesMap(message.data);
             this.postMessage({
               command: "postTsCodeCheckMap",
@@ -216,12 +218,30 @@ export class Panel {
             break;
           }
           case "getAllTsFileChecks": {
-            console.log("ich bekomme message yayyyy");
             const messageData = await addAllFilesToTestedFilesMap();
             this.postMessage({
               command: "postTsCodeCheckMap",
               data: messageData,
             });
+            break;
+          }
+          // ? File Messages
+          case "getCurrentDirectory": {
+            const messageData = await getWorkspaceRessourceForMessage();
+            this.postMessage({
+              command: "postCurrentDirectoryRes",
+              data: messageData,
+            });
+            //console.log("getCurrentDirectory: ", JSON.stringify(messageData));
+            break;
+          }
+          case "setCurrentDirectory": {
+            const messageData = setWorkspace(message.data);
+            this.postMessage({
+              command: "postCurrentDirectory",
+              data: messageData,
+            });
+
             break;
           }
         }

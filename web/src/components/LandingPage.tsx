@@ -18,6 +18,11 @@ export type TsCodeCheckResource = {
   errors: string[];
 };
 
+export type DirectoryResource = {
+  currentWorkspace: string;
+  fileCount: number;
+};
+
 function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * View Mode -> react switch select
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -30,6 +35,10 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   // ? Function-View
   const [functions, setFunctions] = useState<FunctionResource[]>([]);
+
+  // ? Directory-Componet
+  const [currentDirectoryRes, setCurrentDirectoryRes] =
+    useState<DirectoryResource>();
 
   // * Instace stuff
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
@@ -56,19 +65,21 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   //wenn Webview ready hole alle Klassen, Functions, CodeChecks und aktuelle Directory informationen
   useEffect(() => {
+    //checke ob alle TS-Files
+    vscode.postMessage({
+      command: "getAllTsFileChecks",
+    });
+    //holle alle KLassen
     vscode.postMessage({
       command: "getAllTsClasses",
     });
+    //holle alle Funktionen
     vscode.postMessage({
       command: "getAllTsFunctions",
     });
-
+    //holle aktuelle directory
     vscode.postMessage({
-      command: "get",
-    });
-
-    vscode.postMessage({
-      command: "getAllTsFileChecks",
+      command: "getCurrentDirectory",
     });
   }, []);
 
@@ -106,7 +117,8 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
         case "postTsCodeCheckMap":
           handelPostTsCodeCheckMap(data);
           break;
-        case "setCurrentDirectoryPath":
+        case "postCurrentDirectoryRes":
+          handelCurrentDirectoryRes(data);
           //hier implemnetieung directory
           break;
 
@@ -243,7 +255,12 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   }
 
   function handelPostTsCodeCheckMap(data: [string, TsCodeCheckResource][]) {
-    setTestedTsFileMap(new Map(data));
+    const myTsCodeCheckMap = new Map(data);
+    setTestedTsFileMap(myTsCodeCheckMap);
+  }
+
+  function handelCurrentDirectoryRes(data: DirectoryResource) {
+    setCurrentDirectoryRes(data);
   }
 
   // ? ----------------------------
@@ -278,6 +295,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
       {/* Directory settings */}
       <div className="mb-3">
         <DirectorySettingsComponent
+          currentDirectoryRes={currentDirectoryRes}
           vscode={vscode}
         ></DirectorySettingsComponent>
       </div>
