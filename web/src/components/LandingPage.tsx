@@ -47,18 +47,28 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   const instancesAsParamsMap = useRef<Map<string, string[]>>(new Map([]));
 
   // * File stuff
-  const testedTsFileMap = useRef(new Map<string, TsCodeCheckResource>([]));
+  const [testedTsFileMap, setTestedTsFileMap] = useState(
+    new Map<string, TsCodeCheckResource>([])
+  );
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  //wenn Webview ready hole alle KLassen
+  //wenn Webview ready hole alle Klassen, Functions, CodeChecks und aktuelle Directory informationen
   useEffect(() => {
     vscode.postMessage({
       command: "getAllTsClasses",
     });
     vscode.postMessage({
       command: "getAllTsFunctions",
+    });
+
+    vscode.postMessage({
+      command: "get",
+    });
+
+    vscode.postMessage({
+      command: "getAllTsFileChecks",
     });
   }, []);
 
@@ -67,6 +77,9 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     setLoading(true);
     vscode.postMessage({
       command: type === "classes" ? "getAllTsClasses" : "getAllTsFunctions",
+    });
+    vscode.postMessage({
+      command: "getAllTsFileChecks",
     });
   };
 
@@ -93,6 +106,10 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
         case "postTsCodeCheckMap":
           handelPostTsCodeCheckMap(data);
           break;
+        case "setCurrentDirectoryPath":
+          //hier implemnetieung directory
+          break;
+
         case "error":
           setError(message.error);
           setLoading(false);
@@ -225,8 +242,8 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     }
   }
 
-  function handelPostTsCodeCheckMap(data: Map<string, TsCodeCheckResource>) {
-    testedTsFileMap.current = data;
+  function handelPostTsCodeCheckMap(data: [string, TsCodeCheckResource][]) {
+    setTestedTsFileMap(new Map(data));
   }
 
   // ? ----------------------------

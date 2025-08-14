@@ -12,12 +12,13 @@ import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 type ObjectViewComponentProps = {
   classes: ClassResource[];
   instances: InstanceResource[];
+  testedTsFileMap: Map<string, TsCodeCheckResource>;
+
   loading: boolean;
   methodResults: Map<string, Record<string, Error | string>>;
 
   instanceNameSet: React.RefObject<Set<string>>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-  testedTsFileMap: React.RefObject<Map<string, TsCodeCheckResource>>;
 
   reLoad: (type: "classes" | "functions") => void;
   dropInstance: (insName: string) => void;
@@ -41,7 +42,7 @@ function ObjectViewComponent({
 }: ObjectViewComponentProps) {
   const reLoadClasses = () => reLoad("classes");
   const getTsCodeValidation = (tsFilePath: string) => {
-    return testedTsFileMap.current.get(tsFilePath);
+    return testedTsFileMap.get(tsFilePath);
   };
 
   return (
