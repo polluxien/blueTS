@@ -1,9 +1,27 @@
 import fs from "fs";
 import path from "path";
 import { Path } from "typescript";
-import { DirectoryResource, TsFileResource } from "../_resources/fileResources";
+import { TsFileResource } from "../_resources/fileResources";
+import { getWorkspace } from "../workspaceService";
 
-export async function getCurrentFileDirectory(
+let tsFilesArr: TsFileResource[];
+
+export async function getTSFiles() {
+  //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
+  if (!tsFilesArr) {
+    tsFilesArr = await getAllTsFilesFromDirectory(getWorkspace());
+  }
+  return tsFilesArr;
+}
+
+export async function refreshTSFiles(newWorkspace: string) {
+  //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
+  tsFilesArr = await getAllTsFilesFromDirectory(getWorkspace());
+}
+
+// ? erst einmal nicht benötigt
+/*
+async function getCurrentFileDirectory(
   dirPath: string
 ): Promise<DirectoryResource> {
   let curDirectory: DirectoryResource = {
@@ -37,7 +55,9 @@ export async function getCurrentFileDirectory(
   return curDirectory;
 }
 
-export async function getAllTsFilesFromDirectory(
+*/
+
+async function getAllTsFilesFromDirectory(
   dirPath: string
 ): Promise<TsFileResource[]> {
   let tsFileArr: TsFileResource[] = [];

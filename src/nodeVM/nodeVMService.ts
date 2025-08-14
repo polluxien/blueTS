@@ -10,30 +10,33 @@ import { TsCodeCheckResource } from "./checkTsCodeManager";
 const vm = require("node:vm");
 
 //context für node-vm
-const context = {
-  //fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
-  //...globalThis,
+// ? Module können nicht doppelt vorkommen im gleichen context
+function createNewContext() {
+  return {
+    //fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
+    //...globalThis,
 
-  //debugging
-  console,
+    //debugging
+    console,
 
-  //hole alle module
-  exports: {},
-  module: { exports: {} },
-  require: require,
+    //hole alle module
+    exports: {},
+    module: { exports: {} },
+    require: require,
 
-  //für async functions
-  Promise: Promise,
+    //für async functions
+    Promise: Promise,
 
-  //für  Timer functions
-  setTimeout: setTimeout,
-  clearTimeout: clearTimeout,
-  setInterval: setInterval,
-  clearInterval: clearInterval,
+    //für  Timer functions
+    setTimeout: setTimeout,
+    clearTimeout: clearTimeout,
+    setInterval: setInterval,
+    clearInterval: clearInterval,
 
-  //global object
-  global: {},
-};
+    //global object
+    global: {},
+  };
+}
 
 export async function checkTsCode(
   filePath: string
@@ -73,7 +76,7 @@ export async function checkTsCode(
       const script = new vm.Script(transpiled.outputText, {
         filePath: filePath,
       });
-      script.runInNewContext(context);
+      script.runInNewContext(createNewContext());
     } catch (runtimeErr: any) {
       errors.push(runtimeErr.message || String(runtimeErr));
     }
@@ -98,6 +101,7 @@ export async function createClassVM(
     });
     const jsCode = transpiled.outputText;
 
+    const context = createNewContext();
     vm.createContext(context);
     vm.runInContext(jsCode, context, {
       timeout: 5000, // nach 5 Sekunden Timeout für code

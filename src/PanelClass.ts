@@ -15,7 +15,10 @@ import {
   getAlltsClasses,
   getAlltsFunctions,
 } from "./tsCompilerApi/analyzerManager";
-import { addFilesToTestedFilesMap } from "./nodeVM/checkTsCodeManager";
+import {
+  addAllFilesToTestedFilesMap,
+  addFilesToTestedFilesMap,
+} from "./nodeVM/checkTsCodeManager";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -154,6 +157,8 @@ export class Panel {
         switch (message.command) {
           // ? ts Compiler Messages
           case "getAllTsClasses": {
+            console.log("ich bekomme message bahhhh");
+
             const messageData = await getAlltsClasses();
             console.log(
               "Sending postAllClasses message with",
@@ -201,8 +206,18 @@ export class Panel {
             break;
           }
           // ? File Messages
-          case "testTsFiles": {
+          case "testTsFile": {
+            console.log("ich bekomme message yayyyy");
             const messageData = await addFilesToTestedFilesMap(message.data);
+            this.postMessage({
+              command: "postTsCodeCheckMap",
+              data: messageData,
+            });
+            break;
+          }
+          case "getAllTsFileChecks": {
+            console.log("ich bekomme message yayyyy");
+            const messageData = await addAllFilesToTestedFilesMap();
             this.postMessage({
               command: "postTsCodeCheckMap",
               data: messageData,
