@@ -1,3 +1,4 @@
+import { PseudoBigInt } from "typescript";
 import { TsFileResource } from "./fileResources";
 
 // * Param-Resource Types für Object- als auch Function-View
@@ -20,11 +21,11 @@ export type TypeResource = {
     | "never"
     | "void"
     | "unknown";
+  literalType?: string;
   enumValues?: string[];
   tupleElements?: TypeResource[];
   unionValues?: TypeResource[];
   arrayType?: TypeResource;
-  literalValue?: string | number | undefined;
   objectParameters?: ParameterResource[];
   //ich galube erst mal ein bisschen lighter mit namer nur ohne 1 zu 1 prüfen ob identisch
   // ! selbst damit könnte ich nicht feststellen ob 1 zu 1 identisch

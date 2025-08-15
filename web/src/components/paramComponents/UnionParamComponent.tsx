@@ -43,10 +43,17 @@ function UnionParamComponent({
       (value) => value.errors
     );
 
-    paramFormType.onValidationChange!(paramFormType.param.paramName, {
+    const paramName = paramFormType.param.paramName;
+
+    //Fallback null
+    const parsedValue = paramValidations[paramName]
+      ? paramValidations[paramName].parsedValue
+      : null;
+
+    paramFormType.onValidationChange!(paramName, {
       isValid: allErrors.length === 0,
       errors: allErrors,
-      parsedValue: paramValidations,
+      parsedValue,
     });
   }, [
     paramValidations,

@@ -168,6 +168,11 @@ export class Panel {
               messageData.length,
               "classes"
             );
+            console.log(
+              "Sending postAllClasses message with",
+              JSON.stringify(messageData, null, 2),
+              "classes"
+            );
             this.postMessage({
               command: "postAllClasses",
               data: messageData,

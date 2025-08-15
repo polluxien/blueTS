@@ -1,5 +1,8 @@
 import { ParameterDeclaration, Type, Node } from "ts-morph";
-import { ParameterResource, TypeResource } from "../_resources/tsCompilerAPIResources";
+import {
+  ParameterResource,
+  TypeResource,
+} from "../_resources/tsCompilerAPIResources";
 
 export class TSParameterAnalyzer {
   constructor(private param: ParameterDeclaration) {}
@@ -10,7 +13,6 @@ export class TSParameterAnalyzer {
     return typeNode ? typeNode.getText() : param.getType().getText();
   }
   */
-
 
   //default param-analyser
   public paramAnalyzer(
@@ -53,10 +55,22 @@ export class TSParameterAnalyzer {
       type.isBigIntLiteral() ||
       type.isBooleanLiteral()
     ) {
+      let literalType = "";
+      if (type.isStringLiteral()) {
+        literalType = "string";
+      } else if (type.isNumberLiteral()) {
+        literalType = "number";
+      } else if (type.isBigIntLiteral()) {
+        literalType = "bigint";
+      } else if (type.isBooleanLiteral()) {
+        literalType = "boolean";
+      }
+
+      //switch typeAsString -> da bei literal Value === type
       return {
         typeAsString,
         paramType: "literal",
-        //  literalValue: type.getLiteralValue(),
+        literalType: literalType,
       };
     }
 

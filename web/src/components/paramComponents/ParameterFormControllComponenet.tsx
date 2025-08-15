@@ -179,7 +179,7 @@ function ParameterFormControllComponent({
     case "enum": {
       return (
         <FormGroup key={index}>
-          {getFormLabel(param)}
+          {!hideLabel && getFormLabel(param)}
           <Form.Select
             required={!param.optional}
             value={value}
@@ -215,7 +215,7 @@ function ParameterFormControllComponent({
       }
       return (
         <FormGroup key={index}>
-          {getFormLabel(param)}
+          {!hideLabel && getFormLabel(param)}
           <Form.Select
             required={!param.optional}
             value={value}
@@ -245,7 +245,7 @@ function ParameterFormControllComponent({
       if (typeRes.paramType === "void") placeholder = "undefined";
       return (
         <FormGroup key={index}>
-          {getFormLabel(param)}
+          {!hideLabel && getFormLabel(param)}
           <FormControl
             type="text"
             placeholder={placeholder}
@@ -259,6 +259,25 @@ function ParameterFormControllComponent({
       );
     }
 
+    case "literal": {
+      return (
+        <FormGroup key={index}>
+          {!hideLabel && getFormLabel(param)}
+          <FormControl
+            type="text"
+            placeholder={typeRes.typeAsString}
+            value={typeRes.typeAsString}
+            disabled
+            isInvalid={validated}
+          />
+          <Form.Control.Feedback type="invalid">
+            {error?.message || "This field is required"}
+          </Form.Control.Feedback>
+        </FormGroup>
+      );
+    }
+
+    //hier alle basic Param types
     default: {
       return (
         <FormGroup key={index}>

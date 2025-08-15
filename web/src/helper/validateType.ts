@@ -29,9 +29,9 @@ export function validateFormControllType(
     return { parsedValue: undefined };
   }
 
-  //basic types
-  if (typeRes.paramType === "basic") {
-    if (typeRes.typeAsString === "string") {
+  //basic types oder literalType defined
+  if (typeRes.paramType === "basic" || typeRes.literalType) {
+    if (typeRes.typeAsString === "string" || typeRes.literalType === "string") {
       if (
         (formValue.startsWith('"') && formValue.endsWith('"')) ||
         (formValue.startsWith("`") && formValue.endsWith("`")) ||
@@ -42,7 +42,10 @@ export function validateFormControllType(
       }
       return { err: new Error('Invalid string "..."') };
     }
-    if (typeRes.typeAsString === "boolean") {
+    if (
+      typeRes.typeAsString === "boolean" ||
+      typeRes.literalType === "boolean"
+    ) {
       const bool = formValue.toLowerCase();
       if (bool == "true" || bool == "false") {
         //gebe typ true oder false zurück
@@ -54,14 +57,14 @@ export function validateFormControllType(
         err: new Error("Invalid boolean"),
       };
     }
-    if (typeRes.typeAsString === "number") {
+    if (typeRes.typeAsString === "number" || typeRes.literalType === "number") {
       const num = Number(formValue);
       if (!isNaN(num)) {
         return { parsedValue: num };
       }
       return { err: new Error("Invalid number") };
     }
-    if (typeRes.typeAsString === "bigint") {
+    if (typeRes.typeAsString === "bigint" || typeRes.literalType === "bigint") {
       try {
         const bigNum = BigInt(formValue);
         return { parsedValue: bigNum };

@@ -21,11 +21,11 @@ export type TypeResource = {
     | "never"
     | "void"
     | "unknown";
+  literalType?: string;
   enumValues?: string[];
   tupleElements?: TypeResource[];
   unionValues?: TypeResource[];
   arrayType?: TypeResource;
-  literalValue?: string | number | boolean | undefined;
   objectParameters?: ParameterResource[];
 };
 
