@@ -104,9 +104,6 @@ function ObjectParamComponent({
                 instancesAsParamsMap={paramFormType.instancesAsParamsMap}
                 hideLabel={true}
               />
-              <Form.Control.Feedback type="invalid">
-                {paramFormType.error?.message || "This field is required"}
-              </Form.Control.Feedback>
             </div>
           )}
           {/* // * Default case */}
@@ -122,9 +119,6 @@ function ObjectParamComponent({
                 onChange={handelInternChange}
                 onValidationChange={handleChildChange}
               />
-              <Form.Control.Feedback type="invalid">
-                {paramFormType.error?.message || "This field is required"}
-              </Form.Control.Feedback>
             </div>
           ))}
           <p>{"}"}</p>

@@ -26,6 +26,8 @@ function UnionParamComponent({
     Record<string, ValidationTypeResource>
   >({});
 
+  const paramName = paramFormType.param.paramName;
+
   function handleChildChange(
     paramName: string,
     validationType: ValidationTypeResource
@@ -43,8 +45,9 @@ function UnionParamComponent({
       (value) => value.errors
     );
 
-    const paramName = paramFormType.param.paramName;
-
+    if (!selectedUnionType && !paramFormType.param.optional) {
+      allErrors.push(new Error("Please select a type"));
+    }
     //Fallback null
     const parsedValue = paramValidations[paramName]
       ? paramValidations[paramName].parsedValue
@@ -118,9 +121,11 @@ function UnionParamComponent({
           instancesAsParamsMap={paramFormType.instancesAsParamsMap}
         />
       )}{" "}
-      <Form.Control.Feedback type="invalid">
-        {paramFormType.error + "elementParam"}
-      </Form.Control.Feedback>
+      {!selectedUnionType && (
+        <Form.Control.Feedback type="invalid">
+          {paramValidations[paramName]?.errors.toString()}
+        </Form.Control.Feedback>
+      )}
     </FormGroup>
   );
 }
