@@ -33,9 +33,10 @@ export function validateFormControllType(
   if (typeRes.paramType === "basic" || typeRes.literalType) {
     if (typeRes.typeAsString === "string" || typeRes.literalType === "string") {
       if (
-        (formValue.startsWith('"') && formValue.endsWith('"')) ||
-        (formValue.startsWith("`") && formValue.endsWith("`")) ||
-        (formValue.startsWith("'") && formValue.endsWith("'"))
+        formValue.length >= 2 &&
+        ((formValue.startsWith('"') && formValue.endsWith('"')) ||
+          (formValue.startsWith("`") && formValue.endsWith("`")) ||
+          (formValue.startsWith("'") && formValue.endsWith("'")))
       ) {
         const stripped = formValue.slice(1, -1);
         return { parsedValue: stripped };
@@ -174,9 +175,10 @@ function parseDynamicValue(formValue: string): ValidationResult {
 
   // Prüfe string
   if (
-    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
-    (trimmed.startsWith("'") && trimmed.endsWith("'")) ||
-    (trimmed.startsWith("`") && trimmed.endsWith("`"))
+    trimmed.length >= 2 &&
+    ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'")) ||
+      (trimmed.startsWith("`") && trimmed.endsWith("`")))
   ) {
     result = trimmed.slice(1, -1);
   }
