@@ -29,10 +29,12 @@ function DirectorySettingsComponent({
       useDefault: useDefaultDirectory,
       directory: directory,
     });
-    vscode.postMessage({
-      command: "setCurrentDirectoryPath",
-      data: { useDefault: useDefaultDirectory, directory: directory },
-    });
+    vscode.postMessage([
+      {
+        command: "setCurrentDirectoryPath",
+        data: { useDefault: useDefaultDirectory, directory: directory },
+      },
+    ]);
   }, [directory]);
 
   const handleDirectoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {

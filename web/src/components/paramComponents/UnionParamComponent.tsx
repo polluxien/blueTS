@@ -10,7 +10,7 @@ import ParameterFormControllComponent, {
   type ValidationTypeResource,
 } from "./ParameterFormControllComponenet";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function UnionParamComponent({
   paramFormType,
@@ -63,14 +63,10 @@ function UnionParamComponent({
   ]);
 
   //die Unions beeinflussen sich gegenseitig wenn zu viele vorkommen
-  const uniqueId = () => {
-    let myID;
-    if (!myID) {
-      //erstelle art uuid
-      myID = `_${paramFormType.param.paramName}_${Date.now()}`;
-    }
-    return myID;
-  };
+  const uniqueId = useMemo(
+    () => `_${paramFormType.param.paramName}_${Date.now()}`,
+    [paramFormType.param.paramName]
+  );
 
   return (
     <FormGroup key={paramFormType.index}>
@@ -82,7 +78,7 @@ function UnionParamComponent({
       <ToggleButtonGroup
         type="radio"
         /* ich hoffe damit genug einzigartigkeit */
-        name={uniqueId()}
+        name={uniqueId}
         value={selectedUnionType?.typeAsString || ""}
         onChange={(val: string) => {
           const selectedType = typeRes.unionValues?.find(
@@ -98,7 +94,7 @@ function UnionParamComponent({
         {typeRes.unionValues?.map((type, i) => (
           <ToggleButton
             key={`${uniqueId}_${i}`}
-            id={`${uniqueId()}_${type.typeAsString}_${i}`}
+            id={`${uniqueId}_${type.typeAsString}_${i}`}
             value={type.typeAsString}
             variant="outline-primary"
           >

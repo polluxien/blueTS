@@ -31,10 +31,12 @@ function InstanceCardComponent({
 
   const deleteInstance = () => {
     //entferne instance aus backend instanceMap
-    vscode.postMessage({
-      command: "deleteInstance",
-      data: ins.instanceName,
-    });
+    vscode.postMessage([
+      {
+        command: "deleteInstance",
+        data: ins.instanceName,
+      },
+    ]);
     //entferne instance aus frontend
     dropInstance(ins.instanceName);
   };

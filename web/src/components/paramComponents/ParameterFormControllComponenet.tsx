@@ -68,9 +68,10 @@ function ParameterFormControllComponent({
       "Effect triggered for",
       param.paramName,
       param.typeInfo.paramType,
-      value
+      value,
+      onValidationChange
     );
-  }, [value, param.paramName, param.typeInfo.paramType]);
+  }, [value, param.paramName, param.typeInfo.paramType, onValidationChange]);
 
   const nestedTypes = ["union", "tuple", "object", "array"];
 
@@ -249,6 +250,8 @@ function ParameterFormControllComponent({
           <FormControl
             type="text"
             placeholder={placeholder}
+            value={placeholder}
+            onChange={(e) => onChange(param.paramName, e.target.value)}
             disabled
             isInvalid={validated}
           />
@@ -267,8 +270,9 @@ function ParameterFormControllComponent({
             type="text"
             placeholder={typeRes.typeAsString}
             value={typeRes.typeAsString}
+            onChange={(e) => onChange(param.paramName, e.target.value)}
             disabled
-            isInvalid={validated}
+            isInvalid={validated || !!error}
           />
           <Form.Control.Feedback type="invalid">
             {error?.message || "This field is required"}

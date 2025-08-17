@@ -49,7 +49,7 @@ function ClassCardComponent({
     const message = { message: "refreshClass", data: cls.tsFile.path };
     console.log("check pressed sending message: ", message);
 
-    vscode.postMessage(message);
+    vscode.postMessage([message]);
   };
 
   const renderErrorInfo = () => {

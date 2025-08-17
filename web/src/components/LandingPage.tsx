@@ -65,33 +65,37 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   //wenn Webview ready hole alle Klassen, Functions, CodeChecks und aktuelle Directory informationen
   useEffect(() => {
-    //checke ob alle TS-Files
-    vscode.postMessage({
-      command: "getAllTsFileChecks",
-    });
-    //holle alle KLassen
-    vscode.postMessage({
-      command: "getAllTsClasses",
-    });
-    //holle alle Funktionen
-    vscode.postMessage({
-      command: "getAllTsFunctions",
-    });
-    //holle aktuelle directory
-    vscode.postMessage({
-      command: "getCurrentDirectory",
-    });
+    vscode.postMessage([
+      //checke ob alle TS-Files korrekt
+      { command: "getAllTsFileChecks" },
+      //holle alle KLassen
+      {
+        command: "getAllTsClasses",
+      },
+      //holle alle Funktionen
+      {
+        command: "getAllTsFunctions",
+      },
+      //holle aktuelle directory
+      {
+        command: "getCurrentDirectory",
+      },
+    ]);
   }, []);
 
   //
   const reLoad = (type: "classes" | "functions") => {
     setLoading(true);
-    vscode.postMessage({
-      command: type === "classes" ? "getAllTsClasses" : "getAllTsFunctions",
-    });
-    vscode.postMessage({
-      command: "getAllTsFileChecks",
-    });
+    vscode.postMessage([
+      {
+        //aktualisiere und hole neue klassen / Funktionen
+        command: type === "classes" ? "getAllTsClasses" : "getAllTsFunctions",
+      },
+      //checke Files erneut
+      {
+        command: "getAllTsFileChecks",
+      },
+    ]);
   };
 
   //api - alle erhaltenen messages vom backend

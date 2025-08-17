@@ -126,10 +126,12 @@ function InstanceMethodComponent({
       JSON.stringify(runMethodeInInstanceType, null, 2)
     );
 
-    vscode.postMessage({
-      command: "runMethodInInstance",
-      data: runMethodeInInstanceType,
-    });
+    vscode.postMessage([
+      {
+        command: "runMethodInInstance",
+        data: runMethodeInInstanceType,
+      },
+    ]);
   }
 
   return (

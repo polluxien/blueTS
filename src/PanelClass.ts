@@ -153,101 +153,110 @@ export class Panel {
   // ! Under Construction
   /**
    * https://medium.com/@ashleyluu87/data-flow-from-vs-code-extension-webview-panel-react-components-2f94b881467e
-   *
+   *0
    * @param webview
    */
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
-      async (message: any) => {
-        switch (message.command) {
-          // ? ts Compiler Messages
-          case "getAllTsClasses": {
-            const messageData = await getAlltsClasses();
-            console.log(
-              "Sending postAllClasses message with",
-              messageData.length,
-              "classes"
-            );
-            console.log(
-              "Sending postAllClasses message with",
-              JSON.stringify(messageData, null, 2),
-              "classes"
-            );
-            this.postMessage({
-              command: "postAllClasses",
-              data: messageData,
-            });
-            break;
-          }
-          case "getAllTsFunctions": {
-            const messageData = await getAlltsFunctions();
-            console.log(
-              "Sending postAllFunctions message with",
-              messageData.length,
-              "functions"
-            );
-            this.postMessage({
-              command: "postAllFunctions",
-              data: messageData,
-            });
-            break;
-          }
-          // ? Instance Messages
-          case "createInstance": {
-            const messageData = await addInstanceToInstanceMap(message.data);
-            this.postMessage({
-              command: "postInstanceCheck",
-              data: messageData,
-            });
-            break;
-          }
-          case "deleteInstance": {
-            await deleteInstanceInInstanceMap(message.data);
-            break;
-          }
-          case "runMethodInInstance": {
-            const messageData = await compileMethodInClassObject(message.data);
-            this.postMessage({
-              command: "postMethodCheck",
-              data: messageData,
-            });
-            break;
-          }
-          // ? File Messages
-          case "testTsFile": {
-            const messageData = await addFilesToTestedFilesMap(message.data);
-            this.postMessage({
-              command: "postTsCodeCheckMap",
-              data: messageData,
-            });
-            break;
-          }
-          case "getAllTsFileChecks": {
-            const messageData = await addAllFilesToTestedFilesMap();
-            this.postMessage({
-              command: "postTsCodeCheckMap",
-              data: messageData,
-            });
-            break;
-          }
-          // ? File Messages
-          case "getCurrentDirectory": {
-            const messageData = await getWorkspaceRessourceForMessage();
-            this.postMessage({
-              command: "postCurrentDirectoryRes",
-              data: messageData,
-            });
-            //console.log("getCurrentDirectory: ", JSON.stringify(messageData));
-            break;
-          }
-          case "setCurrentDirectory": {
-            const messageData = setWorkspace(message.data);
-            this.postMessage({
-              command: "postCurrentDirectory",
-              data: messageData,
-            });
+      async (messages: any[]) => {
+        //iterier durch alle messages und handel und warte auf ergebnis
+        for (let curMessage of messages) {
+          switch (curMessage.command) {
+            // ? ts Compiler Messages
+            case "getAllTsClasses": {
+              const messageData = await getAlltsClasses();
+              console.log(
+                "Sending postAllClasses message with",
+                messageData.length,
+                "classes"
+              );
+              console.log(
+                "Sending postAllClasses message with",
+                JSON.stringify(messageData, null, 2),
+                "classes"
+              );
+              this.postMessage({
+                command: "postAllClasses",
+                data: messageData,
+              });
+              break;
+            }
+            case "getAllTsFunctions": {
+              const messageData = await getAlltsFunctions();
+              console.log(
+                "Sending postAllFunctions message with",
+                messageData.length,
+                "functions"
+              );
+              this.postMessage({
+                command: "postAllFunctions",
+                data: messageData,
+              });
+              break;
+            }
+            // ? Instance Messages
+            case "createInstance": {
+              const messageData = await addInstanceToInstanceMap(
+                curMessage.data
+              );
+              this.postMessage({
+                command: "postInstanceCheck",
+                data: messageData,
+              });
+              break;
+            }
+            case "deleteInstance": {
+              await deleteInstanceInInstanceMap(curMessage.data);
+              break;
+            }
+            case "runMethodInInstance": {
+              const messageData = await compileMethodInClassObject(
+                curMessage.data
+              );
+              this.postMessage({
+                command: "postMethodCheck",
+                data: messageData,
+              });
+              break;
+            }
+            // ? File Messages
+            case "testTsFile": {
+              const messageData = await addFilesToTestedFilesMap(
+                curMessage.data
+              );
+              this.postMessage({
+                command: "postTsCodeCheckMap",
+                data: messageData,
+              });
+              break;
+            }
+            case "getAllTsFileChecks": {
+              const messageData = await addAllFilesToTestedFilesMap();
+              this.postMessage({
+                command: "postTsCodeCheckMap",
+                data: messageData,
+              });
+              break;
+            }
+            // ? File Messages
+            case "getCurrentDirectory": {
+              const messageData = await getWorkspaceRessourceForMessage();
+              this.postMessage({
+                command: "postCurrentDirectoryRes",
+                data: messageData,
+              });
+              //console.log("getCurrentDirectory: ", JSON.stringify(messageData));
+              break;
+            }
+            case "setCurrentDirectory": {
+              const messageData = setWorkspace(curMessage.data);
+              this.postMessage({
+                command: "postCurrentDirectory",
+                data: messageData,
+              });
 
-            break;
+              break;
+            }
           }
         }
       },
