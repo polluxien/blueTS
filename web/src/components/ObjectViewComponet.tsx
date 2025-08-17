@@ -64,6 +64,7 @@ function ObjectViewComponent({
                 cursor: "pointer",
               }}
               aria-label="Refresh"
+              title="Reload all classes"
             >
               <ArrowClockwise />
             </Button>

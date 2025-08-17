@@ -36,6 +36,7 @@ function FunctionViewComponent({
               cursor: "pointer",
             }}
             aria-label="Refresh"
+            title="Reload all functions"
           >
             <ArrowClockwise />
           </Button>
