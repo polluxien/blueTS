@@ -80,15 +80,6 @@ function UnionParamComponent({
         /* ich hoffe damit genug einzigartigkeit */
         name={uniqueId}
         value={selectedUnionType?.typeAsString || ""}
-        onChange={(val: string) => {
-          const selectedType = typeRes.unionValues?.find(
-            (unionType) => unionType.typeAsString === val
-          );
-          if (selectedType) {
-            setSelectedUnionType(selectedType);
-            paramFormType.onChange(paramFormType.param.paramName, val);
-          }
-        }}
         className="mb-2 d-flex flex-wrap gap-2"
       >
         {typeRes.unionValues?.map((type, i) => (
@@ -97,11 +88,24 @@ function UnionParamComponent({
             id={`${uniqueId}_${type.typeAsString}_${i}`}
             value={type.typeAsString}
             variant="outline-primary"
+            active={selectedUnionType?.typeAsString === type.typeAsString}
+            onClick={() => {
+              if (selectedUnionType?.typeAsString === type.typeAsString) {
+                setSelectedUnionType(null);
+                paramFormType.onChange(paramFormType.param.paramName, "");
+              } else {
+                setSelectedUnionType(type);
+                paramFormType.onChange(
+                  paramFormType.param.paramName,
+                  type.typeAsString
+                );
+              }
+            }}
           >
             {type.typeAsString}
           </ToggleButton>
         ))}{" "}
-        {/* weil Feld noch ohne auswahl von unionType noch nicht gerendert ist eine valiedierung hier */}
+        {/* weil Feld noch ohne auswahl von unionType noch nicht gerendert ist eine feedback hier bei nicht selected*/}
         {!selectedUnionType &&
           !paramFormType.param.optional &&
           paramFormType.validated && (

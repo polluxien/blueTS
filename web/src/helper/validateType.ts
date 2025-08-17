@@ -19,6 +19,9 @@ export function validateFormControllType(
 ): ValidationResult {
   const typeRes: TypeResource = paramRes.typeInfo;
 
+  console.log("VALUE TO VALIDATE: ", formValue);
+  console.log("NAME: ", typeRes.typeAsString);
+
   //wenn field garnicht benutzt aber required return sofort
   if (!formValue && !paramRes.optional) {
     return { err: new Error(`field is required`) };

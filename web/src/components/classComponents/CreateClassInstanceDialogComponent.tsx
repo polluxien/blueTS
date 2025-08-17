@@ -140,6 +140,8 @@ function CreateClassInstanceDialogComponent({
           data: creClsInRes,
         },
       ]);
+    } else {
+      console.log(JSON.stringify(errors, null, 2));
     }
   }
 

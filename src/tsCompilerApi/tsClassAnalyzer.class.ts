@@ -63,13 +63,18 @@ export class TSClassAnalyzer {
   private extractConstructors(cls: ClassDeclaration): ConstructorResource[] {
     const constructorRessourceArr: ConstructorResource[] = [];
 
+    /*
     //führe constructoren und constructSignautres zusammen
-    const conArr = [
-      cls.getConstructors(),
-      cls.getType().getConstructSignatures(),
-    ].flat();
+    const impl = cls.getConstructors()[0];
+    
+    const overloads = cls
+      .getType()
+      .getConstructSignatures()
+      .filter((sig) => sig.getDeclaration() !== impl);
+    const conArr = [impl, ...overloads];
+    */
 
-    for (let con of conArr) {
+    for (let con of cls.getConstructors()) {
       const myConstructor: ConstructorResource = {
         parameters: this.extractParameters(con),
       };
@@ -143,19 +148,26 @@ export class TSClassAnalyzer {
   ): ParameterResource[] {
     const parameterRessourceArr: ParameterResource[] = [];
     //bei signatures, da getParams als symbol[] zurückgegeben wird
+    /*
     if (foo instanceof Signature) {
+      if (!foo.getDeclaration()) {
+        return [];
+      }
+
       for (let paramAsSymbol of foo.getParameters()) {
         console.log("PARAMSYMBOL FOUND -->", paramAsSymbol.getName());
         const myParameter = new TSParameterAnalyzer(paramAsSymbol, foo);
         parameterRessourceArr.push(myParameter.paramAnalyzer());
       }
-      //bei rest
     } else {
-      for (let param of foo.getParameters()) {
-        const myParameter = new TSParameterAnalyzer(param);
-        parameterRessourceArr.push(myParameter.paramAnalyzer());
-      }
+      */
+    //bei Constructoren und Methoden
+    for (let param of foo.getParameters()) {
+      const myParameter = new TSParameterAnalyzer(param);
+      parameterRessourceArr.push(myParameter.paramAnalyzer());
     }
+
+    //  }
     return parameterRessourceArr;
   }
 }

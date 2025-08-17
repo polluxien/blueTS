@@ -73,6 +73,40 @@ function ParameterFormControllComponent({
     );
   }, [value, param.paramName, param.typeInfo.paramType, onValidationChange]);
 
+  // für feste Typen
+  const fixedTypes = ["null", "void", "never", "literal"];
+
+  useEffect(() => {
+    if (!fixedTypes.includes(typeRes.paramType)) return;
+
+    let expectedValue = "";
+
+    if (typeRes.paramType === "null") expectedValue = "null";
+    else if (typeRes.paramType === "void") expectedValue = "undefined";
+    else if (typeRes.paramType === "never") expectedValue = "never";
+    else if (typeRes.paramType === "literal")
+      expectedValue = typeRes.typeAsString;
+
+    // nur setzen, wenn sich Wert unterscheidet
+    if (expectedValue && value !== expectedValue) {
+      onChange(param.paramName, expectedValue);
+    }
+
+    const { err, parsedValue } = validateFormControllType(param, value);
+
+    onValidationChange!(param.paramName, {
+      isValid: !err,
+      errors: err ? [err] : [],
+      parsedValue,
+    });
+  }, [
+    typeRes.paramType,
+    typeRes.typeAsString,
+    param.paramName,
+    value,
+    onChange,
+  ]);
+
   const nestedTypes = ["union", "tuple", "object", "array"];
 
   //Nested types -> externe überprüfung schon stattgefunden und muss nur übernommen werden
@@ -243,13 +277,13 @@ function ParameterFormControllComponent({
           <FormControl
             type="text"
             placeholder={placeholder}
-            value={placeholder}
-            onChange={(e) => onChange(param.paramName, e.target.value)}
-            disabled
-            isInvalid={validated}
+            // value={value || placeholder}
+            // onChange={() => onChange(param.paramName, typeRes.paramType)}
+            readOnly
+            isInvalid={validated && !!error}
           />
           <Form.Control.Feedback type="invalid">
-            {error?.message || "This field is required"}
+            {error?.message}
           </Form.Control.Feedback>
         </FormGroup>
       );
@@ -262,13 +296,13 @@ function ParameterFormControllComponent({
           <FormControl
             type="text"
             placeholder={typeRes.typeAsString}
-            value={typeRes.typeAsString}
-            onChange={(e) => onChange(param.paramName, e.target.value)}
-            disabled
-            isInvalid={validated || !!error}
+            // value={value || typeRes.typeAsString}
+            // onChange={() => onChange(param.paramName, typeRes.typeAsString)}
+            readOnly
+            isInvalid={validated && !!error}
           />
           <Form.Control.Feedback type="invalid">
-            {error?.message || "This field is required"}
+            {error?.message}
           </Form.Control.Feedback>
         </FormGroup>
       );
