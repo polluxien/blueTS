@@ -1,11 +1,20 @@
-import { ParameterDeclaration, Type, Node } from "ts-morph";
+import { ParameterDeclaration, Type, Node, Symbol, Signature } from "ts-morph";
 import {
   ParameterResource,
   TypeResource,
 } from "../_resources/tsCompilerAPIResources";
 
 export class TSParameterAnalyzer {
-  constructor(private param: ParameterDeclaration) {}
+  private param: ParameterDeclaration | Symbol;
+  private isSymbol: boolean = false;
+  private signature?: Signature;
+
+  constructor(param: ParameterDeclaration | Symbol, signature?: Signature) {
+    this.param = param;
+    this.signature = signature;
+
+    this.isSymbol = !Node.isParameterDeclaration(param as any as Node);
+  }
 
   /*
   private parseType(param: ParameterDeclaration): string {
@@ -16,13 +25,36 @@ export class TSParameterAnalyzer {
 
   //default param-analyser
   public paramAnalyzer(
-    param: ParameterDeclaration = this.param
+    param: ParameterDeclaration | Symbol = this.param
   ): ParameterResource {
-    return {
-      paramName: param.getName(),
-      typeInfo: this.typeAnalyzer(param.getType()),
-      optional: param.isOptional(),
-    };
+    if (!this.isSymbol) {
+      const myParam = this.param as ParameterDeclaration;
+
+      //bei param ganz normal weiter machen
+      return {
+        paramName: myParam.getName(),
+        typeInfo: this.typeAnalyzer(myParam.getType()),
+        optional: myParam.isOptional(),
+      };
+    } else {
+      const myParam = this.param as Symbol;
+
+      if (!this.signature) {
+        throw new Error("signatur wird für arbeit mit symbol benötigt");
+      }
+
+      const paramName = myParam.getName();
+      const paramType = myParam.getTypeAtLocation(
+        this.signature.getDeclaration()
+      );
+      const isOptional = myParam.isOptional?.() ?? false;
+
+      return {
+        paramName: paramName,
+        typeInfo: this.typeAnalyzer(paramType),
+        optional: isOptional,
+      };
+    }
   }
 
   private isBasicType(type: Type): boolean {
@@ -191,7 +223,10 @@ export class TSParameterAnalyzer {
 
       const paramArr: ParameterResource[] = [];
       for (let prop of props) {
-        const propType = prop.getTypeAtLocation(this.param);
+        const propType = prop.getTypeAtLocation(
+          // ! hier noch mal prüfen ob ich das so kann
+          this.param as ParameterDeclaration
+        );
         paramArr.push({
           paramName: prop.getName(),
           typeInfo: this.typeAnalyzer(propType),

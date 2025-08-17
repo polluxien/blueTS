@@ -7,15 +7,13 @@ import {
 import { TSFunctionAnalyzer } from "./TSFunctionAnalyzer.class";
 import { TSClassAnalyzer } from "./TSClassAnalyzer.class";
 
-export async function getAlltsClasses(path?: Path): Promise<ClassResource[]> {
+export async function getAlltsClasses(): Promise<ClassResource[]> {
   //Erstelle ClasenRessources
   const tsClasses = new TSClassAnalyzer(await getTSFiles());
   return tsClasses.parse();
 }
 
-export async function getAlltsFunctions(
-  path?: Path
-): Promise<FunctionResource[]> {
+export async function getAlltsFunctions(): Promise<FunctionResource[]> {
   //Erstelle ClasenRessources
   const tsfunctions = new TSFunctionAnalyzer(await getTSFiles());
   return tsfunctions.parse();

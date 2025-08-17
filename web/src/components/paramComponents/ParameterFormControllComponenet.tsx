@@ -89,13 +89,6 @@ function ParameterFormControllComponent({
     const allErrors = Object.values(paramValidations).flatMap(
       (value) => value.errors
     );
-
-    console.log("PARAM COMPONENT: ", {
-      isValid: allChildrenValid,
-      errors: allErrors,
-      parsedValue: paramValidations[param.paramName],
-    });
-
     if (!paramValidations[param.paramName]) {
       console.error(
         "param zur Validation übergabe konnte nicht gefunden werden"

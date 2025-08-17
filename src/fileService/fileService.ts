@@ -7,7 +7,8 @@ import { getWorkspace } from "../workspaceService";
 let tsFilesArr: TsFileResource[];
 
 //wenn refresh true, durchsuche neu (bei Pfadänderung)
-export async function getTSFiles(refresh = false): Promise<TsFileResource[]> {
+// ? sollte immer true sein da ich ja neue files erstellen kann und parallel meine extension habe
+export async function getTSFiles(refresh = true): Promise<TsFileResource[]> {
   //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
   if (!tsFilesArr || refresh) {
     const workspace = getWorkspace();

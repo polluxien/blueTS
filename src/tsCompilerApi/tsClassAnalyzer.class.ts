@@ -6,6 +6,8 @@ import {
   MethodDeclaration,
   Project,
   SetAccessorDeclaration,
+  Signature,
+  SignaturedDeclaration,
   SyntaxKind,
 } from "ts-morph";
 import path from "path";
@@ -60,12 +62,20 @@ export class TSClassAnalyzer {
 
   private extractConstructors(cls: ClassDeclaration): ConstructorResource[] {
     const constructorRessourceArr: ConstructorResource[] = [];
-    for (let con of cls.getConstructors()) {
+
+    //führe constructoren und constructSignautres zusammen
+    const conArr = [
+      cls.getConstructors(),
+      cls.getType().getConstructSignatures(),
+    ].flat();
+
+    for (let con of conArr) {
       const myConstructor: ConstructorResource = {
         parameters: this.extractParameters(con),
       };
       constructorRessourceArr.push(myConstructor);
     }
+
     return constructorRessourceArr;
   }
 
@@ -123,16 +133,28 @@ export class TSClassAnalyzer {
   }
 
   private extractParameters(
-    foo:
-      | MethodDeclaration
+    foo: //Methoden alg. u. getter und setter
+    | MethodDeclaration
       | GetAccessorDeclaration
       | SetAccessorDeclaration
+      //Konstrucktor und bei überladen zusätzliche Signaturen
       | ConstructorDeclaration
+      | Signature
   ): ParameterResource[] {
     const parameterRessourceArr: ParameterResource[] = [];
-    for (let param of foo.getParameters()) {
-      const myParameter = new TSParameterAnalyzer(param);
-      parameterRessourceArr.push(myParameter.paramAnalyzer());
+    //bei signatures, da getParams als symbol[] zurückgegeben wird
+    if (foo instanceof Signature) {
+      for (let paramAsSymbol of foo.getParameters()) {
+        console.log("PARAMSYMBOL FOUND -->", paramAsSymbol.getName());
+        const myParameter = new TSParameterAnalyzer(paramAsSymbol, foo);
+        parameterRessourceArr.push(myParameter.paramAnalyzer());
+      }
+      //bei rest
+    } else {
+      for (let param of foo.getParameters()) {
+        const myParameter = new TSParameterAnalyzer(param);
+        parameterRessourceArr.push(myParameter.paramAnalyzer());
+      }
     }
     return parameterRessourceArr;
   }
