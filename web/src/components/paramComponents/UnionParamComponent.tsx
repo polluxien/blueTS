@@ -45,9 +45,6 @@ function UnionParamComponent({
       (value) => value.errors
     );
 
-    if (!selectedUnionType && !paramFormType.param.optional) {
-      allErrors.push(new Error("Please select a type"));
-    }
     //Fallback null
     const parsedValue = paramValidations[paramName]
       ? paramValidations[paramName].parsedValue
@@ -103,7 +100,15 @@ function UnionParamComponent({
           >
             {type.typeAsString}
           </ToggleButton>
-        ))}
+        ))}{" "}
+        {/* weil Feld noch ohne auswahl von unionType noch nicht gerendert ist eine valiedierung hier */}
+        {!selectedUnionType &&
+          !paramFormType.param.optional &&
+          paramFormType.validated && (
+            <div className="invalid-feedback d-block">
+              Selecting a type is required
+            </div>
+          )}
       </ToggleButtonGroup>
       {selectedUnionType && (
         <ParameterFormControllComponent
@@ -120,11 +125,6 @@ function UnionParamComponent({
           hideLabel={true}
           instancesAsParamsMap={paramFormType.instancesAsParamsMap}
         />
-      )}{" "}
-      {!selectedUnionType && (
-        <Form.Control.Feedback type="invalid">
-          {paramValidations[paramName]?.errors.toString()}
-        </Form.Control.Feedback>
       )}
     </FormGroup>
   );
