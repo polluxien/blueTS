@@ -5,16 +5,7 @@ import {
 } from "../_resources/tsCompilerAPIResources";
 
 export class TSParameterAnalyzer {
-  private param: ParameterDeclaration | Symbol;
-  private isSymbol: boolean = false;
-  private signature?: Signature;
-
-  constructor(param: ParameterDeclaration | Symbol, signature?: Signature) {
-    this.param = param;
-    this.signature = signature;
-
-    this.isSymbol = !Node.isParameterDeclaration(param as any as Node);
-  }
+  constructor(private param: ParameterDeclaration) {}
 
   /*
   private parseType(param: ParameterDeclaration): string {
@@ -25,41 +16,20 @@ export class TSParameterAnalyzer {
 
   //default param-analyser
   public paramAnalyzer(
-    param: ParameterDeclaration | Symbol = this.param
+    param: ParameterDeclaration = this.param
   ): ParameterResource {
-    if (!this.isSymbol) {
-      const myParam = this.param as ParameterDeclaration;
-
-      //bei param ganz normal weiter machen
-      return {
-        paramName: myParam.getName(),
-        typeInfo: this.typeAnalyzer(myParam.getType()),
-        optional: myParam.isOptional(),
-      };
-    } else {
-      const myParam = this.param as Symbol;
-
-      if (!this.signature) {
-        throw new Error("signatur wird für arbeit mit symbol benötigt");
-      }
-
-      const paramName = myParam.getName();
-      const paramType = myParam.getTypeAtLocation(
-        this.signature.getDeclaration()
-      );
-      const isOptional = myParam.isOptional?.() ?? false;
-
-      return {
-        paramName: paramName,
-        typeInfo: this.typeAnalyzer(paramType),
-        optional: isOptional,
-      };
-    }
+    return {
+      paramName: param.getName(),
+      typeInfo: this.typeAnalyzer(param.getType()),
+      optional: param.isOptional(),
+    };
   }
 
+  /*
   private isBasicType(type: Type): boolean {
     return type.isString() || type.isNumber() || type.isBoolean();
   }
+    */
 
   //default type-analyser (eine Ebene Tiefer)
   private typeAnalyzer(type: Type): TypeResource {

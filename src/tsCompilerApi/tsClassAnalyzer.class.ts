@@ -51,7 +51,7 @@ export class TSClassAnalyzer {
         const myClass: ClassResource = {
           className: cls.getName()!,
           tsFile: tsFile!,
-          constructors: this.extractConstructors(cls),
+          constructor: this.extractConstructors(cls),
           methods: this.extractMethodes(cls),
         };
         this.classResourceArr.push(myClass);
@@ -60,28 +60,19 @@ export class TSClassAnalyzer {
     return this.classResourceArr;
   }
 
-  private extractConstructors(cls: ClassDeclaration): ConstructorResource[] {
-    const constructorRessourceArr: ConstructorResource[] = [];
-
-    /*
-    //führe constructoren und constructSignautres zusammen
-    const impl = cls.getConstructors()[0];
-    
-    const overloads = cls
-      .getType()
-      .getConstructSignatures()
-      .filter((sig) => sig.getDeclaration() !== impl);
-    const conArr = [impl, ...overloads];
-    */
-
-    for (let con of cls.getConstructors()) {
-      const myConstructor: ConstructorResource = {
-        parameters: this.extractParameters(con),
-      };
-      constructorRessourceArr.push(myConstructor);
+  private extractConstructors(
+    cls: ClassDeclaration
+  ): ConstructorResource | undefined {
+    if (!cls.getConstructors()[0]) {
+      return undefined;
     }
+    const myConstructor: ConstructorResource = {
+      //typescript klassisches überladen nicht möglich, nur mit signaturen
 
-    return constructorRessourceArr;
+      parameters: this.extractParameters(cls.getConstructors()[0]),
+    };
+
+    return myConstructor;
   }
 
   private extractMethodes(cls: ClassDeclaration): MethodResource[] {
@@ -142,32 +133,14 @@ export class TSClassAnalyzer {
     | MethodDeclaration
       | GetAccessorDeclaration
       | SetAccessorDeclaration
-      //Konstrucktor und bei überladen zusätzliche Signaturen
+      //Konstrucktor
       | ConstructorDeclaration
-      | Signature
   ): ParameterResource[] {
     const parameterRessourceArr: ParameterResource[] = [];
-    //bei signatures, da getParams als symbol[] zurückgegeben wird
-    /*
-    if (foo instanceof Signature) {
-      if (!foo.getDeclaration()) {
-        return [];
-      }
-
-      for (let paramAsSymbol of foo.getParameters()) {
-        console.log("PARAMSYMBOL FOUND -->", paramAsSymbol.getName());
-        const myParameter = new TSParameterAnalyzer(paramAsSymbol, foo);
-        parameterRessourceArr.push(myParameter.paramAnalyzer());
-      }
-    } else {
-      */
-    //bei Constructoren und Methoden
     for (let param of foo.getParameters()) {
       const myParameter = new TSParameterAnalyzer(param);
       parameterRessourceArr.push(myParameter.paramAnalyzer());
     }
-
-    //  }
     return parameterRessourceArr;
   }
 }

@@ -1,14 +1,12 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import Carousel from "react-bootstrap/Carousel";
 import Container from "react-bootstrap/Container";
 import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
 
 import type {
   ClassResource,
-  ConstructorResource,
   CreateClassInstanceResource,
   InstanceResource,
 } from "../../ressources/classRessources.ts";
@@ -36,7 +34,6 @@ function CreateClassInstanceDialogComponent({
   instanceNameSet,
   instancesAsParamsMap,
 }: CreateClassInstanceDialogComponentProps) {
-  const [constructorIndex, setConstructorIndex] = useState(0);
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
 
@@ -48,9 +45,7 @@ function CreateClassInstanceDialogComponent({
     Record<string, ValidationTypeResource>
   >({});
 
-  const constructors: ConstructorResource[] = cls.constructors || [];
-  const currentConstructor = constructors[constructorIndex];
-  const classVariables = currentConstructor?.parameters || [];
+  const classVariables = cls.constructor?.parameters || [];
 
   function handleChange(paramName: string, value: string) {
     setFormValues((prev) => ({ ...prev, [paramName]: value }));
@@ -165,84 +160,40 @@ function CreateClassInstanceDialogComponent({
               {errors["__instanceName"]?.message || "Instance name is required"}
             </Form.Control.Feedback>
           </FormGroup>{" "}
-          {constructors.length > 1 && (
-            <p>Multiple constructors found. Please choose one:</p>
-          )}
-          {
-            //zu groß
-            /*         <p>
-            constructor(
-            {currentConstructor.parameters
-              ?.map(
-                (param) =>
-                  param.paramName +
-                  (param.optional ? "?" : "") +
-                  ": " +
-                  param.typeInfo.typeAsString
-              )
-              .join(", ")}
-            )
-          </p>{" "} */
-          }
           {
             <p>
-              new{" "}
-              {cls.className +
-                "(" +
-                (currentConstructor?.parameters &&
-                currentConstructor?.parameters.length > 0
-                  ? ""
-                  : ")")}
+              new {cls.className + "(" + (classVariables.length > 0 ? "" : ")")}
             </p>
           }
-          {constructors?.length > 0 &&
-            currentConstructor?.parameters.length > 0 && (
-              <div className="mb-4">
-                <Carousel
-                  activeIndex={constructorIndex}
-                  onSelect={(selectedIndex) =>
-                    setConstructorIndex(selectedIndex)
-                  }
-                  slide={false}
-                  indicators={constructors.length > 1}
-                  style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}
-                >
-                  {constructors.map((constructor, i) => (
-                    <Carousel.Item
-                      key={i}
-                      style={{
-                        backgroundColor: "#f7f9fb",
-                        padding: "1.5rem",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      <Container>
-                        {constructor?.parameters &&
-                          constructor?.parameters.map((param, index) => (
-                            <ParameterFormControllComponent
-                              index={index}
-                              param={param}
-                              value={formValues[param.paramName] || ""}
-                              validated={validated}
-                              error={errors[param.paramName]}
-                              onChange={handleChange}
-                              onValidationChange={handleParameterValidation}
-                              instancesAsParamsMap={instancesAsParamsMap}
-                            ></ParameterFormControllComponent>
-                          ))}
-                      </Container>
-                      <Carousel.Caption></Carousel.Caption>
-                    </Carousel.Item>
-                  ))}
-                </Carousel>
-              </div>
-            )}
-          <p>
-            {currentConstructor?.parameters &&
-            currentConstructor?.parameters.length > 0
-              ? ")"
-              : ""}
-          </p>
+          {classVariables.length > 0 && (
+            <div className="mb-4">
+              <Container
+                style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}
+              >
+                {classVariables.map((param, index) => (
+                  <Container
+                    style={{
+                      backgroundColor: "#f7f9fb",
+                      padding: "1rem",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <ParameterFormControllComponent
+                      index={index}
+                      param={param}
+                      value={formValues[param.paramName] || ""}
+                      validated={validated}
+                      error={errors[param.paramName]}
+                      onChange={handleChange}
+                      onValidationChange={handleParameterValidation}
+                      instancesAsParamsMap={instancesAsParamsMap}
+                    ></ParameterFormControllComponent>
+                  </Container>
+                ))}
+              </Container>
+            </div>
+          )}
+          <p>{classVariables.length > 0 ? ")" : ""}</p>
           <Modal.Footer>
             <Button variant="secondary" type="button" onClick={close}>
               Close

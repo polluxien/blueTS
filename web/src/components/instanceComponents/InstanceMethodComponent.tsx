@@ -165,7 +165,7 @@ function InstanceMethodComponent({
                 <Container
                   style={{
                     backgroundColor: "#f7f9fb",
-                    padding: "1.5rem",
+                    padding: "1rem",
                     borderRadius: "10px",
                   }}
                 >

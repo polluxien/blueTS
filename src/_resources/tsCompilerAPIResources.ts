@@ -62,7 +62,7 @@ export type MethodResource = {
 export type ClassResource = {
   className: string;
   tsFile: TsFileResource;
-  constructors: ConstructorResource[];
+  constructor: ConstructorResource | undefined;
   methods: MethodResource[];
 };
 
