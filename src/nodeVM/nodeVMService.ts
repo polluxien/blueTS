@@ -4,8 +4,7 @@ import {
   CreateClassInstanceRessource,
   RunMethodeInInstanceType,
 } from "../_resources/nodeVMResources";
-import { TsFileResource } from "../_resources/fileResources";
-import { TsCodeCheckResource } from "./checkTsCodeManager";
+import { CompileErrorResource, TsCodeCheckResource } from "./checkTsCodeManager";
 
 const vm = require("node:vm");
 
@@ -41,7 +40,7 @@ function createNewContext() {
 export async function checkTsCode(
   filePath: string
 ): Promise<TsCodeCheckResource> {
-  const errors: string[] = [];
+  const errors: CompileErrorResource[] = [];
 
   try {
     const tsCode = fs.readFileSync(filePath, {
@@ -65,9 +64,18 @@ export async function checkTsCode(
       for (let err of transpiled.diagnostics) {
         /**
          * https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API/38206fde051e37bcf0cb11a29068a1e9f9cc8a14
-         * füge bei Funden den errors hinzu
+         * füge bei finden von error zu errors hinzu
          */
-        errors.push(ts.flattenDiagnosticMessageText(err.messageText, "\n"));
+        let errMessage = ts.flattenDiagnosticMessageText(err.messageText, "\n");
+        let row, col;
+        if (err.file && err.start && errMessage) {
+          const { line, character } = err.file.getLineAndCharacterOfPosition(
+            err.start
+          );
+          row = line;
+          col = character;
+        }
+        errors.push({ message: errMessage, row, col });
       }
     }
 

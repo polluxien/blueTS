@@ -5,6 +5,7 @@ import type {
   FunctionResource,
   InstanceCheckResource,
   InstanceResource,
+  TsCodeCheckResource,
 } from "../ressources/classRessources.ts";
 import Switch from "react-switch";
 
@@ -12,11 +13,6 @@ import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
 import ObjectViewComponent from "./ObjectViewComponet.tsx";
 import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
 import FunctionViewComponent from "./FunctionViewComponent.tsx";
-
-export type TsCodeCheckResource = {
-  isValid: boolean;
-  errors: string[];
-};
 
 export type DirectoryResource = {
   currentWorkspace: string;

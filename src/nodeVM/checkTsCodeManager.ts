@@ -13,7 +13,13 @@ function filterFiles(tsFiles: TsFileResource[]) {
 
 export type TsCodeCheckResource = {
   isValid: boolean;
-  errors: string[];
+  errors: CompileErrorResource[];
+};
+
+export type CompileErrorResource = {
+  message: string;
+  col: number | undefined;
+  row: number | undefined;
 };
 
 export async function addAllFilesToTestedFilesMap() {
@@ -23,7 +29,7 @@ export async function addAllFilesToTestedFilesMap() {
     const result = await checkTsCode(filePath);
     myTestedFileMap.set(filePath, result);
   }
-  
+
   /*
   console.log("myTested FileMap:");
   for (const [key, value] of myTestedFileMap.entries()) {

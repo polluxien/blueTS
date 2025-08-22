@@ -5,10 +5,10 @@ import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 import type {
   ClassResource,
   InstanceResource,
+  TsCodeCheckResource,
 } from "../ressources/classRessources";
 import LoadingComponent from "./LoadingComponent.tsx";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
-import type { TsCodeCheckResource } from "./LandingPage.tsx";
 
 type ObjectViewComponentProps = {
   classes: ClassResource[];

@@ -1,17 +1,18 @@
 import type {
   ClassResource,
   InstanceResource,
+  TsCodeCheckResource,
 } from "../../ressources/classRessources.ts";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useEffect, useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 import CreateClassInstanceDialogComponent from "./CreateClassInstanceDialogComponent.tsx";
-import { Col, OverlayTrigger, Row, Table, Tooltip } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
 import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
-import type { TsCodeCheckResource } from "../LandingPage.tsx";
+import CompilerErrorModalComponent from "./CompilerErrorModalComponent.tsx";
 
 type ClassCardComponentProps = {
   cls: ClassResource;
@@ -32,6 +33,8 @@ function ClassCardComponent({
   instancesAsParamsMap,
 }: ClassCardComponentProps) {
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
+  const [errorDialogOpen, setErrorDialogOpen] = useState<boolean>(false);
+
   const [isValid, setIsValid] = useState(tsCodeValidation?.isValid ?? false);
 
   useEffect(() => {
@@ -41,8 +44,11 @@ function ClassCardComponent({
   // const [hoveredAdd, setHoveredAdd] = useState(false);
   // const [hoveredRun, setHoveredRun] = useState(false);
 
-  const openDialog = () => setClassDialogOpen(true);
-  const closeDialog = () => setClassDialogOpen(false);
+  const openclassDialog = () => setClassDialogOpen(true);
+  const closeclassDialog = () => setClassDialogOpen(false);
+
+  const openErrorDialog = () => setErrorDialogOpen(true);
+  const closeErrorDialog = () => setErrorDialogOpen(false);
 
   const sendTsPathForTsCodeChecking = () => {
     // ! funktioniert nicht -> ziel refresh class neue classRessource anfordern und neue CheckRessource
@@ -50,24 +56,6 @@ function ClassCardComponent({
     console.log("check pressed sending message: ", message);
 
     vscode.postMessage([message]);
-  };
-
-  const renderErrorInfo = () => {
-    return (
-      <Tooltip id={`tooltip-${cls.className}`}>
-        <strong>Error</strong> in File <strong>{cls.tsFile.name}</strong>
-        <Table responsive="sm">
-          <tbody>
-            {tsCodeValidation?.errors.map((err, i) => (
-              <tr key={i}>
-                <td>{i}</td>
-                <td>{err}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Tooltip>
-    );
   };
 
   return (
@@ -85,25 +73,10 @@ function ClassCardComponent({
         }}
       >
         <Card.Body>
-          {!isValid && tsCodeValidation && (
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 250, hide: 400 }}
-              overlay={renderErrorInfo}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  zIndex: 10,
-                }}
-              >
-                <Button variant="danger" size="sm">
-                  <QuestionCircle />
-                </Button>
-              </div>
-            </OverlayTrigger>
+          {tsCodeValidation && !isValid && (
+            <Button variant="danger" size="sm" onClick={openErrorDialog}>
+              <QuestionCircle />
+            </Button>
           )}
           <Card.Title>{cls.className}</Card.Title>
           <Row className="gap-2">
@@ -143,7 +116,7 @@ function ClassCardComponent({
                 //style={baseStyle(hoveredAdd)}
                 // onMouseEnter={() => setHoveredAdd(true)}
                 //  onMouseLeave={() => setHoveredAdd(false)}
-                onClick={openDialog}
+                onClick={openclassDialog}
               >
                 <>
                   <Plus className="me-2" /> Add Instance
@@ -166,12 +139,19 @@ function ClassCardComponent({
       {classDialogOpen && (
         <CreateClassInstanceDialogComponent
           cls={cls}
-          close={closeDialog}
+          close={closeclassDialog}
           addToInstanceWaitingList={addToInstanceWaitingList}
           vscode={vscode}
           instanceNameSet={instanceNameSet}
           instancesAsParamsMap={instancesAsParamsMap}
         ></CreateClassInstanceDialogComponent>
+      )}
+      {errorDialogOpen && tsCodeValidation && !isValid && (
+        <CompilerErrorModalComponent
+          close={closeErrorDialog}
+          tsFile={cls.tsFile}
+          compilerErrs={tsCodeValidation.errors}
+        ></CompilerErrorModalComponent>
       )}
     </>
   );

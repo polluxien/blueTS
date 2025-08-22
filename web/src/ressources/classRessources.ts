@@ -132,3 +132,16 @@ export type FunctionResource = {
   };
   returnType: string;
 };
+
+////////// -------
+
+export type TsCodeCheckResource = {
+  isValid: boolean;
+  errors: CompileErrorResource[];
+};
+
+export type CompileErrorResource = {
+  message: string;
+  col: number | undefined;
+  row: number | undefined;
+};
