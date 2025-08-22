@@ -76,79 +76,88 @@ function ParameterFormControllComponent({
   // für feste Typen
   const fixedTypes = ["null", "void", "never", "literal"];
 
-  useEffect(() => {
-    if (!fixedTypes.includes(typeRes.paramType)) return;
+  useEffect(
+    () => {
+      if (!fixedTypes.includes(typeRes.paramType)) return;
 
-    let expectedValue = "";
+      let expectedValue = "";
 
-    if (typeRes.paramType === "null") expectedValue = "null";
-    else if (typeRes.paramType === "void") expectedValue = "undefined";
-    else if (typeRes.paramType === "never") expectedValue = "never";
-    else if (typeRes.paramType === "literal")
-      expectedValue = typeRes.typeAsString;
+      if (typeRes.paramType === "null") expectedValue = "null";
+      else if (typeRes.paramType === "void") expectedValue = "undefined";
+      else if (typeRes.paramType === "never") expectedValue = "never";
+      else if (typeRes.paramType === "literal")
+        expectedValue = typeRes.typeAsString;
 
-    // nur setzen, wenn sich Wert unterscheidet
-    if (expectedValue && value !== expectedValue) {
-      onChange(param.paramName, expectedValue);
-    }
+      // nur setzen, wenn sich Wert unterscheidet
+      if (expectedValue && value !== expectedValue) {
+        onChange(param.paramName, expectedValue);
+        return;
+      }
 
-    const { err, parsedValue } = validateFormControllType(param, value);
+      const { err, parsedValue } = validateFormControllType(param, value);
 
-    onValidationChange!(param.paramName, {
-      isValid: !err,
-      errors: err ? [err] : [],
-      parsedValue,
-    });
-  }, [
-    typeRes.paramType,
-    typeRes.typeAsString,
-    param.paramName,
-    value,
-    onChange,
-  ]);
+      onValidationChange!(param.paramName, {
+        isValid: !err,
+        errors: err ? [err] : [],
+        parsedValue,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [value, typeRes.paramType, typeRes.typeAsString, param.paramName]
+  );
 
   const nestedTypes = ["union", "tuple", "object", "array"];
 
   //Nested types -> externe überprüfung schon stattgefunden und muss nur übernommen werden
-  useEffect(() => {
-    if (!onValidationChange || !nestedTypes.includes(typeRes.paramType)) return;
-    //console.log("nested type");
+  useEffect(
+    () => {
+      if (!onValidationChange || !nestedTypes.includes(typeRes.paramType))
+        return;
+      //console.log("nested type");
 
-    // Noch keine Child-Validierungen erhalten
-    if (Object.keys(paramValidations).length === 0) return;
+      // Noch keine Child-Validierungen erhalten
+      if (Object.keys(paramValidations).length === 0) return;
 
-    const allChildrenValid = Object.values(paramValidations).every(
-      (value) => value.isValid
-    );
-    const allErrors = Object.values(paramValidations).flatMap(
-      (value) => value.errors
-    );
-    if (!paramValidations[param.paramName]) {
-      console.error(
-        "param zur Validation übergabe konnte nicht gefunden werden"
+      const allChildrenValid = Object.values(paramValidations).every(
+        (value) => value.isValid
       );
-    }
+      const allErrors = Object.values(paramValidations).flatMap(
+        (value) => value.errors
+      );
+      if (!paramValidations[param.paramName]) {
+        console.error(
+          "param zur Validation übergabe konnte nicht gefunden werden"
+        );
+      }
 
-    onValidationChange(param.paramName, {
-      isValid: allChildrenValid,
-      errors: allErrors,
-      parsedValue: paramValidations[param.paramName]?.parsedValue,
-    });
-  }, [paramValidations, param.paramName, onValidationChange]);
+      onValidationChange(param.paramName, {
+        isValid: allChildrenValid,
+        errors: allErrors,
+        parsedValue: paramValidations[param.paramName]?.parsedValue,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [paramValidations, param.paramName, typeRes.paramType]
+  );
 
   //Basic/primitiv oder enum types -> hier interene Überprüfung
-  useEffect(() => {
-    if (!onValidationChange || nestedTypes.includes(typeRes.paramType)) return;
-    //console.log("primitive type");
+  useEffect(
+    () => {
+      if (!onValidationChange || nestedTypes.includes(typeRes.paramType))
+        return;
+      //console.log("primitive type");
 
-    const { err, parsedValue } = validateFormControllType(param, value);
+      const { err, parsedValue } = validateFormControllType(param, value);
 
-    onValidationChange(param.paramName, {
-      isValid: !err,
-      errors: err ? [err] : [],
-      parsedValue,
-    });
-  }, [value, param.paramName, onValidationChange]);
+      onValidationChange(param.paramName, {
+        isValid: !err,
+        errors: err ? [err] : [],
+        parsedValue,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [value, param.paramName, typeRes.paramType]
+  );
 
   const paramFormType: ParamFormTypeResource = {
     index,
