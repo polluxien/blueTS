@@ -3,8 +3,8 @@ import Button from "react-bootstrap/Button";
 
 import type { InstanceResource } from "../../ressources/classRessources.js";
 import { Accordion, Alert, Table } from "react-bootstrap";
-import InstanceMethodComponent from "./InstanceMethodComponent.js";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.js";
+import InstanceMethodComponent from "./InstanceMethodComponent.js";
 
 type InstanceDialogComponentProps = {
   ins: InstanceResource;

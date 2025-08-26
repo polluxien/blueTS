@@ -44,6 +44,10 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   const [methodResults, setMethodResults] = useState<
     Map<string, Record<string, Error | string>>
   >(new Map([]));
+
+  const [functionResults, setFunctionResults] = useState<
+    Map<string, Record<string, Error | string>>
+  >(new Map([]));
   //Set von Namen instances um sicherzustellen das name uniqe
   const instanceNameSet = useRef(new Set<string>([]));
 
@@ -352,11 +356,12 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
       ) : (
         <div>
           <FunctionViewComponent
-              functions={functions}
-              loading={loading}
-              reLoad={reLoad} 
-              testedTsFileMap={testedTsFileMap}            // testedTsFileMap={testedTsFileMap}
-            //  vscode={vscode}
+            functions={functions}
+            loading={loading}
+            reLoad={reLoad}
+            testedTsFileMap={testedTsFileMap}
+            instancesAsParamsMap={instancesAsParamsMap}
+            vscode={vscode}
           ></FunctionViewComponent>
         </div>
       )}

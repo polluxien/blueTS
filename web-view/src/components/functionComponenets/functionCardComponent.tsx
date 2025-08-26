@@ -10,10 +10,14 @@ import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
 import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
+import CompilerErrorModalComponent from "../CompilerErrorModalComponent.tsx";
+import FunctionRunFunctionDialogComponent from "./functionRunFunctionDialogComponent.tsx";
 
 type FunctionCardComponentProps = {
   func: FunctionResource;
   tsCodeValidation: TsCodeCheckResource | undefined;
+
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 
   vscode: VSCodeAPIWrapper;
 };
@@ -21,6 +25,7 @@ type FunctionCardComponentProps = {
 function FunctionCardComponent({
   func,
   tsCodeValidation,
+  instancesAsParamsMap,
   vscode,
 }: FunctionCardComponentProps) {
   const [functionDialogOpen, setFunctionDialogOpen] = useState<boolean>(false);
@@ -32,12 +37,11 @@ function FunctionCardComponent({
     setIsValid(tsCodeValidation?.isValid ?? false);
   }, [tsCodeValidation]);
 
-  
   const openFunctionDialog = () => setFunctionDialogOpen(true);
-  //const closeFunctionDialog = () => setFunctionDialogOpen(false);
+  const closeFunctionDialog = () => setFunctionDialogOpen(false);
 
   const openErrorDialog = () => setErrorDialogOpen(true);
-  //const closeErrorDialog = () => setErrorDialogOpen(false);
+  const closeErrorDialog = () => setErrorDialogOpen(false);
 
   const sendTsPathForTsCodeChecking = () => {
     // ! funktioniert nicht -> ziel refresh class neue classRessource anfordern und neue CheckRessource
@@ -54,7 +58,7 @@ function FunctionCardComponent({
         className="h-100 shadow-sm"
         style={{
           //width: "280px",
-          background: "#c7751dff",
+          background: "#C7751D",
           borderRadius: "16px",
           border: "none",
           width: "100%",
@@ -62,17 +66,19 @@ function FunctionCardComponent({
         }}
       >
         <Card.Body>
-          {tsCodeValidation && !isValid && (
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={openErrorDialog}
-              title="show compiler Error"
-            >
-              <QuestionCircle />
-            </Button>
-          )}
-          <Card.Title>{func.functionName}</Card.Title>
+          <Card.Title>
+            {func.functionName}{" "}
+            {tsCodeValidation && !isValid && (
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={openErrorDialog}
+                title="show compiler Error"
+              >
+                <QuestionCircle />
+              </Button>
+            )}
+          </Card.Title>
           <Row className="gap-2">
             <Col>
               <Button
@@ -124,37 +130,27 @@ function FunctionCardComponent({
             border: "none",
             borderBottomLeftRadius: "16px",
             borderBottomRightRadius: "16px",
-            background: "#26385D",
+            background: "#945613",
           }}
         >
           file: <i>{func.tsFile?.name}</i>
         </Card.Footer>
       </Card>
-      {functionDialogOpen &&
-        {
-          /*       
-        <CreateClassInstanceDialogComponent
-          cls={cls}
-          close={closeclassDialog}
-          addToInstanceWaitingList={addToInstanceWaitingList}
-          vscode={vscode}
-          instanceNameSet={instanceNameSet}
+      {functionDialogOpen && (
+        <FunctionRunFunctionDialogComponent
+          func={func}
           instancesAsParamsMap={instancesAsParamsMap}
-        ></CreateClassInstanceDialogComponent>
-        */
-        }}
-      {errorDialogOpen &&
-        tsCodeValidation &&
-        !isValid &&
-        {
-          /*        
-          <CompilerErrorModalComponent
+          close={closeFunctionDialog}
+          vscode={vscode}
+        ></FunctionRunFunctionDialogComponent>
+      )}
+      {errorDialogOpen && tsCodeValidation && !isValid && (
+        <CompilerErrorModalComponent
           close={closeErrorDialog}
-          tsFile={cls.tsFile}
+          tsFile={func.tsFile}
           compilerErrs={tsCodeValidation.errors}
         ></CompilerErrorModalComponent>
-        */
-        }}
+      )}
     </>
   );
 }

@@ -2,7 +2,7 @@ import { Button, Modal, Table, Badge } from "react-bootstrap";
 import type {
   CompileErrorResource,
   TsFileResource,
-} from "../../ressources/classRessources";
+} from "../ressources/classRessources";
 
 type CompilerErrorModalComponentType = {
   close: () => void;

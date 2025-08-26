@@ -6,8 +6,7 @@ import type {
 } from "../ressources/classRessources";
 import LoadingComponent from "./LoadingComponent";
 import FunctionCardComponent from "./functionComponenets/functionCardComponent";
-import { vscode } from "../api/vscodeAPI";
-//import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
+import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 
 type FunctionViewComponentProps = {
   functions: FunctionResource[];
@@ -16,8 +15,9 @@ type FunctionViewComponentProps = {
   reLoad: (type: "classes" | "functions") => void;
 
   testedTsFileMap: Map<string, TsCodeCheckResource>;
+  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 
-  //vscode: VSCodeAPIWrapper;
+  vscode: VSCodeAPIWrapper;
 };
 
 function FunctionViewComponent({
@@ -25,6 +25,8 @@ function FunctionViewComponent({
   loading,
   reLoad,
   testedTsFileMap,
+  instancesAsParamsMap,
+  vscode,
 }: FunctionViewComponentProps) {
   const reLoadFunctions = () => reLoad("functions");
 
@@ -64,6 +66,7 @@ function FunctionViewComponent({
                     func={foo}
                     tsCodeValidation={getTsCodeValidation(foo.tsFile.path)}
                     vscode={vscode}
+                    instancesAsParamsMap={instancesAsParamsMap}
                   ></FunctionCardComponent>
                 </Col>
               ))}

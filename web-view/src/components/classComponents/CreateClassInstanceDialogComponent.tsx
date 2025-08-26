@@ -194,16 +194,16 @@ function CreateClassInstanceDialogComponent({
             </div>
           )}
           <p>{classVariables.length > 0 ? ")" : ""}</p>
-          <Modal.Footer>
-            <Button variant="secondary" type="button" onClick={close}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit">
-              create instance
-            </Button>
-          </Modal.Footer>
         </Form>
       </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" type="button" onClick={close}>
+          Close
+        </Button>
+        <Button variant="primary" type="submit">
+          create instance
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }

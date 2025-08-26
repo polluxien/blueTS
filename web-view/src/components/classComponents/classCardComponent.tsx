@@ -12,7 +12,7 @@ import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
 import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
-import CompilerErrorModalComponent from "./CompilerErrorModalComponent.tsx";
+import CompilerErrorModalComponent from "../CompilerErrorModalComponent.tsx";
 
 type ClassCardComponentProps = {
   cls: ClassResource;
@@ -73,17 +73,19 @@ function ClassCardComponent({
         }}
       >
         <Card.Body>
-          {tsCodeValidation && !isValid && (
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={openErrorDialog}
-              title="show compiler Error"
-            >
-              <QuestionCircle />
-            </Button>
-          )}
-          <Card.Title>{cls.className}</Card.Title>
+          <Card.Title>
+            {cls.className}{" "}
+            {tsCodeValidation && !isValid && (
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={openErrorDialog}
+                title="show compiler Error"
+              >
+                <QuestionCircle />
+              </Button>
+            )}
+          </Card.Title>
           <Row className="gap-2">
             <Col>
               <Button
