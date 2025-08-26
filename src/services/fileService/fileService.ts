@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Path } from "typescript";
-import { TsFileResource } from "../_resources/fileResources";
+import { TsFileResource } from "../../_resources/fileResources";
 import { getWorkspace } from "../workspaceService";
 
 let tsFilesArr: TsFileResource[];

@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from "react-bootstrap";
 import type {
   ParameterResource,
   TypeResource,
-} from "../../ressources/classRessources";
+} from "../../ressources/classRessources.ts";
 
 import ArrayParameterComponent from "./ArrayParamComponent.tsx";
 import UnionParamComponent from "./UnionParamComponent.tsx";

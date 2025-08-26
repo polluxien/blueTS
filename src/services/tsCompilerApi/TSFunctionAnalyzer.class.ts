@@ -8,11 +8,11 @@ import {
 import path from "path";
 
 //eigene Imports
-import { TsFileResource } from "../_resources/fileResources";
+import { TsFileResource } from "../../_resources/fileResources";
 import {
   FunctionResource,
   ParameterResource,
-} from "../_resources/tsCompilerAPIResources";
+} from "../../_resources/tsCompilerAPIResources";
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
 export class TSFunctionAnalyzer {

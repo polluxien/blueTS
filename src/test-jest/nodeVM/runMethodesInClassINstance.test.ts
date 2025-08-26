@@ -5,11 +5,8 @@ import {
   RunMethodeInInstanceType,
 } from "../../_resources/nodeVMResources";
 import { Path } from "typescript";
-import {
-  addInstanceToInstanceMap,
-  clearInstanceMap,
-  compileMethodInClassObject,
-} from "../../nodeVM/instanceManager";
+import { addInstanceToInstanceMap, clearInstanceMap, compileMethodInClassObject } from "../../services/nodeVM/instanceManager";
+
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   //erstelle zu anfang jedem tests eine neue Instanz

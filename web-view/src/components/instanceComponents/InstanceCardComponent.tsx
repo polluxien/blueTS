@@ -1,4 +1,4 @@
-import type { InstanceResource } from "../../ressources/classRessources";
+import type { InstanceResource } from "../../ressources/classRessources.ts";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useState } from "react";

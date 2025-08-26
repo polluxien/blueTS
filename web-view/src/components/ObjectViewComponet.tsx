@@ -1,12 +1,12 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
-import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
+import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
 import type {
   ClassResource,
   InstanceResource,
   TsCodeCheckResource,
-} from "../ressources/classRessources";
+} from "../ressources/classRessources.ts";
 import LoadingComponent from "./LoadingComponent.tsx";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
 

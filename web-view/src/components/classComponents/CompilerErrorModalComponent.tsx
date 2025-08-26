@@ -19,7 +19,7 @@ function CompilerErrorModalComponent({
     <Modal show={true} onHide={close} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title>
-          <strong style={{ color: "red" }}> Error</strong> in File{" "}
+          <strong style={{ color: "red" }}>Compiler Error</strong> in File{" "}
           <strong>{tsFile.name}</strong>
         </Modal.Title>
       </Modal.Header>

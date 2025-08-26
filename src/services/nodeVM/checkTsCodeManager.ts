@@ -1,4 +1,4 @@
-import { TsFileResource } from "../_resources/fileResources";
+import { TsFileResource } from "../../_resources/fileResources";
 import { getTSFiles } from "../fileService/fileService";
 import { checkTsCode } from "./nodeVMService";
 

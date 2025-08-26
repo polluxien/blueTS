@@ -6,24 +6,24 @@ import {
   window,
   ViewColumn,
 } from "vscode";
+
+import {
+  getAlltsClasses,
+  getAlltsFunctions,
+} from "./services/tsCompilerApi/analyzerManager";
 import {
   addInstanceToInstanceMap,
   compileMethodInClassObject,
   deleteInstanceInInstanceMap,
-} from "./nodeVM/instanceManager";
-import {
-  getAlltsClasses,
-  getAlltsFunctions,
-} from "./tsCompilerApi/analyzerManager";
+} from "./services/nodeVM/instanceManager";
 import {
   addAllFilesToTestedFilesMap,
   addFilesToTestedFilesMap,
-} from "./nodeVM/checkTsCodeManager";
+} from "./services/nodeVM/checkTsCodeManager";
 import {
-  getWorkspace,
   getWorkspaceRessourceForMessage,
   setWorkspace,
-} from "./workspaceService";
+} from "./services/workspaceService";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -74,7 +74,7 @@ export class Panel {
         //Webview Options
         {
           enableScripts: true,
-          localResourceRoots: [Uri.joinPath(extensionUri, "web", "dist")],
+          localResourceRoots: [Uri.joinPath(extensionUri, "web-view", "dist")],
         }
       );
 
@@ -109,12 +109,12 @@ export class Panel {
     const stylesUri = this.getUri(
       webview,
       extensionUri,
-      "web/dist/assets/index.css"
+      "web-view/dist/assets/index.css"
     );
     const scriptUri = this.getUri(
       webview,
       extensionUri,
-      "web/dist/assets/index.js"
+      "web-view/dist/assets/index.js"
     );
 
     // Debug-Ausgabe

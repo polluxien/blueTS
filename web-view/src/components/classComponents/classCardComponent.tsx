@@ -74,7 +74,12 @@ function ClassCardComponent({
       >
         <Card.Body>
           {tsCodeValidation && !isValid && (
-            <Button variant="danger" size="sm" onClick={openErrorDialog}>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={openErrorDialog}
+              title="show compiler Error"
+            >
               <QuestionCircle />
             </Button>
           )}

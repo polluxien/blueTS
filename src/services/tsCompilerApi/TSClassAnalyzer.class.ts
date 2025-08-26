@@ -13,13 +13,13 @@ import {
 import path from "path";
 
 //eigene Imports
-import { TsFileResource } from "../_resources/fileResources";
+import { TsFileResource } from "../../_resources/fileResources";
 import {
   ClassResource,
   ConstructorResource,
   MethodResource,
   ParameterResource,
-} from "../_resources/tsCompilerAPIResources";
+} from "../../_resources/tsCompilerAPIResources";
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
 export class TSClassAnalyzer {
@@ -68,7 +68,6 @@ export class TSClassAnalyzer {
     }
     const myConstructor: ConstructorResource = {
       //typescript klassisches überladen nicht möglich, nur mit signaturen
-
       parameters: this.extractParameters(cls.getConstructors()[0]),
     };
 

@@ -1,20 +1,19 @@
-import ts, { Path } from "typescript";
-import { getTSFiles } from "../fileService/fileService";
 import {
   ClassResource,
   FunctionResource,
-} from "../_resources/tsCompilerAPIResources";
+} from "../../_resources/tsCompilerAPIResources";
 import { TSFunctionAnalyzer } from "./TSFunctionAnalyzer.class";
 import { TSClassAnalyzer } from "./TSClassAnalyzer.class";
+import { getTSFiles } from "../fileService/fileService";
 
 export async function getAlltsClasses(): Promise<ClassResource[]> {
-  //Erstelle ClasenRessources
+  //Erstelle ClassResources
   const tsClasses = new TSClassAnalyzer(await getTSFiles());
   return tsClasses.parse();
 }
 
 export async function getAlltsFunctions(): Promise<FunctionResource[]> {
-  //Erstelle ClasenRessources
+  //Erstelle FunctionResources
   const tsfunctions = new TSFunctionAnalyzer(await getTSFiles());
   return tsfunctions.parse();
 }

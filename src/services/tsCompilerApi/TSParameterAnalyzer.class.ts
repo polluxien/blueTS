@@ -2,7 +2,7 @@ import { ParameterDeclaration, Type, Node, Symbol, Signature } from "ts-morph";
 import {
   ParameterResource,
   TypeResource,
-} from "../_resources/tsCompilerAPIResources";
+} from "../../_resources/tsCompilerAPIResources";
 
 export class TSParameterAnalyzer {
   constructor(private param: ParameterDeclaration) {}
@@ -100,14 +100,6 @@ export class TSParameterAnalyzer {
       const booleanLiterals: Type[] = [];
       const otherTypes: Type[] = [];
 
-      /*
-      type.getUnionTypes().map((unionType, index) => {
-        console.log(
-          `unionType ${typeAsString} on index ${index}: ${unionType.getText()}`
-        );
-      });
-      */
-
       // Boolean von anderen typen trennen, da boolean selbst union und sonst true und false
       type.getUnionTypes().forEach((unionType) => {
         const typeText = unionType.getText();
@@ -133,8 +125,9 @@ export class TSParameterAnalyzer {
           typeAsString: "boolean",
           paramType: "basic",
         });
-        // sonst übertarage als literal type
-      } else if (booleanLiterals.length === 1) {
+      }
+      // sonst übertarage als literal type
+      else if (booleanLiterals.length === 1) {
         const literalType = booleanLiterals[0];
         unionValues.push({
           typeAsString: literalType.getText(),
@@ -193,10 +186,7 @@ export class TSParameterAnalyzer {
 
       const paramArr: ParameterResource[] = [];
       for (let prop of props) {
-        const propType = prop.getTypeAtLocation(
-          // ! hier noch mal prüfen ob ich das so kann
-          this.param as ParameterDeclaration
-        );
+        const propType = prop.getTypeAtLocation(this.param);
         paramArr.push({
           paramName: prop.getName(),
           typeInfo: this.typeAnalyzer(propType),

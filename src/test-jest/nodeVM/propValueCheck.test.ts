@@ -4,11 +4,9 @@ import {
   InstanceCheckRessource,
   PropInstanceType,
 } from "../../_resources/nodeVMResources";
-import {
-  addInstanceToInstanceMap,
-  clearInstanceMap,
-} from "../../nodeVM/instanceManager";
+
 import { Path } from "typescript";
+import { addInstanceToInstanceMap, clearInstanceMap } from "../../services/nodeVM/instanceManager";
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   //hier sind die testrelevanten Props abgelegt
