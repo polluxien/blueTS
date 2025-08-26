@@ -352,10 +352,10 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
       ) : (
         <div>
           <FunctionViewComponent
-            functions={functions}
-            loading={loading}
-            reLoad={reLoad}
-            // testedTsFileMap={testedTsFileMap}
+              functions={functions}
+              loading={loading}
+              reLoad={reLoad} 
+              testedTsFileMap={testedTsFileMap}            // testedTsFileMap={testedTsFileMap}
             //  vscode={vscode}
           ></FunctionViewComponent>
         </div>
