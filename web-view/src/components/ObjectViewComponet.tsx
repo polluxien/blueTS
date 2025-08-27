@@ -1,4 +1,4 @@
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
@@ -70,23 +70,40 @@ function ObjectViewComponent({
               <ArrowClockwise />
             </Button>
           </div>
-          <div>
+          <div className="mb-4">
             {!loading ? (
               <Container fluid className="px-0">
                 {" "}
                 <Row className="g-4">
-                  {classes.map((cls, index) => (
-                    <Col key={index} {...getColumnSizes(classes.length)}>
-                      <ClassCardComponent
-                        cls={cls}
-                        addToInstanceWaitingList={addToInstanceWaitingList}
-                        instanceNameSet={instanceNameSet}
-                        instancesAsParamsMap={instancesAsParamsMap}
-                        tsCodeValidation={getTsCodeValidation(cls.tsFile.path)}
-                        vscode={vscode}
-                      />
-                    </Col>
-                  ))}
+                  {classes.length > 0 ? (
+                    classes.map((cls, index) => (
+                      <Col key={index} {...getColumnSizes(classes.length)}>
+                        <ClassCardComponent
+                          cls={cls}
+                          addToInstanceWaitingList={addToInstanceWaitingList}
+                          instanceNameSet={instanceNameSet}
+                          instancesAsParamsMap={instancesAsParamsMap}
+                          tsCodeValidation={getTsCodeValidation(
+                            cls.tsFile.path
+                          )}
+                          vscode={vscode}
+                        />
+                      </Col>
+                    ))
+                  ) : (
+                    <div className="mb-4">
+                      <Alert variant="light">
+                        <h5 className="text-muted mb-2">
+                          No <strong>classes</strong> found in current directory
+                        </h5>
+                        <p className="text-muted mb-0">
+                          Create a TypeScript class in your current working
+                          directory or switch to a different directory and click{" "}
+                          <ArrowClockwise className="mx-1" /> to refresh
+                        </p>
+                      </Alert>
+                    </div>
+                  )}
                 </Row>
               </Container>
             ) : (
@@ -95,24 +112,42 @@ function ObjectViewComponent({
           </div>
         </div>
         {/* Hier werden die erstellten Klassen-Instances angezeigt*/}
-        <div>
-          <h1>Class-Instances</h1>
-          <Container fluid className="px-0">
-            <Row className="g-4">
-              {instances.map((ins, index) => (
-                <Col key={index} {...getColumnSizes(instances.length)}>
-                  <InstanceCardComponent
-                    ins={ins}
-                    vscode={vscode}
-                    methodResults={methodResults.get(ins.instanceName)}
-                    dropInstance={dropInstance}
-                    instancesAsParamsMap={instancesAsParamsMap}
-                  />
-                </Col>
-              ))}
-            </Row>
-          </Container>
-        </div>
+        {classes.length > 0 && (
+          //zeige überhaup erst an wenn mindestens eine Klasse verfügbar ist
+          <div className="mb-4">
+            <h1>Class-Instances</h1>
+            <Container fluid className="px-0">
+              <Row className="g-4">
+                {instances.length > 0 ? (
+                  instances.map((ins, index) => (
+                    //hier auch auf größe von classes anapassen
+                    <Col key={index} {...getColumnSizes(classes.length)}>
+                      <InstanceCardComponent
+                        ins={ins}
+                        vscode={vscode}
+                        methodResults={methodResults.get(ins.instanceName)}
+                        dropInstance={dropInstance}
+                        instancesAsParamsMap={instancesAsParamsMap}
+                      />
+                    </Col>
+                  ))
+                ) : (
+                  <div className="mb-4">
+                    <Alert variant="light">
+                      <h5 className="text-muted mb-2">
+                        No instances created yet
+                      </h5>
+                      <p className="text-muted mb-0">
+                        Click the <strong>"Add Instance"</strong> button on any
+                        class above to create your first instance
+                      </p>
+                    </Alert>
+                  </div>
+                )}
+              </Row>
+            </Container>
+          </div>
+        )}
       </div>
     </>
   );

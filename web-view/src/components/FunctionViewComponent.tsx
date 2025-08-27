@@ -1,4 +1,4 @@
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import type {
   FunctionResource,
@@ -63,24 +63,39 @@ function FunctionViewComponent({
           </Button>
         </div>
       </div>
-      <div>
+      <div className="mb-4">
         {!loading ? (
           <Container fluid className="px-0">
             <Row className="g-4">
-              {functions.map((foo, index) => (
-                <Col key={index} {...getColumnSizes(functions.length)}>
-                  <FunctionCardComponent
-                    func={foo}
-                    functionResult={functionResultKey(
-                      foo.functionName,
-                      foo.tsFile.path
-                    )}
-                    tsCodeValidation={getTsCodeValidation(foo.tsFile.path)}
-                    vscode={vscode}
-                    instancesAsParamsMap={instancesAsParamsMap}
-                  ></FunctionCardComponent>
-                </Col>
-              ))}
+              {functions.length > 0 ? (
+                functions.map((foo, index) => (
+                  <Col key={index} {...getColumnSizes(functions.length)}>
+                    <FunctionCardComponent
+                      func={foo}
+                      functionResult={functionResultKey(
+                        foo.functionName,
+                        foo.tsFile.path
+                      )}
+                      tsCodeValidation={getTsCodeValidation(foo.tsFile.path)}
+                      vscode={vscode}
+                      instancesAsParamsMap={instancesAsParamsMap}
+                    ></FunctionCardComponent>
+                  </Col>
+                ))
+              ) : (
+                <div className="mb-4">
+                  <Alert variant="light">
+                    <h5 className="text-muted mb-2">
+                      No <strong>functions</strong> found in current directory
+                    </h5>
+                    <p className="text-muted mb-0">
+                      Create a TypeScript function in your current working
+                      directory or switch to a different directory and click{" "}
+                      <ArrowClockwise className="mx-1" /> to refresh
+                    </p>
+                  </Alert>
+                </div>
+              )}
             </Row>
           </Container>
         ) : (
