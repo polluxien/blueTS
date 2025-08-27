@@ -9,6 +9,7 @@ import type {
 } from "../ressources/classRessources.ts";
 import LoadingComponent from "./LoadingComponent.tsx";
 import ClassCardComponent from "./classComponents/classCardComponent.tsx";
+import { getColumnSizes } from "../helper/uiHelper.ts";
 
 type ObjectViewComponentProps = {
   classes: ClassResource[];
@@ -71,17 +72,11 @@ function ObjectViewComponent({
           </div>
           <div>
             {!loading ? (
-              <Container>
-                <Row>
+              <Container fluid className="px-0">
+                {" "}
+                <Row className="g-4">
                   {classes.map((cls, index) => (
-                    <Col
-                      key={index}
-                      xs={12}
-                      sm={6}
-                      md={4}
-                      lg={3}
-                      className="mb-4"
-                    >
+                    <Col key={index} {...getColumnSizes(classes.length)}>
                       <ClassCardComponent
                         cls={cls}
                         addToInstanceWaitingList={addToInstanceWaitingList}
@@ -102,10 +97,10 @@ function ObjectViewComponent({
         {/* Hier werden die erstellten Klassen-Instances angezeigt*/}
         <div>
           <h1>Class-Instances</h1>
-          <Container>
-            <Row>
+          <Container fluid className="px-0">
+            <Row className="g-4">
               {instances.map((ins, index) => (
-                <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
+                <Col key={index} {...getColumnSizes(instances.length)}>
                   <InstanceCardComponent
                     ins={ins}
                     vscode={vscode}

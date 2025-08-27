@@ -7,6 +7,7 @@ import type {
 import LoadingComponent from "./LoadingComponent";
 import FunctionCardComponent from "./functionComponenets/functionCardComponent";
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
+import { getColumnSizes } from "../helper/uiHelper";
 
 type FunctionViewComponentProps = {
   functions: FunctionResource[];
@@ -64,10 +65,10 @@ function FunctionViewComponent({
       </div>
       <div>
         {!loading ? (
-          <Container>
-            <Row>
+          <Container fluid className="px-0">
+            <Row className="g-4">
               {functions.map((foo, index) => (
-                <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
+                <Col key={index} {...getColumnSizes(functions.length)}>
                   <FunctionCardComponent
                     func={foo}
                     functionResult={functionResultKey(

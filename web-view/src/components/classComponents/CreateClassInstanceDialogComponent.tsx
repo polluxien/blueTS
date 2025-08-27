@@ -142,11 +142,11 @@ function CreateClassInstanceDialogComponent({
 
   return (
     <Modal show={true} onHide={close} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title>create instance: {cls.className}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title>create instance: {cls.className}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <FormGroup key={0} className="mb-4">
             <Form.Label> name of instance</Form.Label>
             <FormControl
@@ -194,16 +194,16 @@ function CreateClassInstanceDialogComponent({
             </div>
           )}
           <p>{classVariables.length > 0 ? ")" : ""}</p>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" type="button" onClick={close}>
-          Close
-        </Button>
-        <Button variant="primary" type="submit">
-          create instance
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" type="button" onClick={close}>
+            Close
+          </Button>
+          <Button variant="primary" type="submit">
+            create instance
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 }
