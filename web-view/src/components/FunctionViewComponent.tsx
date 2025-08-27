@@ -14,6 +14,8 @@ type FunctionViewComponentProps = {
 
   reLoad: (type: "classes" | "functions") => void;
 
+  functionResults: Map<string, string | Error> | undefined;
+
   testedTsFileMap: Map<string, TsCodeCheckResource>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 
@@ -22,6 +24,7 @@ type FunctionViewComponentProps = {
 
 function FunctionViewComponent({
   functions,
+  functionResults,
   loading,
   reLoad,
   testedTsFileMap,
@@ -29,6 +32,9 @@ function FunctionViewComponent({
   vscode,
 }: FunctionViewComponentProps) {
   const reLoadFunctions = () => reLoad("functions");
+  const functionResultKey = (funcName: string, tsFilePath: string) => {
+    return functionResults?.get(`${funcName}_${tsFilePath}`);
+  };
 
   const getTsCodeValidation = (tsFilePath: string) => {
     return testedTsFileMap.get(tsFilePath);
@@ -64,6 +70,10 @@ function FunctionViewComponent({
                 <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
                   <FunctionCardComponent
                     func={foo}
+                    functionResult={functionResultKey(
+                      foo.functionName,
+                      foo.tsFile.path
+                    )}
                     tsCodeValidation={getTsCodeValidation(foo.tsFile.path)}
                     vscode={vscode}
                     instancesAsParamsMap={instancesAsParamsMap}

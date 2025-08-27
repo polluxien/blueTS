@@ -1,7 +1,7 @@
 import { Badge, Button, Container, Form, Modal } from "react-bootstrap";
 import type {
   FunctionResource,
-  RunMethodeInInstanceType,
+  RunFunctionType,
 } from "../../ressources/classRessources";
 import ParameterFormControllComponent, {
   type ValidationTypeResource,
@@ -14,14 +14,17 @@ type FunctionRunFunctionDialogComponentProps = {
   func: FunctionResource;
   close: () => void;
 
-  vscode: VSCodeAPIWrapper;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+  functionResult: string | Error | undefined;
+
+  vscode: VSCodeAPIWrapper;
 };
 function FunctionRunFunctionDialogComponent({
   func,
   close,
-  vscode,
+  functionResult,
   instancesAsParamsMap,
+  vscode,
 }: FunctionRunFunctionDialogComponentProps) {
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
@@ -108,11 +111,11 @@ function FunctionRunFunctionDialogComponent({
       });
     }
 
-    const runMethodeInInstanceType: RunMethodeInInstanceType = {
-      instanceName: "insName",
-      methodName: func.functionName,
+    const runMethodeInInstanceType: RunFunctionType = {
+      functionName: func.functionName,
       params: metParameter,
-      specs: { methodKind: "default", isAsync: func.specs.isAsync },
+      specs: { isAsync: func.specs.isAsync },
+      tsFile: func.tsFile,
     };
     console.log(
       `run ${func.functionName} with values: `,
@@ -121,7 +124,7 @@ function FunctionRunFunctionDialogComponent({
 
     vscode.postMessage([
       {
-        command: "runMethodInInstance",
+        command: "runFunction",
         data: runMethodeInInstanceType,
       },
     ]);
@@ -177,7 +180,7 @@ function FunctionRunFunctionDialogComponent({
               )}
               {funcVariables.length > 0 && <p>{")"}</p>}
               {/* Hier letzte methoden Rückgaben */}
-              {/*{methodResults && (
+              {functionResult && (
                 <div className="mb-4">
                   <hr></hr>{" "}
                   <Form.Group>
@@ -189,11 +192,11 @@ function FunctionRunFunctionDialogComponent({
                       rows={1}
                       disabled
                       readOnly
-                      value={methodResults as string}
+                      value={functionResult as string}
                     />
                   </Form.Group>
                 </div>
-              )}*/}
+              )}
             </div>
           </Modal.Body>
           <Modal.Footer>

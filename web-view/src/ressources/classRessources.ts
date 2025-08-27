@@ -82,6 +82,16 @@ export type InstanceCheckResource = {
   error: unknown;
 };
 
+//function Types
+export type RunFunctionType = {
+  functionName: string;
+  params: unknown[];
+  specs: {
+    isAsync: boolean;
+  };
+  tsFile: TsFileResource;
+};
+
 //method types
 export type RunMethodeInInstanceType = {
   instanceName: string;
@@ -93,14 +103,24 @@ export type RunMethodeInInstanceType = {
   };
 };
 
-export type CompiledRunMethodInInstanceTyp = {
+export type CompiledMethodInInstanceTyp = {
   instanceName: string;
   methodName: string;
+  //unique über instanceName + methodeName + methodKind
   methodKind: "default" | "get" | "set";
   newProps?: PropInstanceType[];
   isValid: boolean;
   returnValue?: string;
   error?: Error;
+};
+
+export type CompiledFunctionTyp = {
+  functionName: string;
+  isValid: boolean;
+  returnValue?: string;
+  error?: Error;
+  //unique über functionName + tsFile.path
+  tsFile: TsFileResource;
 };
 
 //type für interene props von Instanz

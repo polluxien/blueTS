@@ -17,6 +17,7 @@ type FunctionCardComponentProps = {
   func: FunctionResource;
   tsCodeValidation: TsCodeCheckResource | undefined;
 
+  functionResult: string | Error | undefined;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 
   vscode: VSCodeAPIWrapper;
@@ -24,6 +25,7 @@ type FunctionCardComponentProps = {
 
 function FunctionCardComponent({
   func,
+  functionResult,
   tsCodeValidation,
   instancesAsParamsMap,
   vscode,
@@ -139,6 +141,7 @@ function FunctionCardComponent({
       {functionDialogOpen && (
         <FunctionRunFunctionDialogComponent
           func={func}
+          functionResult={functionResult}
           instancesAsParamsMap={instancesAsParamsMap}
           close={closeFunctionDialog}
           vscode={vscode}

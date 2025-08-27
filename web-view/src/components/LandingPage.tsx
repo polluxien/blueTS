@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type {
   ClassResource,
-  CompiledRunMethodInInstanceTyp,
+  CompiledFunctionTyp,
+  CompiledMethodInInstanceTyp,
   FunctionResource,
   InstanceCheckResource,
   InstanceResource,
@@ -39,15 +40,13 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * Instace stuff
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
   const instanceWaitingMap = useRef(new Map<string, InstanceResource>([]));
+
   //hier werden entsprechende methoden rückgaben vom Backend abgelegt
   // ? Map<instanceName, <MethodeName.METHODETYPE, result>[]>
   const [methodResults, setMethodResults] = useState<
     Map<string, Record<string, Error | string>>
   >(new Map([]));
 
-  const [functionResults, setFunctionResults] = useState<
-    Map<string, Record<string, Error | string>>
-  >(new Map([]));
   //Set von Namen instances um sicherzustellen das name uniqe
   const instanceNameSet = useRef(new Set<string>([]));
 
@@ -60,10 +59,17 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     new Map<string, TsCodeCheckResource>([])
   );
 
+  // * Function stuff
+  // für function View -> Results
+  // ? Map<functionName, result>
+  const [functionResultsMap, setFunctionResultsMap] = useState<
+    Map<string, string | Error>
+  >(new Map());
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  //wenn Webview ready hole alle Klassen, Functions, CodeChecks und aktuelle Directory informationen
+  //wenn Webview ready hole alle Klassen, Functions, CodeChecks und aktuelle Directory Informationen
   useEffect(() => {
     vscode.postMessage([
       //checke ob alle TS-Files korrekt
@@ -87,8 +93,8 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   const reLoad = (type: "classes" | "functions") => {
     setLoading(true);
     vscode.postMessage([
+      //aktualisiere und hole neue klassen / Funktionen
       {
-        //aktualisiere und hole neue klassen / Funktionen
         command: type === "classes" ? "getAllTsClasses" : "getAllTsFunctions",
       },
       //checke Files erneut
@@ -117,6 +123,9 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
           break;
         case "postMethodCheck":
           handelPostMethodCheck(data);
+          break;
+        case "postFunctionCheck":
+          handelPostFunctionCheck(data);
           break;
         case "postTsCodeCheckMap":
           handelPostTsCodeCheckMap(data);
@@ -208,7 +217,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     }
   }
 
-  function handelPostMethodCheck(data: CompiledRunMethodInInstanceTyp) {
+  function handelPostMethodCheck(data: CompiledMethodInInstanceTyp) {
     console.log(
       `Massage from command has CompiledRunMethodInInstanceTyp: `,
       JSON.stringify(data, null, 2)
@@ -256,6 +265,16 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
         return updatedInstances;
       });
     }
+  }
+
+  function handelPostFunctionCheck(data: CompiledFunctionTyp) {
+    const myKey = `${data.functionName}_${data.tsFile.path}`;
+
+    setFunctionResultsMap((prev) => {
+      const myMap = new Map(prev);
+      myMap.set(myKey, data.isValid ? data.returnValue! : data.error!);
+      return myMap;
+    });
   }
 
   function handelPostTsCodeCheckMap(data: [string, TsCodeCheckResource][]) {
@@ -357,6 +376,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
         <div>
           <FunctionViewComponent
             functions={functions}
+            functionResults={functionResultsMap}
             loading={loading}
             reLoad={reLoad}
             testedTsFileMap={testedTsFileMap}
