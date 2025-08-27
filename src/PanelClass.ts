@@ -24,6 +24,7 @@ import {
   getWorkspaceRessourceForMessage,
   setWorkspace,
 } from "./services/workspaceService";
+import { compileFunction } from "./services/nodeVM/nodeVMService";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -215,6 +216,16 @@ export class Panel {
               );
               this.postMessage({
                 command: "postMethodCheck",
+                data: messageData,
+              });
+              break;
+            }
+            // ? Function
+            case "runFunction": {
+              const messageData = await compileFunction(curMessage.data);
+              console.log("Sende FunctionCheckRes zurück: ", messageData);
+              this.postMessage({
+                command: "postFunctionCheck",
                 data: messageData,
               });
               break;

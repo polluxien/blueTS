@@ -6,9 +6,10 @@ import {
   PropInstanceType,
   RunMethodeInInstanceType,
 } from "../../_resources/nodeVMResources";
+import { parseReturnResult } from "./nodeHelper";
 import {
-  compileClassMethod,
-  createClassVM,
+  compileInstanceMethod,
+  createClassInstanceVM,
   extractClassInstanceProps,
 } from "./nodeVMService";
 
@@ -88,7 +89,7 @@ export async function addInstanceToInstanceMap(
     }
     console.log("zu übergebene ressource an node-vm: ", myCreateClsInstanceRes);
 
-    const instance = await createClassVM(myCreateClsInstanceRes);
+    const instance = await createClassInstanceVM(myCreateClsInstanceRes);
     if (!instance) {
       throw new Error("Instance konnte nicht erstellt werden");
     }
@@ -131,29 +132,13 @@ export async function compileMethodInClassObject(
       throw new Error("Instanz nicht gefunden.");
     }
 
-    const result = await compileClassMethod(
+    const result = await compileInstanceMethod(
       tupelInstanceValue[0],
       runMethodeInInstanceType
     );
     compiledResult.isValid = true;
 
-    let parsedValue = "";
-    if (result === undefined || result === null) {
-      parsedValue = "void";
-    } else if (typeof result === "object") {
-      try {
-        parsedValue = JSON.stringify(result, null, 2);
-      } catch {
-        parsedValue = "[Unserializable Object]";
-      }
-    } else {
-      try {
-        parsedValue = result!.toString();
-      } catch {
-        parsedValue = result as string;
-      }
-    }
-    compiledResult.returnValue = parsedValue;
+    compiledResult.returnValue = parseReturnResult(result);
 
     //hole aktuelle instance
     const curIns = getInstanceFromInstanceMap(
