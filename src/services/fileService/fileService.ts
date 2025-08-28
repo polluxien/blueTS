@@ -31,6 +31,30 @@ export function getTSFilesLength(): number {
 }
   */
 
+//exclude Pattern -> sollen ignoriert werden
+// * eventuell noch erweitern
+const excludePatterns = [
+  "node_modules",
+  "dist",
+  "build",
+  "coverage",
+  ".git",
+  "logs",
+  ".cache",
+  ".vscode",
+  "temp",
+];
+const testFileEx = [
+  ".test.ts",
+  ".spec.ts",
+  ".d.ts",
+  ".stories.ts",
+  ".stories.tsx",
+  ".mock.ts",
+  ".fixture.ts",
+  ".e2e.ts",
+];
+
 async function getAllTsFilesFromDirectory(
   dirPath: string
 ): Promise<TsFileResource[]> {
@@ -40,11 +64,23 @@ async function getAllTsFilesFromDirectory(
     const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
 
     for (let entry of entries) {
-      const fullPath = path.join(dirPath, entry.name);
+      const entryName = entry.name;
+      //überspringe nicht relevante Ordnerstruckturen
+      if (excludePatterns.includes(entryName)) {
+        continue;
+      }
+
+      const fullPath = path.join(dirPath, entryName);
       if (entry.isDirectory()) {
         const subfiles = await getAllTsFilesFromDirectory(fullPath);
         tsFileArr.push(...subfiles);
-      } else if (entry.isFile() && entry.name.endsWith(".ts")) {
+      } else if (entry.isFile() && entryName.endsWith(".ts")) {
+        //überspringe Testdatein
+        const isTestFile = testFileEx.some((end) => entryName.endsWith(end));
+        if (isTestFile) {
+          continue;
+        }
+
         tsFileArr.push({
           name: entry.name,
           path: fullPath as Path,
@@ -52,10 +88,7 @@ async function getAllTsFilesFromDirectory(
       }
     }
   } catch (err) {
-    console.error(
-      `getAllTsFilesFromDirectory: Fehler beim Lesen von ${dirPath}:`,
-      err
-    );
+    console.error(`Fehler beim Lesen von ${dirPath}:`, err);
   }
   return tsFileArr;
 }
