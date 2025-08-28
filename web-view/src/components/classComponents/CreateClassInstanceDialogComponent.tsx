@@ -12,10 +12,10 @@ import type {
 } from "../../ressources/classRessources.ts";
 
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
-import { validateFormControllType } from "../../helper/validateType.ts";
 import ParameterFormControllComponent, {
   type ValidationTypeResource,
 } from "../paramComponents/ParameterFormControllComponenet.tsx";
+import { validateSubmit } from "../../helper/validateSubmit.ts";
 
 type CreateClassInstanceDialogComponentProps = {
   cls: ClassResource;
@@ -65,9 +65,13 @@ function CreateClassInstanceDialogComponent({
     event.preventDefault();
     event.stopPropagation();
 
-    const newErrors: Record<string, Error> = {};
-    const newParsedValues: Record<string, unknown> = {};
+    const { newErrors, newParsedValues } = validateSubmit(
+      classVariables,
+      paramValidations,
+      formValues
+    );
 
+    //externe InstanceName Überprüfung
     const instanceName = formValues["__instanceName"];
     if (!instanceName) {
       newErrors["__instanceName"] = new Error("name for instance is required");
@@ -76,32 +80,6 @@ function CreateClassInstanceDialogComponent({
       newErrors["__instanceName"] = new Error(
         "name for instance is allready used"
       );
-    }
-
-    for (const param of classVariables) {
-      const validation = paramValidations[param.paramName];
-
-      if (!validation || !validation.isValid) {
-        // Fallback
-        if (!validation) {
-          const value = formValues[param.paramName];
-          const { err, parsedValue } = validateFormControllType(param, value);
-
-          if (err) {
-            newErrors[param.paramName] = err;
-          } else {
-            newParsedValues[param.paramName] = parsedValue;
-          }
-        } else {
-          // verwende gesammelte Validierungsfehler
-          if (validation.errors.length > 0) {
-            newErrors[param.paramName] = validation.errors[0];
-          }
-        }
-      } else {
-        // verwende den parsedValue
-        newParsedValues[param.paramName] = validation.parsedValue;
-      }
     }
 
     setErrors(newErrors);

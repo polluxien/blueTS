@@ -7,8 +7,8 @@ import ParameterFormControllComponent, {
   type ValidationTypeResource,
 } from "../paramComponents/ParameterFormControllComponenet";
 import { useState } from "react";
-import { validateFormControllType } from "../../helper/validateType";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
+import { validateSubmit } from "../../helper/validateSubmit";
 
 type FunctionRunFunctionDialogComponentProps = {
   func: FunctionResource;
@@ -63,34 +63,11 @@ function FunctionRunFunctionDialogComponent({
       return;
     }
 
-    const newErrors: Record<string, Error> = {};
-    const newParsedValues: Record<string, unknown> = {};
-
-    for (const param of funcVariables) {
-      const validation = paramValidations[param.paramName];
-
-      if (!validation || !validation.isValid) {
-        // Fallback
-        if (!validation) {
-          const value = formValues[param.paramName];
-          const { err, parsedValue } = validateFormControllType(param, value);
-
-          if (err) {
-            newErrors[param.paramName] = err;
-          } else {
-            newParsedValues[param.paramName] = parsedValue;
-          }
-        } else {
-          // verwende gesammelte Validierungsfehler
-          if (validation.errors.length > 0) {
-            newErrors[param.paramName] = validation.errors[0];
-          }
-        }
-      } else {
-        // verwende den parsedValue
-        newParsedValues[param.paramName] = validation.parsedValue;
-      }
-    }
+    const { newErrors, newParsedValues } = validateSubmit(
+      funcVariables,
+      paramValidations,
+      formValues
+    );
 
     setErrors(newErrors);
     setValidated(true);
