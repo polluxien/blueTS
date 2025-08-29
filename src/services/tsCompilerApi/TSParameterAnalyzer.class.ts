@@ -1,11 +1,4 @@
-import {
-  ParameterDeclaration,
-  Type,
-  Node,
-  Symbol,
-  Signature,
-  ts,
-} from "ts-morph";
+import { ParameterDeclaration, Type, Node, ts } from "ts-morph";
 
 import {
   ParameterResource,
@@ -123,7 +116,13 @@ export class TSParameterAnalyzer {
 
     //* tupel type
     if (type.isTuple()) {
-      this.handelTupelType(type, typeAsString, depth, visited);
+      return {
+        typeAsString,
+        paramType: "tuple",
+        tupleElements: type
+          .getTupleElements()
+          .map((t) => this.typeAnalyzer(t, depth, visited)),
+      };
     }
 
     //* function type
@@ -163,7 +162,8 @@ export class TSParameterAnalyzer {
       typeAsString.includes(">") &&
       type.getTypeArguments().length > 0
     ) {
-      return this.handleGenericType(type, typeAsString, depth, visited);
+      // ! kommt momentan nichts brauchbares raus
+      // return this.handleGenericType(type, typeAsString, depth, visited);
     }
 
     //* Fallback
@@ -171,42 +171,6 @@ export class TSParameterAnalyzer {
     return {
       typeAsString,
       paramType: "unknown",
-    };
-  }
-  handelTupelType(
-    type: Type,
-    typeAsString: string,
-    depth: number,
-    visited: Set<string>
-  ) {
-    const tupleElements = type.getTupleElements();
-    const analyzedElements = tupleElements.map((t) =>
-      this.typeAnalyzer(t, depth, visited)
-    );
-
-    // Check for rest elements by examining the original type string
-    const hasRestElement = typeAsString.includes("...");
-
-    // If has rest element, the last element should be treated as array
-    if (hasRestElement && analyzedElements.length > 1) {
-      const lastIndex = analyzedElements.length - 1;
-      const lastElement = analyzedElements[lastIndex];
-
-      // Convert the last element to array type if it's not already
-      if (lastElement.paramType === "basic") {
-        analyzedElements[lastIndex] = {
-          typeAsString: `${lastElement.typeAsString}[]`,
-          paramType: "array",
-          arrayType: lastElement,
-        };
-      }
-    }
-
-    return {
-      typeAsString,
-      paramType: "tuple",
-      tupleElements: analyzedElements,
-      hasRestElement,
     };
   }
 

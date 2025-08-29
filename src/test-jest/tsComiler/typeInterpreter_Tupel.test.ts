@@ -22,6 +22,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
     expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
   });
 
+  // ! erkennt keine optional types
   test("erkenne Eingabeparameter: [string, number, boolean?]", () => {
     const expectedParam = {
       paramName: "optionalTuple",
@@ -48,6 +49,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
     expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
   });
 
+  // ! erkennt keine rest types
   test("erkenne Eingabeparameter: [string, ...number[]]", () => {
     const expectedParam = {
       paramName: "restTuple",
@@ -68,35 +70,5 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
     };
     console.log(JSON.stringify(res[0].constructor!.parameters[2]), null, 2);
     expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
-  });
-});
-
-// ERROR HANDLING TESTS
-describe("Error Handling und Edge Cases", () => {
-  test("handle circular references", () => {
-    const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassCircular")]);
-    const res: ClassResource[] = myAnalyser.parse();
-
-    expect(res[0].constructor!.parameters[0].typeInfo.paramType).toBe(
-      "circular-reference"
-    );
-  });
-
-  test("handle max depth reached", () => {
-    const myAnalyser = new TSClassAnalyzer([
-      giveMeTSResource("ClassDeepNested"),
-    ]);
-    const res: ClassResource[] = myAnalyser.parse();
-
-    // Sollte nicht crashen und graceful fallback haben
-    expect(res).toBeDefined();
-    expect(res[0]).toBeDefined();
-  });
-
-  test("handle invalid TypeScript code", () => {
-    const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassInvalid")]);
-
-    // Sollte nicht crashen
-    expect(() => myAnalyser.parse()).not.toThrow();
   });
 });

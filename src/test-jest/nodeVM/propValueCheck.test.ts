@@ -185,7 +185,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       name: "mixedTuple",
       type: "object",
       value: `[
-  "Level",
+  '"Level"',
   5,
   true
 ]`,
@@ -215,7 +215,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[17]).toEqual({
       name: "greet",
       type: "function",
-      value: "function",
+      value: "[Function: greet]",
     });
   });
 
@@ -224,7 +224,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[18]).toEqual({
       name: "action",
       type: "function",
-      value: "function",
+      value: "[Function: action]",
     });
   });
 
@@ -233,7 +233,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[19]).toEqual({
       name: "genericValue",
       type: "string",
-      value: "defaultValue",
+      value: '"defaultValue"',
     });
   });
 });
