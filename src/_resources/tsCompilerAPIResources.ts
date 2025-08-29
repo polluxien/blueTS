@@ -3,6 +3,16 @@ import { TsFileResource } from "./fileResources";
 
 // * Param-Resource Types für Object- als auch Function-View
 
+export type FunctionParamTypeSignatureResource = {
+  defaultImplementation: string;
+  returnType?: TypeResource;
+};
+
+export type GenericParamTypeResource = {
+  baseType: string;
+  genericArgs?: TypeResource[];
+};
+
 export type TypeResource = {
   typeAsString: string;
   paramType:
@@ -20,16 +30,21 @@ export type TypeResource = {
     | "undefined"
     | "never"
     | "void"
-    | "unknown";
+    | "unknown"
+    | "intersection"
+    | "generic"
+    | "max-depth"
+    | "recursive-reference";
   literalType?: string;
   enumValues?: string[];
+  intersectionValues?: TypeResource[];
   tupleElements?: TypeResource[];
   unionValues?: TypeResource[];
   arrayType?: TypeResource;
   objectParameters?: ParameterResource[];
-  //ich galube erst mal ein bisschen lighter mit namer nur ohne 1 zu 1 prüfen ob identisch
-  // ! selbst damit könnte ich nicht feststellen ob 1 zu 1 identisch
-  //instanceClass?: ClassRessource;
+  //Spezielle Typen
+  functionRes?: FunctionParamTypeSignatureResource;
+  genericRes?: GenericParamTypeResource;
 };
 
 export type ParameterResource = {

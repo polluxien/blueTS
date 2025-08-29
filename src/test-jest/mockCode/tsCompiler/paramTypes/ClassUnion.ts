@@ -1,6 +1,6 @@
 //EingabeParameter Union
 
-export class unn {
+export class ClassUnion {
   private stringOrNumber: string | number;
   private numberOrBoolean: number | boolean;
   private stringOrArray: string | string[];

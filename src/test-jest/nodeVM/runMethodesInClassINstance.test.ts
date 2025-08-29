@@ -93,7 +93,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
         {
           name: "name",
           type: "string",
-          value: "Albert",
+          value: `"Albert"`,
         },
         {
           name: "_age",
