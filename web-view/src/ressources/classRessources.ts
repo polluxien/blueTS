@@ -3,6 +3,16 @@ export type TsFileResource = {
   path: string;
 };
 
+export type FunctionParamTypeSignatureResource = {
+  defaultImplementation: string;
+  returnType?: TypeResource;
+};
+
+export type GenericParamTypeResource = {
+  baseType: string;
+  genericArgs?: TypeResource[];
+};
+
 export type TypeResource = {
   typeAsString: string;
   paramType:
@@ -20,13 +30,21 @@ export type TypeResource = {
     | "undefined"
     | "never"
     | "void"
-    | "unknown";
+    | "unknown"
+    | "intersection"
+    | "generic"
+    | "max-depth"
+    | "recursive-reference";
   literalType?: string;
   enumValues?: string[];
+  intersectionValues?: TypeResource[];
   tupleElements?: TypeResource[];
   unionValues?: TypeResource[];
   arrayType?: TypeResource;
   objectParameters?: ParameterResource[];
+  //Spezielle Typen
+  functionRes?: FunctionParamTypeSignatureResource;
+  genericRes?: GenericParamTypeResource;
 };
 
 export type ParameterResource = {

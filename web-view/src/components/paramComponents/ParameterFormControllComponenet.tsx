@@ -12,6 +12,7 @@ import TupelParamComponent from "./TupelParamComponent.tsx";
 import { useEffect, useState } from "react";
 import { validateFormControllType } from "../../helper/validateType.ts";
 import ObjectParamComponent from "./ObjectParamComponent.tsx";
+import IntersectionParamComponent from "./IntersectionFormControllComponenet.tsx";
 
 export type ParamFormTypeResource = {
   index: number;
@@ -186,6 +187,14 @@ function ParameterFormControllComponent({
         <UnionParamComponent
           paramFormType={paramFormType}
         ></UnionParamComponent>
+      );
+    }
+
+    case "intersection": {
+      return (
+        <IntersectionParamComponent
+          paramFormType={paramFormType}
+        ></IntersectionParamComponent>
       );
     }
 
