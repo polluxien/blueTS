@@ -1,0 +1,98 @@
+// Beispiel für Interface Properties
+interface UserInterface {
+  username: string;
+  email?: string;
+  readonly id: number;
+  preferences: {
+    theme: "light" | "dark";
+    language: string;
+  };
+}
+
+// Beispiel für Type Aliases mit Properties
+type UserType = {
+  name: string;
+  age: number;
+  readonly createdAt: Date;
+  isAdmin?: boolean;
+};
+
+class ExampleClass {
+  public name: string;
+  public age: number;
+
+  //private
+  private _id: string;
+
+  // protected
+  protected category: string;
+
+  // 4. Readonly Properties
+  readonly createdAt: Date;
+
+  static Properties;
+  static totalInstances: number = 0;
+  static readonly MAX_INSTANCES: number = 100;
+
+  // 6. Optional Properties
+  description?: string;
+
+  // 7. Property mit Default-Wert
+  isActive: boolean = true;
+
+  // 8. Array Properties
+  tags: string[] = [];
+  coordinates: [number, number] = [0, 0]; // Tuple
+
+  // 9. Object Properties
+  metadata: { [key: string]: any } = {};
+  settings: { theme: "light" | "dark"; notifications: boolean } = {
+    theme: "light",
+    notifications: true,
+  };
+
+  // 10. Union Type Properties
+  status: "pending" | "active" | "inactive" = "pending";
+  value: string | number | null = null;
+
+  // 11. Generic Properties
+  data: Map<string, any> = new Map();
+  cache: Set<string> = new Set();
+
+  // 12. Function Properties
+  onUpdate?: (data: any) => void;
+  validator: (input: string) => boolean = (input) => input.length > 0;
+
+  // 13. Computed Properties (mit Gettern und Settern)
+  private _fullName: string = "";
+
+  //personal-type
+  myType: UserType;
+
+  //interaface
+  myInterface: UserInterface;
+
+  // Constructor mit Parameter Properties
+  constructor(
+    name: string,
+    age: number,
+    // 15. Parameter Properties (erstellen automatisch Properties)
+    public email: string,
+    private readonly _secretKey: string,
+    protected department: string = "General"
+  ) {
+    this.name = name;
+    this.age = age;
+    this.createdAt = new Date();
+    this._id = Math.random().toString(36);
+    this.category = "user";
+
+    // Static Property erhöhen
+    ExampleClass.totalInstances++;
+
+    // Optional: Validation
+    if (ExampleClass.totalInstances > ExampleClass.MAX_INSTANCES) {
+      throw new Error("Maximum instances exceeded");
+    }
+  }
+}

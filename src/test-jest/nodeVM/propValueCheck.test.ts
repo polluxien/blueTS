@@ -6,7 +6,10 @@ import {
 } from "../../_resources/nodeVMResources";
 
 import { Path } from "typescript";
-import { addInstanceToInstanceMap, clearInstanceMap } from "../../services/nodeVM/instanceManager";
+import {
+  addInstanceToInstanceMap,
+  clearInstanceMap,
+} from "../../services/nodeVM/instanceManager";
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   //hier sind die testrelevanten Props abgelegt
@@ -183,9 +186,9 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[14]).toBeDefined();
     expect(propsResultArr[14]).toEqual({
       name: "mixedTuple",
-      type: "object",
+      type: "array",
       value: `[
-  '"Level"',
+  \"Level\",
   5,
   true
 ]`,

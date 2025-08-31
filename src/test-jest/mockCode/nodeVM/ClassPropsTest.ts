@@ -11,10 +11,10 @@ interface Address {
 
 class AllTheTypes<T = string> {
   // Primitive Types
-  public id: number = 1;                                                  //0
-  public name: string = "Bennet";                                         //1
+  private id: number = 1;                                                 //0
+  protected name: string = "Bennet";                                      //1
   public isActive: boolean = true;                                        //2
-  public rating: number | null = null;                                    //3
+  rating: number | null = null;                                           //3
   public uuid?: string = "123e4567-e89b-12d3-a456-426614174000";          //4
   public nothing: undefined = undefined;                                  //5
   public anything: any = { foo: "bar" };                                  //6

@@ -14,10 +14,23 @@
   "contributes": {
     "commands": [
       {
-        "command": "react-ext.showPanel",
-        "title": "React Web View"
+        "command": "react-ext.openFromCommandPalett",
+        "title": "open redJ"
+      },
+      {
+        "command": "react-ext.openFromToolbar",
+        "title": "open redJ",
+        "icon": "$(preview)"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "react-ext.openFromToolbar",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

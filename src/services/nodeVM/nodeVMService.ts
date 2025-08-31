@@ -177,8 +177,9 @@ export async function extractClassInstanceProps(
 
   try {
     // Hole alle props der Instanz
-    const propNames = Object.getOwnPropertyNames(instance);
-    for (let propName of propNames) {
+    const instanceProps = Object.getOwnPropertyNames(instance);
+    
+    for (let propName of instanceProps) {
       try {
         let value: any;
         let type: string;
@@ -203,11 +204,12 @@ export async function extractClassInstanceProps(
             value = Object.getPrototypeOf(instance)[propName];
           }
         } catch (err) {
-          value = "[Nicht zugreifbar]";
+          value = "[not inspected]";
         }
 
         // Bestimme Typ
         if (typeof value === "function") {
+          // ! skippe eventuell function
           type = "function";
         } else if (value === null) {
           type = "null";
@@ -240,9 +242,9 @@ export async function extractClassInstanceProps(
           type,
           value: valueStr,
           /*
-          specs: {
-            visibility,
-            isStatic,
+          ? specs: {
+          ?   visibility,
+          ?   isStatic,
           },
           */
         });
