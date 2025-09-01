@@ -14,19 +14,20 @@
   "contributes": {
     "commands": [
       {
-        "command": "react-ext.openFromCommandPalett",
+        "command": "redj-ext.openFromCommandPalett",
         "title": "open redJ"
       },
       {
-        "command": "react-ext.openFromToolbar",
+        "command": "redj-ext.openFromToolbar",
         "title": "open redJ",
         "icon": "$(preview)"
       }
     ],
     "menus": {
-      "view/title": [
+      "editor/title": [
         {
-          "command": "react-ext.openFromToolbar",
+          "command": "redj-ext.openFromToolbar",
+          "when": "redj-ext.hasTsFiles",
           "group": "navigation"
         }
       ]

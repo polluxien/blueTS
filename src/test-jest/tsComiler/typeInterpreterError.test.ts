@@ -7,7 +7,7 @@ describe("Error Handling und Edge Cases", () => {
     const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassCircular")]);
     const res: ClassResource[] = myAnalyser.parse();
 
-    console.log(JSON)
+    console.log(JSON);
     expect(JSON.stringify(res[0].constructor!.parameters[0])).toContain(
       "recursive-reference"
     );

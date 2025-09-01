@@ -16,6 +16,11 @@ export async function getTSFiles(refresh = true): Promise<TsFileResource[]> {
       throw new Error("kein workspace geöffnet");
     }
     tsFilesArr = await getAllTsFilesFromDirectory(workspace);
+
+    console.log(
+      "TSFILES GEFUNDEN UND ICON SOLLTE ANGEZEIGT WERDEN!: ",
+      hasTsFilesInDirectory()
+    );
   }
   return tsFilesArr;
 }
@@ -55,6 +60,7 @@ const testFileEx = [
   ".e2e.ts",
 ];
 
+//rekursive rückgabe nach tsFiles mit rückgabe von Resourcen
 async function getAllTsFilesFromDirectory(
   dirPath: string
 ): Promise<TsFileResource[]> {
@@ -91,6 +97,40 @@ async function getAllTsFilesFromDirectory(
     console.error(`Fehler beim Lesen von ${dirPath}:`, err);
   }
   return tsFileArr;
+}
+
+//rekursive suche nach stimmigen TS-Files als boolean
+export async function hasTsFilesInDirectory(
+  dirPath = getWorkspace()
+): Promise<boolean> {
+  try {
+    const entries = await fs.promises.readdir(dirPath, {
+      withFileTypes: true,
+    });
+
+    for (let entry of entries) {
+      const entryName = entry.name;
+      if (excludePatterns.includes(entryName)) {
+        continue;
+      }
+
+      const fullPath = path.join(dirPath, entryName);
+      if (entry.isDirectory()) {
+        const hasTS = await hasTsFilesInDirectory(fullPath);
+        if (hasTS) {
+          return true;
+        }
+      } else if (entry.isFile() && entryName.endsWith(".ts")) {
+        const isTestFile = testFileEx.some((end) => entryName.endsWith(end));
+        if (!isTestFile) {
+          return true;
+        }
+      }
+    }
+  } catch (err) {
+    console.error(`Fehler beim Lesen von ${dirPath}:`, err);
+  }
+  return false;
 }
 
 // ? erst einmal nicht benötigt
