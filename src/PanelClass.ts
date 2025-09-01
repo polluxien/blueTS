@@ -154,7 +154,7 @@ export class Panel {
   // ! Under Construction
   /**
    * https://medium.com/@ashleyluu87/data-flow-from-vs-code-extension-webview-panel-react-components-2f94b881467e
-   *0
+   *
    * @param webview
    */
   private _setWebviewMessageListener(webview: Webview) {

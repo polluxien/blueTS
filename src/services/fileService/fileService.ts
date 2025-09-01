@@ -4,41 +4,13 @@ import { Path } from "typescript";
 import { TsFileResource } from "../../_resources/fileResources";
 import { getWorkspace } from "../workspaceService";
 
-let tsFilesArr: TsFileResource[];
+import * as vscode from "vscode";
 
-//wenn refresh true, durchsuche neu (bei Pfadänderung)
-// ? sollte immer true sein da ich ja neue files erstellen kann und parallel meine extension habe
-export async function getTSFiles(refresh = true): Promise<TsFileResource[]> {
-  //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
-  if (!tsFilesArr || refresh) {
-    const workspace = getWorkspace();
-    if (!workspace) {
-      throw new Error("kein workspace geöffnet");
-    }
-    tsFilesArr = await getAllTsFilesFromDirectory(workspace);
-
-    console.log(
-      "TSFILES GEFUNDEN UND ICON SOLLTE ANGEZEIGT WERDEN!: ",
-      hasTsFilesInDirectory()
-    );
-  }
-  return tsFilesArr;
-}
-
-// ! wirft eh nur solange ich das mit message handler nicht besser mache
-
-/* 
-export function getTSFilesLength(): number {
-  if (!tsFilesArr) {
-    throw new Error("ts files wurden noch nicht geladen");
-  }
-  return tsFilesArr.length;
-}
-  */
+let tsFilesArr: TsFileResource[] | null;
 
 //exclude Pattern -> sollen ignoriert werden
 // * eventuell noch erweitern
-const excludePatterns = [
+const DIRECTORY_EXCLUDE = [
   "node_modules",
   "dist",
   "build",
@@ -49,7 +21,7 @@ const excludePatterns = [
   ".vscode",
   "temp",
 ];
-const testFileEx = [
+const TEST_FILE_EXCLUDE = [
   ".test.ts",
   ".spec.ts",
   ".d.ts",
@@ -59,6 +31,36 @@ const testFileEx = [
   ".fixture.ts",
   ".e2e.ts",
 ];
+
+function exludeFusionForVSCode() {
+  const folderExcludes = DIRECTORY_EXCLUDE.map((ex) => `**/${ex}/**`);
+  const testFileExcludes = TEST_FILE_EXCLUDE.map((ex) => `**/*${ex}`);
+  const allExcludes = [...folderExcludes, ...testFileExcludes];
+
+  return `{${allExcludes.join(",")}}`;
+}
+
+//wenn refresh true, durchsuche neu (bei Pfadänderung)
+export async function getTSFiles(refresh = true): Promise<TsFileResource[]> {
+  //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
+  if (!tsFilesArr || refresh) {
+    const workspace = getWorkspace();
+    if (!workspace) {
+      throw new Error("kein workspace geöffnet");
+    }
+    tsFilesArr = await getAllTsFilesFromDirectory(workspace);
+  }
+  return tsFilesArr;
+}
+
+export async function getTsFilesCount(): Promise<number> {
+  const files = await getTSFiles(false);
+  return files.length;
+}
+
+export function resetTsFilesCache(): void {
+  tsFilesArr = null;
+}
 
 //rekursive rückgabe nach tsFiles mit rückgabe von Resourcen
 async function getAllTsFilesFromDirectory(
@@ -72,7 +74,7 @@ async function getAllTsFilesFromDirectory(
     for (let entry of entries) {
       const entryName = entry.name;
       //überspringe nicht relevante Ordnerstruckturen
-      if (excludePatterns.includes(entryName)) {
+      if (DIRECTORY_EXCLUDE.includes(entryName)) {
         continue;
       }
 
@@ -82,7 +84,9 @@ async function getAllTsFilesFromDirectory(
         tsFileArr.push(...subfiles);
       } else if (entry.isFile() && entryName.endsWith(".ts")) {
         //überspringe Testdatein
-        const isTestFile = testFileEx.some((end) => entryName.endsWith(end));
+        const isTestFile = TEST_FILE_EXCLUDE.some((end) =>
+          entryName.endsWith(end)
+        );
         if (isTestFile) {
           continue;
         }
@@ -100,35 +104,25 @@ async function getAllTsFilesFromDirectory(
 }
 
 //rekursive suche nach stimmigen TS-Files als boolean
-export async function hasTsFilesInDirectory(
-  dirPath = getWorkspace()
-): Promise<boolean> {
+export async function hasTsFilesInDirectory(): Promise<boolean> {
+  const workspace = getWorkspace();
+  if (!workspace) {
+    return false;
+  }
+
   try {
-    const entries = await fs.promises.readdir(dirPath, {
-      withFileTypes: true,
-    });
+    const tsFiles = await vscode.workspace.findFiles(
+      // ? suche
+      "**/*.{ts,tsx}",
+      // ? schließe aus
+      exludeFusionForVSCode(),
+      // ? brauche nur 1 datei
+      1
+    );
 
-    for (let entry of entries) {
-      const entryName = entry.name;
-      if (excludePatterns.includes(entryName)) {
-        continue;
-      }
-
-      const fullPath = path.join(dirPath, entryName);
-      if (entry.isDirectory()) {
-        const hasTS = await hasTsFilesInDirectory(fullPath);
-        if (hasTS) {
-          return true;
-        }
-      } else if (entry.isFile() && entryName.endsWith(".ts")) {
-        const isTestFile = testFileEx.some((end) => entryName.endsWith(end));
-        if (!isTestFile) {
-          return true;
-        }
-      }
-    }
+    return tsFiles.length !== 0;
   } catch (err) {
-    console.error(`Fehler beim Lesen von ${dirPath}:`, err);
+    console.error(`Fehler beim Lesen von `, err);
   }
   return false;
 }

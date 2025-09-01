@@ -9,26 +9,29 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "workspaceContains:**/*.ts"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "redj-ext.openFromCommandPalett",
-        "title": "open redJ"
+        "title": "open redJ extension"
       },
       {
         "command": "redj-ext.openFromToolbar",
-        "title": "open redJ",
-        "icon": "$(preview)"
+        "title": "open redJ extension",
+        "icon": "$(zap)"
       }
     ],
     "menus": {
-      "editor/title": [
+      "view/title": [
         {
           "command": "redj-ext.openFromToolbar",
-          "when": "redj-ext.hasTsFiles",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "extHasTsFiles"
         }
       ]
     }

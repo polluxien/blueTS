@@ -16,38 +16,31 @@ const showInformation = () =>
 
 export async function activate(context: ExtensionContext) {
   try {
+    //stelle zum Anfang fest ob tsFiles im workspace
+    await updateToolbarVisibility();
+
     //öffne view über Command-Palette -> immer möglich
     const openFromCommandPalettCommand = commands.registerCommand(
       "redj-ext.openFromCommandPalett",
       () => {
-        if (currentPanel) {
-          currentPanel.triggerDispose();
-        }
-        //Erstelle Panel-Webview
-        currentPanel = Panel.render(context.extensionUri);
-        showInformation();
+        createPanel(context);
       }
     );
     context.subscriptions.push(openFromCommandPalettCommand);
 
+    //öffne view über toolbar -> if extHasTsFiles
     const openFromToolbarCommand = commands.registerCommand(
       "redj-ext.openFromToolbar",
       () => {
-        if (currentPanel) {
-          currentPanel.triggerDispose();
-        }
-        currentPanel = Panel.render(context.extensionUri);
-        showInformation();
+        createPanel(context);
       }
     );
     context.subscriptions.push(openFromToolbarCommand);
 
-    //inital toolbar -> wird nur in toolbar angezeigt wenn ts-Files verfügbar
-    await updateToolbarVisibility();
-
     // * VSCode trigger ------------------------------------------
 
     //File-change hat stattgefunden
+    /*
     context.subscriptions.push(
       vscode.workspace.onDidChangeTextDocument((event) => {
         if (event.document.languageId === "typescript") {
@@ -55,6 +48,7 @@ export async function activate(context: ExtensionContext) {
         }
       })
     );
+    */
 
     //File-save hat stattgefunden
     context.subscriptions.push(
@@ -108,11 +102,18 @@ async function updateDiagnostics(document: vscode.TextDocument) {}
 //schaue ob ts-Files im aktuellen Verzeichnis, wenn ja zeige startIcon in toolbar
 async function updateToolbarVisibility() {
   const hasTsFiles = await hasTsFilesInDirectory();
-  vscode.commands.executeCommand(
-    "setContext",
-    "redj-ext.hasTsFiles",
-    hasTsFiles
-  );
+  /**
+   * https://code.visualstudio.com/api/references/contribution-points#contributes.views
+   */
+  vscode.commands.executeCommand("setContext", "extHasTsFiles", hasTsFiles);
 }
 
+function createPanel(context: ExtensionContext) {
+  if (currentPanel) {
+    currentPanel.triggerDispose();
+  }
+  //Erstelle Panel-Webview
+  currentPanel = Panel.render(context.extensionUri);
+  showInformation();
+}
 export function deactivate() {}
