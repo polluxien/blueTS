@@ -1,3 +1,4 @@
+import { Uri } from "vscode";
 import { TsFileResource } from "../../_resources/fileResources";
 import { getTSFiles } from "../fileService/fileService";
 import { checkTsCode } from "./nodeVMService";
@@ -47,8 +48,14 @@ export async function addFilesToTestedFilesMap(tsFilePath: string) {
   return Array.from(myTestedFileMap.entries());
 }
 
-export async function dropFilesFromTestedFileMap(tsFiles: TsFileResource) {
-  myTestedFileMap.delete(tsFiles.path);
+export function dropFilesFromTestedFileMap(
+  tsFilePath: Uri
+): [string, TsCodeCheckResource][] | undefined {
+  const parsedUri = tsFilePath.toString();
+  if (!myTestedFileMap.get(parsedUri)) {
+    return;
+  }
+  myTestedFileMap.delete(parsedUri);
 
   return Array.from(myTestedFileMap.entries());
 }
