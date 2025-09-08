@@ -4,7 +4,7 @@ import { giveMeTSResource } from "../testHelper";
 
 describe("Error Handling und Edge Cases", () => {
   test("handle circular references", () => {
-    const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassCircular")]);
+    const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassCircular"));
     const res: ClassResource[] = myAnalyser.parse();
 
     console.log(JSON);
@@ -14,9 +14,9 @@ describe("Error Handling und Edge Cases", () => {
   });
 
   test("handle max depth reached", () => {
-    const myAnalyser = new TSClassAnalyzer([
+    const myAnalyser = new TSClassAnalyzer(
       giveMeTSResource("ClassDeepNested"),
-    ]);
+    );
     const res: ClassResource[] = myAnalyser.parse();
 
     // Sollte nicht crashen und graceful fallback haben
@@ -25,7 +25,7 @@ describe("Error Handling und Edge Cases", () => {
   });
 
   test("handle invalid TypeScript code", () => {
-    const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassInvalid")]);
+    const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassInvalid"));
 
     // Sollte nicht crashen
     expect(() => myAnalyser.parse()).not.toThrow();

@@ -4,17 +4,17 @@ import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ENUM", () => {
   test("erkenne Eingabeparameter: enum", () => {
-    const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassEnum")]);
+    const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassEnum"));
     const res: ClassResource[] = myAnalyser.parse();
 
     const expectedParam = {
       paramName: "x",
       typeInfo: {
-        enumValues: ["RED", "BLUE", "YELLOW"],
+        enumMembers: ["RED", "BLUE", "YELLOW"],
         typeAsString: "myEnum",
         paramType: "enum",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
   });

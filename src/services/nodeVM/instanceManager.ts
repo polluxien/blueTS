@@ -12,6 +12,7 @@ import {
   createClassInstanceVM,
   extractClassInstanceProps,
 } from "./nodeVMService";
+import { normalizeParam } from "./typeCheckerHelper";
 
 // ! eventuell hier ehr Map<string, {VM-Objectobject, MorphInstanceAnalyse[] ,PropInstanceType[]}>
 
@@ -27,7 +28,7 @@ export function clearInstanceMap() {
   instanceMap.clear();
 }
 
-function getInstanceFromInstanceMap(
+export function getInstanceFromInstanceMap(
   instanceName: string,
   getProps: boolean = false
 ): object | [object, PropInstanceType[]] {
@@ -63,30 +64,11 @@ export async function addInstanceToInstanceMap(
     }
 
     let myCreateClsInstanceRes = createClsInstanceRes;
-    let isInstanceParamType = (param: any): param is InstanceParamType => {
-      return (
-        typeof param === "object" &&
-        typeof param.className === "string" &&
-        typeof param.instanceName === "string"
-      );
-    };
 
     //übergebenen params nach instances checken
-    for (
-      let i = 0;
-      i < myCreateClsInstanceRes.constructorParameter.length;
-      i++
-    ) {
-      const param = myCreateClsInstanceRes.constructorParameter[i];
-      if (isInstanceParamType(param)) {
-        try {
-          const ins = getInstanceFromInstanceMap(param.instanceName);
-          myCreateClsInstanceRes.constructorParameter[i] = ins;
-        } catch (err) {
-          throw err;
-        }
-      }
-    }
+    myCreateClsInstanceRes.constructorParameter =
+      myCreateClsInstanceRes.constructorParameter.flatMap(normalizeParam);
+
     console.log("zu übergebene ressource an node-vm: ", myCreateClsInstanceRes);
 
     const instance = await createClassInstanceVM(myCreateClsInstanceRes);
@@ -123,6 +105,9 @@ export async function compileMethodInClassObject(
   };
 
   try {
+    runMethodeInInstanceType.params =
+      runMethodeInInstanceType.params.flatMap(normalizeParam);
+
     const tupelInstanceValue = getInstanceFromInstanceMap(
       runMethodeInInstanceType.instanceName,
       true

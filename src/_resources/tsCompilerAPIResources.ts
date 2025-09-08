@@ -35,14 +35,17 @@ export type TypeResource = {
     | "generic"
     | "max-depth"
     | "recursive-reference";
+  isOptional?: boolean;
+  isRest?: boolean;
+  // * typeSpecific
   literalType?: string;
-  enumValues?: string[];
+  enumMembers?: string[];
   intersectionValues?: TypeResource[];
   tupleElements?: TypeResource[];
   unionValues?: TypeResource[];
   arrayType?: TypeResource;
   objectParameters?: ParameterResource[];
-  //Spezielle Typen
+  //* sehr Spezielle Typen
   functionRes?: FunctionParamTypeSignatureResource;
   genericRes?: GenericParamTypeResource;
 };
@@ -50,7 +53,8 @@ export type TypeResource = {
 export type ParameterResource = {
   paramName: string;
   typeInfo: TypeResource;
-  optional: boolean;
+  isOptional: boolean;
+  isRest?: boolean;
 };
 
 // * Class-Resource Types für Object View

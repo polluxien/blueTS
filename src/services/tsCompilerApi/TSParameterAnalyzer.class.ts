@@ -4,21 +4,46 @@ import {
   ParameterResource,
   TypeResource,
 } from "../../_resources/tsCompilerAPIResources";
+import { UnionType } from "typescript";
 
 export class TSParameterAnalyzer {
   private MAX_DEPTH = 10;
 
-  constructor(private param: ParameterDeclaration) {}
+  private checker;
+
+  constructor(private param: ParameterDeclaration, program: ts.Program) {
+    this.checker = program.getTypeChecker();
+  }
 
   //default param-analyser
   public paramAnalyzer(
     param: ParameterDeclaration = this.param
   ): ParameterResource {
+    //hier wieder in vanilla typescript ast auflösen
+    const compilerNode = param.compilerNode as ts.ParameterDeclaration;
+    const isOptional = !!compilerNode.questionToken;
+
     return {
       paramName: param.getName(),
       typeInfo: this.typeAnalyzer(param.getType()),
-      optional: param.isOptional(),
+      isOptional: isOptional,
+
+      //nur setzten wenn rest == true
+      ...(param.isRestParameter() && { isRest: true }),
     };
+  }
+
+  private getTsTypeFromTsMorphType(tsMorphType: Type): ts.Type {
+    const symbol = tsMorphType.getSymbol();
+    if (symbol) {
+      return this.checker!.getTypeOfSymbolAtLocation(
+        symbol.compilerSymbol,
+        this.param.compilerNode
+      );
+    }
+
+    // Fallback
+    return this.checker!.getTypeAtLocation(this.param.compilerNode);
   }
 
   //type-analyser
@@ -28,6 +53,7 @@ export class TSParameterAnalyzer {
     visited = new Set<string>()
   ): TypeResource {
     let typeAsString;
+
     try {
       typeAsString = type.getText();
     } catch (err) {
@@ -66,6 +92,10 @@ export class TSParameterAnalyzer {
   ): TypeResource {
     const typeAsString = type.getText();
 
+    // nativ api vars
+    const tsType = this.getTsTypeFromTsMorphType(type);
+    const flags = type.getFlags();
+
     //* special types
     if (["any", "unknown", "void", "never"].includes(typeAsString)) {
       return {
@@ -80,14 +110,30 @@ export class TSParameterAnalyzer {
       return { typeAsString, paramType: "undefined" };
     }
 
-    //* literal type
-    if (type.isLiteral()) {
-      return this.handelLiteralType(type, typeAsString);
-    }
-
     //* enum type
     if (type.isEnum()) {
-      return this.handelEnumType(type, typeAsString);
+      return this.handelEnumType(type as Type<ts.EnumType>, typeAsString);
+    }
+
+    // ? ts nativ api - compiler api ----------------------------------------------------------------------------
+    // Handle null and undefined
+    if ((flags & ts.TypeFlags.Null) !== 0) {
+      return { typeAsString: "null", paramType: "null" };
+    }
+    if ((flags & ts.TypeFlags.Undefined) !== 0) {
+      return { typeAsString: "undefined", paramType: "undefined" };
+    }
+
+    // Union types - gibt fehler bei ts-morph version daher verwendung von
+    if ((flags & ts.TypeFlags.Union) !== 0 && !type.isBoolean()) {
+      return this.handleUnionType(type, tsType, typeAsString, depth, visited);
+    }
+
+    // ? ----------------------------------------------------------------------------------------------------------
+
+    //* literal type
+    if (type.isLiteral()) {
+      return this.handelLiteralType(type as Type<ts.LiteralType>, typeAsString);
     }
 
     //* array type
@@ -103,12 +149,6 @@ export class TSParameterAnalyzer {
       };
     }
 
-    //* uion type
-    // ! Problem bei union null und undefined werden raus gefiltert schon bei typeAsString und werden nicht als option gewertet
-    if (type.isUnion() && !type.isBoolean()) {
-      return this.handelUnionType(type, typeAsString, depth, visited);
-    }
-
     //* intersection type
     if (type.isIntersection()) {
       return this.handleIntersectionType(type, typeAsString, depth, visited);
@@ -116,13 +156,7 @@ export class TSParameterAnalyzer {
 
     //* tupel type
     if (type.isTuple()) {
-      return {
-        typeAsString,
-        paramType: "tuple",
-        tupleElements: type
-          .getTupleElements()
-          .map((t) => this.typeAnalyzer(t, depth, visited)),
-      };
+      return this.handelTupelType(type, typeAsString, depth, visited);
     }
 
     //* function type
@@ -163,7 +197,14 @@ export class TSParameterAnalyzer {
       type.getTypeArguments().length > 0
     ) {
       // ! kommt momentan nichts brauchbares raus
-      // return this.handleGenericType(type, typeAsString, depth, visited);
+      /*
+      return this.handleGenericType(
+        type as Type<ts.GenericType>,
+        typeAsString,
+        depth,
+        visited
+      );
+      */
     }
 
     //* Fallback
@@ -174,31 +215,132 @@ export class TSParameterAnalyzer {
     };
   }
 
-  handelUnionType(
-    type: Type<ts.UnionType>,
+  // ? an sich kein schlechter ansatz, aber problem ist bei verschachtelten typen ...
+  /*
+  private handleNullableType(
+    type: Type,
+    typeAsString: string,
+    depth: number,
+    visited: Set<string>,
+    nullUndefinedInfo: { hasNull: boolean; hasUndefined: boolean }
+  ): TypeResource {
+    const unionValues: TypeResource[] = [];
+
+    // Füge null/undefined hinzu
+    if (nullUndefinedInfo.hasNull) {
+      unionValues.push({ typeAsString: "null", paramType: "null" });
+    }
+    if (nullUndefinedInfo.hasUndefined) {
+      unionValues.push({ typeAsString: "undefined", paramType: "undefined" });
+    }
+
+    unionValues.push(this.typeAnalyzer(type, depth, visited, true));
+
+    return {
+      typeAsString: `${typeAsString}${
+        nullUndefinedInfo.hasNull ? " | null" : ""
+      }${nullUndefinedInfo.hasUndefined ? " | undefined" : ""}`,
+      paramType: "union",
+      unionValues,
+    };
+  }
+    */
+
+  private handelTupelType(
+    type: Type<ts.TupleType>,
     typeAsString: string,
     depth: number,
     visited: Set<string>
   ): TypeResource {
-    const unionTypes = type.getUnionTypes();
+    // ? funktioniert nur auf oberster Ebene
+    const getTupleKind = (elementIndex: number) => {
+      return this.param
+        .getTypeNode()
+        ?.asKind(ts.SyntaxKind.TupleType)
+        ?.getElements()
+        [elementIndex]?.getKind();
+    };
 
-    // Fallback für Boolean
-    if (type.isBoolean()) {
+    const isTupleElementOptional = (elementIndex: number) => {
+      return getTupleKind(elementIndex) === ts.SyntaxKind.OptionalType;
+    };
+
+    const isTupelElementRest = (elementIndex: number) => {
+      return getTupleKind(elementIndex) === ts.SyntaxKind.RestType;
+    };
+
+    return {
+      typeAsString,
+      paramType: "tuple",
+      /*
+      tupleElements: type.getTupleElements().map((elementType, index) => {
+        return this.typeAnalyzer(elementType, depth, visited);
+      }),
+      */
+
+      tupleElements: type.getTupleElements().map((elementType, index) => {
+        const analyzed = this.typeAnalyzer(elementType, depth + 1, visited);
+
+        const isOptional = depth === 1 && isTupleElementOptional(index);
+        const isRest = depth === 1 && isTupelElementRest(index);
+
+        return {
+          ...analyzed,
+          ...(isOptional && { isOptional: true }),
+          ...(isRest && { isRest: true }),
+        };
+      }),
+    };
+  }
+
+  // ! sowohl nativ ts compiler api noch ts-morph erkennen ---> | undefined | null
+  private handleUnionType(
+    tsMorphType: Type,
+    nativeType: ts.Type,
+    typeAsString: string,
+    depth: number,
+    visited: Set<string>
+  ): TypeResource {
+    if (tsMorphType.isBoolean()) {
       return { typeAsString: "boolean", paramType: "basic" };
     }
 
+    // Use native TS API to get union types - more reliable
+    const unionTsNativTypes = (nativeType as ts.UnionType).types;
     const unionValues: TypeResource[] = [];
     const booleanLiterals: Type[] = [];
+
+    let hasNull = false;
+    let hasUndefined = false;
+
+    try {
+      for (const unionMember of unionTsNativTypes) {
+        const flags = unionMember.getFlags();
+
+        if ((flags & ts.TypeFlags.Null) !== 0) {
+          hasNull = true;
+          unionValues.push({ typeAsString: "null", paramType: "null" });
+        } else if ((flags & ts.TypeFlags.Undefined) !== 0) {
+          hasUndefined = true;
+          unionValues.push({
+            typeAsString: "undefined",
+            paramType: "undefined",
+          });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    const unionTypes = tsMorphType.getUnionTypes();
 
     for (const unionType of unionTypes) {
       const unionTypeText = unionType.getText();
 
-      if (unionType.isNull()) {
-        // ! Funktioniert nicht | erkennt in union kein null
-        unionValues.push({ typeAsString: "null", paramType: "null" });
-      } else if (unionType.isUndefined()) {
-        // ! Funktioniert nicht | erkennt in union kein undefineds
-        unionValues.push({ typeAsString: "undefined", paramType: "undefined" });
+      if (unionType.isNull() || unionType.isUndefined()) {
+        // * Funktioniert eh nicht | erkennt in union kein null oder undefined
+        // just to be sure
+        continue;
       }
       //bei type.getUnionTypes() werden boolean auch gespalten weil auch unionType
       //daher noch einmal schauen ob beide vorkommen und dann basic sonst einzelnt hinzufügen
@@ -212,6 +354,7 @@ export class TSParameterAnalyzer {
       }
     }
 
+    // Handle boolean literals
     //Boolean Literal Behandlung
     //Wenn beide Values true && false vorkommen pushe basic boolean
     if (booleanLiterals.length === 2) {
@@ -224,6 +367,12 @@ export class TSParameterAnalyzer {
         literalType: "boolean",
       });
     }
+    if (hasNull) {
+      typeAsString += " | null";
+    }
+    if (hasUndefined) {
+      typeAsString += " | undefined";
+    }
 
     return {
       typeAsString,
@@ -233,7 +382,7 @@ export class TSParameterAnalyzer {
   }
 
   private handleIntersectionType(
-    type: Type,
+    type: Type<ts.IntersectionType>,
     typeAsString: string,
     depth: number,
     visited: Set<string>
@@ -254,7 +403,10 @@ export class TSParameterAnalyzer {
     };
   }
 
-  private handelLiteralType(type: Type, typeAsString: string): TypeResource {
+  private handelLiteralType(
+    type: Type<ts.LiteralType>,
+    typeAsString: string
+  ): TypeResource {
     let literalType = "";
     if (type.isStringLiteral()) {
       literalType = "string";
@@ -266,7 +418,7 @@ export class TSParameterAnalyzer {
       literalType = "boolean";
     }
 
-    //switch typeAsString -> da bei literal value = type
+    //switch typeAsString -> da bei literal type = value
     return {
       typeAsString,
       paramType: "literal",
@@ -274,19 +426,22 @@ export class TSParameterAnalyzer {
     };
   }
 
-  private handelEnumType(type: Type, typeAsString: string): TypeResource {
+  private handelEnumType(
+    type: Type<ts.EnumType>,
+    typeAsString: string
+  ): TypeResource {
     try {
       const enumDecl = type.getSymbol()?.getDeclarations()?.[0];
       if (enumDecl && Node.isEnumDeclaration(enumDecl)) {
         const members = enumDecl.getMembers();
-        const enumValues = members.map((m) => m.getName());
-        return { typeAsString, paramType: "enum", enumValues };
+        const enumMembers = members.map((m) => m.getName());
+        return { typeAsString, paramType: "enum", enumMembers: enumMembers };
       }
     } catch (err) {
       console.warn(`Error analyzing enum type ${typeAsString}: `, err);
     }
 
-    return { typeAsString, paramType: "enum", enumValues: [] };
+    return { typeAsString, paramType: "enum", enumMembers: [] };
   }
 
   private handleFunctionType(
@@ -352,7 +507,7 @@ export class TSParameterAnalyzer {
         paramArr.push({
           paramName: prop.getName(),
           typeInfo: this.typeAnalyzer(propType, depth, visited),
-          optional: prop.isOptional?.() ?? false,
+          isOptional: prop.isOptional?.() ?? false,
         });
       } catch (error) {
         console.warn(
@@ -362,7 +517,7 @@ export class TSParameterAnalyzer {
         paramArr.push({
           paramName: prop.getName(),
           typeInfo: { typeAsString: "unknown", paramType: "unknown" },
-          optional: true,
+          isOptional: true,
         });
       }
     }
@@ -375,42 +530,24 @@ export class TSParameterAnalyzer {
   }
 
   private handleGenericType(
-    type: Type,
+    type: Type<ts.GenericType>,
     typeAsString: string,
     depth: number,
     visited: Set<string>
   ): TypeResource {
     const typeArgs = type.getTypeArguments();
-    const baseType = typeAsString.split("<")[0] || typeAsString;
+    const symbol = type.getSymbol();
+    const baseType = symbol ? symbol.getName() : typeAsString.split("<")[0];
 
-    // Promise und andere Builticht zu tief
-    if (baseType === "Promise" || baseType === "Map" || baseType === "Set") {
-      return {
-        typeAsString,
-        paramType: "generic",
-        genericRes: {
-          baseType,
-          genericArgs: typeArgs
-            .slice(0, 2)
-            .map((arg) => this.typeAnalyzer(arg, depth, visited)),
-        },
-      };
-    }
-
-    // Für alle anderen Generics nur die Args analysieren
-    if (typeArgs.length > 0) {
-      return {
-        typeAsString,
-        paramType: "generic",
-        genericRes: {
-          baseType,
-          genericArgs: typeArgs.map((arg) =>
-            this.typeAnalyzer(arg, depth, visited)
-          ),
-        },
-      };
-    }
-
-    return { typeAsString, paramType: "generic", genericRes: { baseType } };
+    return {
+      typeAsString,
+      paramType: "generic",
+      genericRes: {
+        baseType,
+        genericArgs: typeArgs.map((arg) =>
+          this.typeAnalyzer(arg, depth, visited)
+        ),
+      },
+    };
   }
 }

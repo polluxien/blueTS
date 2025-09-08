@@ -10,6 +10,7 @@ import {
 } from "./checkTsCodeManager";
 import { TsFileResource } from "../../_resources/fileResources";
 import { parseReturnResult } from "./nodeHelper";
+import { normalizeParam } from "./typeCheckerHelper";
 
 const vm = require("node:vm");
 
@@ -178,7 +179,7 @@ export async function extractClassInstanceProps(
   try {
     // Hole alle props der Instanz
     const instanceProps = Object.getOwnPropertyNames(instance);
-    
+
     for (let propName of instanceProps) {
       try {
         let value: any;
@@ -326,6 +327,9 @@ export type CompiledFunctionTyp = {
 export async function compileFunction(
   runFunctionType: RunFunctionType
 ): Promise<CompiledFunctionTyp> {
+  // params parsen wenn nötig
+  runFunctionType.params = runFunctionType.params.flatMap(normalizeParam);
+  
   const { functionName, params } = runFunctionType;
   const { isAsync } = runFunctionType.specs;
   let result: unknown;

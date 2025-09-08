@@ -3,7 +3,7 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", () => {
-  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassLiteral")]);
+  const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassLiteral"));
   const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: 'hello' (string literal)", () => {
@@ -14,7 +14,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
         paramType: "literal",
         literalType: "string",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
   });
@@ -27,7 +27,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
         paramType: "literal",
         literalType: "number",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
   });
@@ -40,7 +40,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
         paramType: "literal",
         literalType: "boolean",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
   });
@@ -53,7 +53,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
         paramType: "literal",
         literalType: "bigint",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[3]).toEqual(expectedParam);
   });

@@ -3,9 +3,9 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTION", () => {
-  const myAnalyser = new TSClassAnalyzer([
+  const myAnalyser = new TSClassAnalyzer(
     giveMeTSResource("ClassIntersection"),
-  ]);
+  );
   const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: User & { id: string }", () => {

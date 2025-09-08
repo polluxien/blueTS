@@ -3,7 +3,7 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> FUNCTION", () => {
-  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassFunction")]);
+  const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassFunction"));
   const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: () => void", () => {

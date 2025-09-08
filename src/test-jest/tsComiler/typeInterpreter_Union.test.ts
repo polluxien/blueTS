@@ -3,7 +3,7 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () => {
-  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassUnion")]);
+  const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassUnion"));
   const res: ClassResource[] = myAnalyser.parse();
 
   console.log(res);
@@ -93,25 +93,24 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
     const expectedParam = {
       paramName: "objectOrNull",
       typeInfo: {
-        // !    typeAsString: "{ name: string; } | null",
-        typeAsString: "{ name: string; }",
-        // !    paramType: "union",
-        // !    unionValues: [
-        // !     {
-        // !            typeAsString: "{ name: string }",
-        paramType: "object",
-        objectParameters: [
+        typeAsString: "{ name: string; } | null",
+        paramType: "union",
+        unionValues: [
+          { typeAsString: "null", paramType: "null" },
           {
-            paramName: "name",
-            typeInfo: {
-              typeAsString: "string",
-              paramType: "basic",
-            },
-            optional: false,
+            typeAsString: "{ name: string; }",
+            paramType: "object",
+            objectParameters: [
+              {
+                paramName: "name",
+                typeInfo: {
+                  typeAsString: "string",
+                  paramType: "basic",
+                },
+                optional: false,
+              },
+            ],
           },
-          // !            ],
-          // !         },
-          // !  { typeAsString: "null", paramType: "null" },
         ],
       },
       optional: false,
@@ -180,15 +179,14 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
     const expectedParam = {
       paramName: "complexUnion",
       typeInfo: {
-        // ! typeAsString: "string | number | boolean | null | undefined",
-        typeAsString: "string | number | boolean",
+        typeAsString: "string | number | boolean | null | undefined",
         paramType: "union",
         unionValues: [
+          { typeAsString: "null", paramType: "null" },
+          { typeAsString: "undefined", paramType: "undefined" },
           { typeAsString: "string", paramType: "basic" },
           { typeAsString: "number", paramType: "basic" },
           { typeAsString: "boolean", paramType: "basic" },
-          // !     { typeAsString: "null", paramType: "null" },
-          // !      { typeAsString: "undefined", paramType: "undefined" },
         ],
       },
       optional: false,

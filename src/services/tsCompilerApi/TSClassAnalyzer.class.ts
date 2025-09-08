@@ -6,11 +6,9 @@ import {
   MethodDeclaration,
   Project,
   SetAccessorDeclaration,
-  Signature,
-  SignaturedDeclaration,
   SyntaxKind,
+  ts,
 } from "ts-morph";
-import path from "path";
 
 //eigene Imports
 import { TsFileResource } from "../../_resources/fileResources";
@@ -20,37 +18,32 @@ import {
   MethodResource,
   ParameterResource,
 } from "../../_resources/tsCompilerAPIResources";
+
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
 export class TSClassAnalyzer {
-  private tsFiles: TsFileResource[];
+  private tsFile: TsFileResource;
   private project: Project;
   private classResourceArr: ClassResource[] = [];
 
-  constructor(tsFiles: TsFileResource[]) {
-    this.tsFiles = tsFiles;
+  private program: ts.Program | undefined;
+
+  constructor(tsFile: TsFileResource) {
+    this.tsFile = tsFile;
     this.project = new Project();
   }
 
   public parse(): ClassResource[] {
-    this.project.addSourceFilesAtPaths(this.tsFiles.map((f) => f.path));
+    this.project.addSourceFileAtPath(this.tsFile.path);
+
+    // * das ist vanilla ts compiler program
+    this.program = this.project.getProgram().compilerObject;
 
     for (let sourceFile of this.project.getSourceFiles()) {
       for (let cls of sourceFile.getClasses()) {
-        const tsFile = this.tsFiles.find(
-          (file) =>
-            path.normalize(file.path) ===
-            path.normalize(sourceFile.getFilePath())
-        );
-        if (!tsFile) {
-          console.warn(
-            "File konnte nicht noch einmal gefunden werden: ",
-            path.normalize(sourceFile.getFilePath())
-          );
-        }
         const myClass: ClassResource = {
           className: cls.getName()!,
-          tsFile: tsFile!,
+          tsFile: this.tsFile,
           constructor: this.extractConstructors(cls),
           methods: this.extractMethodes(cls),
         };
@@ -137,7 +130,7 @@ export class TSClassAnalyzer {
   ): ParameterResource[] {
     const parameterRessourceArr: ParameterResource[] = [];
     for (let param of foo.getParameters()) {
-      const myParameter = new TSParameterAnalyzer(param);
+      const myParameter = new TSParameterAnalyzer(param, this.program!);
       parameterRessourceArr.push(myParameter.paramAnalyzer());
     }
     return parameterRessourceArr;

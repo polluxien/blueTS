@@ -3,7 +3,7 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () => {
-  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassTuple")]);
+  const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassTuple"));
   const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: [string, number]", () => {
@@ -17,7 +17,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
           { typeAsString: "number", paramType: "basic" },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
   });
@@ -27,22 +27,19 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
     const expectedParam = {
       paramName: "optionalTuple",
       typeInfo: {
-        typeAsString: "[string, number, (boolean | undefined)?]",
+        typeAsString: "[string, number, boolean?]",
         paramType: "tuple",
         tupleElements: [
           { typeAsString: "string", paramType: "basic" },
           { typeAsString: "number", paramType: "basic" },
           {
-            typeAsString: "boolean | undefined",
-            paramType: "union",
-            unionValues: [
-              { typeAsString: "boolean", paramType: "basic" },
-              { typeAsString: "undefined", paramType: "undefined" },
-            ],
+            typeAsString: "boolean",
+            paramType: "basic",
+            isOptional: true,
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     console.log(JSON.stringify(res[0].constructor!.parameters[1]), null, 2);
 
@@ -59,14 +56,13 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
         tupleElements: [
           { typeAsString: "string", paramType: "basic" },
           {
-            typeAsString: "number[]",
-            paramType: "array",
-            arrayType: { typeAsString: "number", paramType: "basic" },
+            typeAsString: "number",
+            paramType: "basic",
+            isRest: true,
           },
         ],
-        hasRestElement: true,
       },
-      optional: false,
+      isOptional: false,
     };
     console.log(JSON.stringify(res[0].constructor!.parameters[2]), null, 2);
     expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);

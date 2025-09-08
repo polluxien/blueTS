@@ -3,7 +3,7 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", () => {
-  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassObject")]);
+  const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassObject"));
   const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: { name: string; age: number }", () => {
@@ -16,16 +16,16 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
           {
             paramName: "name",
             typeInfo: { typeAsString: "string", paramType: "basic" },
-            optional: false,
+            isOptional: false,
           },
           {
             paramName: "age",
             typeInfo: { typeAsString: "number", paramType: "basic" },
-            optional: false,
+            isOptional: false,
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
   });
@@ -40,12 +40,12 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
           {
             paramName: "name",
             typeInfo: { typeAsString: "string", paramType: "basic" },
-            optional: false,
+            isOptional: false,
           },
           {
             paramName: "age",
             typeInfo: { typeAsString: "number", paramType: "basic" },
-            optional: true,
+            isOptional: true,
           },
           {
             paramName: "tags",
@@ -54,11 +54,11 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
               paramType: "array",
               arrayType: { typeAsString: "string", paramType: "basic" },
             },
-            optional: false,
+            isOptional: false,
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
   });
@@ -80,16 +80,16 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
                 {
                   paramName: "name",
                   typeInfo: { typeAsString: "string", paramType: "basic" },
-                  optional: false,
+                  isOptional: false,
                 },
                 {
                   paramName: "email",
                   typeInfo: { typeAsString: "string", paramType: "basic" },
-                  optional: false,
+                  isOptional: false,
                 },
               ],
             },
-            optional: false,
+            isOptional: false,
           },
           {
             paramName: "settings",
@@ -100,15 +100,15 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
                 {
                   paramName: "theme",
                   typeInfo: { typeAsString: "string", paramType: "basic" },
-                  optional: false,
+                  isOptional: false,
                 },
               ],
             },
-            optional: false,
+            isOptional: false,
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
   });
@@ -127,7 +127,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
           ],
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[3]).toEqual(expectedParam);
   });

@@ -3,7 +3,7 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () => {
-  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassArray")]);
+  const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassArray"));
   const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: array - string[]", () => {
@@ -17,7 +17,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           paramType: "basic",
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
   });
@@ -33,7 +33,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           paramType: "basic",
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
   });
@@ -49,7 +49,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           paramType: "basic",
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
   });
@@ -69,7 +69,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           ],
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[3]).toEqual(expectedParam);
   });
@@ -90,7 +90,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
                 typeAsString: "string",
                 paramType: "basic",
               },
-              optional: false,
+              isOptional: false,
             },
             {
               paramName: "age",
@@ -98,12 +98,12 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
                 typeAsString: "number",
                 paramType: "basic",
               },
-              optional: false,
+              isOptional: false,
             },
           ],
         },
       },
-      optional: false,
+      isOptional: false,
     };
 
     //object not implemented jet
@@ -122,7 +122,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           arrayType: { typeAsString: "string", paramType: "basic" },
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[5]).toEqual(expectedParam);
   });
@@ -152,7 +152,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           ],
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[6]).toEqual(expectedParam);
   });
@@ -168,7 +168,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           paramType: "basic",
         },
       },
-      optional: false,
+      isOptional: false,
     };
 
     expect(res[0].constructor!.parameters[7]).toEqual(expectedParam);
@@ -185,7 +185,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           paramType: "basic",
         },
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[8]).toEqual(expectedParam);
   });

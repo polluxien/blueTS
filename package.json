@@ -10,7 +10,6 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:typescript",
     "workspaceContains:**/*.ts"
   ],
   "main": "./out/extension.js",

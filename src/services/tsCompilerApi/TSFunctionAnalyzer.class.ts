@@ -4,6 +4,7 @@ import {
   FunctionDeclaration,
   FunctionExpression,
   Project,
+  ts,
 } from "ts-morph";
 import path from "path";
 
@@ -16,36 +17,30 @@ import {
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
 export class TSFunctionAnalyzer {
-  private tsFiles: TsFileResource[];
+  private tsFile: TsFileResource;
   private getAllFunctionTypex: boolean;
   private project: Project;
   private functionResourceArr: FunctionResource[] = [];
 
-  constructor(tsFiles: TsFileResource[], getAllFunctionTypex: boolean = false) {
-    this.tsFiles = tsFiles;
+  private program: ts.Program | undefined;
+
+  constructor(tsFile: TsFileResource, getAllFunctionTypex: boolean = false) {
+    this.tsFile = tsFile;
     this.getAllFunctionTypex = getAllFunctionTypex;
     this.project = new Project();
   }
 
   public parse(): FunctionResource[] {
-    this.project.addSourceFilesAtPaths(this.tsFiles.map((f) => f.path));
+    this.project.addSourceFilesAtPaths(this.tsFile.path);
+
+    // * das ist vanilla ts compiler program
+    this.program = this.project.getProgram().compilerObject;
 
     for (let sourceFile of this.project.getSourceFiles()) {
-      const tsFile = this.tsFiles.find(
-        (file) =>
-          path.normalize(file.path) === path.normalize(sourceFile.getFilePath())
-      );
-      if (!tsFile) {
-        console.warn(
-          "File konnte nicht noch einmal gefunden werden: ",
-          path.normalize(sourceFile.getFilePath())
-        );
-        continue;
-      }
 
       //für klassische Functions
       for (let foo of sourceFile.getFunctions()) {
-        const myFunction = this.extractFunction(foo, tsFile!);
+        const myFunction = this.extractFunction(foo, this.tsFile);
         this.functionResourceArr.push(myFunction);
       }
       //für Arrow-Functions und Function-Expression
@@ -58,7 +53,7 @@ export class TSFunctionAnalyzer {
           ) {
             const myFunction = this.extractFunction(
               initializer,
-              tsFile!,
+              this.tsFile,
               variable.getName()
             );
             this.functionResourceArr.push(myFunction);
@@ -92,7 +87,7 @@ export class TSFunctionAnalyzer {
   ): ParameterResource[] {
     const parameterRessourceArr: ParameterResource[] = [];
     for (let param of foo.getParameters()) {
-      const myParameter = new TSParameterAnalyzer(param);
+      const myParameter = new TSParameterAnalyzer(param, this.program!);
       parameterRessourceArr.push(myParameter.paramAnalyzer());
     }
     return parameterRessourceArr;

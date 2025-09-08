@@ -32,6 +32,17 @@ export type InstanceParamType = {
   instanceName: string;
 };
 
+//vom Frontend wird Enum übergeben
+export type EnumParamType = {
+  enumValue: string;
+  enumMembers: string[];
+};
+
+//vom Frontend wird rest übergeben
+export type RestParamType = {
+  restParams: unknown[];
+};
+
 //übergabe vom Frontend
 export type RunMethodeInInstanceType = {
   instanceName: string;

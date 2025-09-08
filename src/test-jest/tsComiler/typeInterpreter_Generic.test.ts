@@ -3,7 +3,7 @@ import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.cl
 import { giveMeTSResource } from "../testHelper";
 
 describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", () => {
-  const myAnalyser = new TSClassAnalyzer([giveMeTSResource("ClassGeneric")]);
+  const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassGeneric"));
   const res: ClassResource[] = myAnalyser.parse();
 
   test("erkenne Eingabeparameter: Array<string>", () => {
