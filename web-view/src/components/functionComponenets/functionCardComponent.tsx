@@ -37,6 +37,10 @@ function FunctionCardComponent({
 
   useEffect(() => {
     setIsValid(tsCodeValidation?.isValid ?? false);
+
+    if (functionDialogOpen) {
+      setFunctionDialogOpen(false);
+    }
   }, [tsCodeValidation]);
 
   const openFunctionDialog = () => setFunctionDialogOpen(true);

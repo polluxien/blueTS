@@ -37,7 +37,7 @@ function ObjectParamComponent({
       typeRes.objectParameters?.every((objParam) => {
         const validation = paramValidations[objParam.paramName];
         // Optional parameters sind automatisch valid wenn leer
-        return objParam.optional || (validation && validation.isValid);
+        return objParam.isOptional || (validation && validation.isValid);
       }) ?? false;
 
     //sammle alle Errors
@@ -67,7 +67,7 @@ function ObjectParamComponent({
     <FormGroup key={paramFormType.index}>
       <Form.Label>
         <strong>{paramFormType.param.paramName}</strong>
-        {paramFormType.param.optional && "?"}:{" "}
+        {paramFormType.param.isOptional&& "?"}:{" "}
         {paramFormType.param.typeInfo.typeAsString}
       </Form.Label>
       {typeRes.objectParameters && (
@@ -91,7 +91,7 @@ function ObjectParamComponent({
                     paramType: "basic",
                     typeAsString: "emptyObjectType",
                   },
-                  optional: paramFormType.param.optional,
+                  isOptional: paramFormType.param.isOptional,
                 }}
                 value={internValues[`${typeRes.typeAsString}_BLANKTYPE`] || ""}
                 validated={paramFormType.validated}

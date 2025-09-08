@@ -20,6 +20,8 @@ function ArrayParameterComponent({
     Record<string, ValidationTypeResource>
   >({});
 
+  const isRest = paramFormType.param.isRest;
+
   function handleChildChange(
     paramName: string,
     validationType: ValidationTypeResource
@@ -50,7 +52,7 @@ function ArrayParameterComponent({
         paramValidations[`${paramFormType.param.paramName}[${i}]`];
       if (validation && validation.isValid) {
         myArr.push(validation.parsedValue);
-      } else if (elementParam.optional) {
+      } else if (elementParam.isOptional) {
         myArr.push(undefined);
       } else {
         //Fallback an dieser Stelle ist noch nicht valid
@@ -58,16 +60,12 @@ function ArrayParameterComponent({
       }
     }
 
-    console.log("ARRAY COMPONENT: ", {
-      isValid: allErrors.length === 0,
-      errors: allErrors,
-      parsedValue: myArr,
-    });
-
     paramFormType.onValidationChange!(paramFormType.param.paramName, {
       isValid: allErrors.length === 0,
       errors: allErrors,
-      parsedValue: myArr,
+      // ? bei rest übergebe ich im backend values einzeln
+
+      parsedValue: isRest ? { restParams: myArr } : myArr,
     });
   }, [paramValidations, arraySize]);
 
@@ -98,8 +96,11 @@ function ArrayParameterComponent({
   return (
     <FormGroup key={paramFormType.index}>
       <Form.Label>
-        <strong>{paramFormType.param.paramName}</strong>
-        {paramFormType.param.optional && "?"}:{" "}
+        <strong>
+          {isRest ? "..." : ""}
+          {paramFormType.param.paramName}
+        </strong>
+        {paramFormType.param.isOptional && "?"}:{" "}
         {paramFormType.param.typeInfo.typeAsString}
         {/*paramFormType.param.typeInfo.typeAsString.replace("[]", "") */}
       </Form.Label>

@@ -175,7 +175,7 @@ function ParameterFormControllComponent({
     return (
       <Form.Label>
         <strong>{param.paramName}</strong>
-        {param.optional && "?"}: {param.typeInfo.typeAsString}
+        {param.isOptional && "?"}: {param.typeInfo.typeAsString}
       </Form.Label>
     );
   };
@@ -227,13 +227,13 @@ function ParameterFormControllComponent({
         <FormGroup key={index}>
           {!hideLabel && getFormLabel(param)}
           <Form.Select
-            required={!param.optional}
+            required={!param.isOptional}
             value={value}
             onChange={(e) => onChange(param.paramName, e.target.value)}
             isInvalid={validated && !!error}
           >
             <option value="">select enum value</option>
-            {typeRes.enumValues?.map((enumValue, i) => (
+            {typeRes.enumMembers?.map((enumValue, i) => (
               <option key={i} value={enumValue}>
                 {typeRes.typeAsString + "." + enumValue}
               </option>
@@ -254,7 +254,7 @@ function ParameterFormControllComponent({
       const showFeedback = validated && (!!error || hasNoInstances);
 
       let feedbackMessage = "";
-      if (hasNoInstances && !param.optional) {
+      if (hasNoInstances && !param.isOptional) {
         feedbackMessage = `No instances for class: ${typeRes.typeAsString} found and this field is required`;
       } else if (error?.message) {
         feedbackMessage = error.message;
@@ -263,7 +263,7 @@ function ParameterFormControllComponent({
         <FormGroup key={index}>
           {!hideLabel && getFormLabel(param)}
           <Form.Select
-            required={!param.optional}
+            required={!param.isOptional}
             value={value}
             disabled={hasNoInstances}
             onChange={(e) => onChange(param.paramName, e.target.value)}
@@ -333,7 +333,7 @@ function ParameterFormControllComponent({
           {!hideLabel && getFormLabel(param)}
           <FormControl
             type="text"
-            required={!param.optional}
+            required={!param.isOptional}
             value={value}
             onChange={(e) => onChange(param.paramName, e.target.value)}
             isInvalid={validated && !!error}

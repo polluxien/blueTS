@@ -72,7 +72,7 @@ function UnionParamComponent({
     <FormGroup key={paramFormType.index}>
       <Form.Label>
         <strong>{paramFormType.param.paramName}</strong>
-        {paramFormType.param.optional && "?"}:{" "}
+        {paramFormType.param.isOptional && "?"}:{" "}
         {paramFormType.param.typeInfo.typeAsString}
       </Form.Label>
       <ToggleButtonGroup
@@ -107,7 +107,7 @@ function UnionParamComponent({
         ))}{" "}
         {/* weil Feld noch ohne auswahl von unionType noch nicht gerendert ist eine feedback hier bei nicht selected*/}
         {!selectedUnionType &&
-          !paramFormType.param.optional &&
+          !paramFormType.param.isOptional &&
           paramFormType.validated && (
             <div className="invalid-feedback d-block">
               Selecting a type is required

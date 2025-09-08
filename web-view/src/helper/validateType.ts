@@ -23,12 +23,12 @@ export function validateFormControllType(
   console.log("NAME: ", typeRes.typeAsString);
 
   //wenn field garnicht benutzt aber required return sofort
-  if (!formValue && !paramRes.optional) {
+  if (!formValue && !paramRes.isOptional) {
     return { err: new Error(`field is required`) };
   }
 
   //wenn nichts gegeben aber nicht gefordert return undefined || speziel undefined angegebn bei optional
-  if ((paramRes.optional && !formValue) || formValue === "undefined") {
+  if ((paramRes.isOptional && !formValue) || formValue === "undefined") {
     return { parsedValue: undefined };
   }
 
@@ -81,7 +81,12 @@ export function validateFormControllType(
   // ! das mit dem enum funktioniert noch nicht, ich übergebe noch kein object
   //enum type
   if (typeRes.paramType === "enum") {
-    //
+    return {
+      parsedValue: {
+        enumValue: `${typeRes.typeAsString}.${formValue}`,
+        enumMembers: typeRes.enumMembers
+      },
+    };
   }
 
   // für object als type  (exampleObj: object)

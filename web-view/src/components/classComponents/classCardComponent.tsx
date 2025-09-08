@@ -39,6 +39,10 @@ function ClassCardComponent({
 
   useEffect(() => {
     setIsValid(tsCodeValidation?.isValid ?? false);
+
+    if (classDialogOpen) {
+      setClassDialogOpen(false);
+    }
   }, [tsCodeValidation]);
 
   // const [hoveredAdd, setHoveredAdd] = useState(false);

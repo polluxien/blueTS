@@ -69,7 +69,7 @@ function TupelParamComponent({
     <>
       <Form.Label>
         <strong>{paramFormType.param.paramName}</strong>
-        {paramFormType.param.optional && "?"}:{" "}
+        {paramFormType.param.isOptional && "?"}:{" "}
         {paramFormType.param.typeInfo.typeAsString}
       </Form.Label>
       <Row className="mb-3">
@@ -81,6 +81,12 @@ function TupelParamComponent({
                 ...paramFormType.param,
                 typeInfo: tupelParam,
                 paramName: getElementName(i),
+                ...(tupelParam.isOptional && {
+                  isOptional: tupelParam.isOptional,
+                }),
+                ...(tupelParam.isRest && {
+                  isRest: tupelParam.isRest,
+                }),
               }}
               value={internValues[getElementName(i)] || ""}
               validated={paramFormType.validated}

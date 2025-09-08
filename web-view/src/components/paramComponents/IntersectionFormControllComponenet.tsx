@@ -72,7 +72,7 @@ function IntersectionParamComponent({
     <FormGroup key={paramFormType.index}>
       <Form.Label>
         <strong>{paramFormType.param.paramName}</strong>
-        {paramFormType.param.optional && "?"}:{" "}
+        {paramFormType.param.isOptional && "?"}:{" "}
         {paramFormType.param.typeInfo.typeAsString}
       </Form.Label>
       {typeRes.intersectionValues && (
