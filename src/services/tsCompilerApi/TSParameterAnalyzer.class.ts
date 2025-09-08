@@ -172,7 +172,22 @@ export class TSParameterAnalyzer {
       };
     }
 
+    //* generic type
+    if (
+      typeAsString.includes("<") &&
+      typeAsString.includes(">") &&
+      type.getTypeArguments().length > 0
+    ) {
+      return this.handleGenericType(
+        type as Type<ts.GenericType>,
+        typeAsString,
+        depth,
+        visited
+      );
+    }
+
     //* object type ( || interface)
+    // quasi Fallback, nimmt sehr viel
     if (type.isObject()) {
       return this.handelObjectType(type, typeAsString, depth, visited);
     }
@@ -188,23 +203,6 @@ export class TSParameterAnalyzer {
         typeAsString,
         paramType: "basic",
       };
-    }
-
-    //* generic type
-    if (
-      typeAsString.includes("<") &&
-      typeAsString.includes(">") &&
-      type.getTypeArguments().length > 0
-    ) {
-      // ! kommt momentan nichts brauchbares raus
-      /*
-      return this.handleGenericType(
-        type as Type<ts.GenericType>,
-        typeAsString,
-        depth,
-        visited
-      );
-      */
     }
 
     //* Fallback

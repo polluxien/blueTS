@@ -1,6 +1,5 @@
-interface User {
-  name: string;
-  email: string;
+class User {
+  constructor(name: string, email: string) {}
 }
 
 export class ClassGeneric {

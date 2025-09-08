@@ -22,7 +22,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
             paramType: "object",
             objectParameters: [
               {
-                optional: false,
+                isOptional: false,
                 paramName: "name",
                 typeInfo: {
                   paramType: "basic",
@@ -30,7 +30,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
                 },
               },
               {
-                optional: false,
+                isOptional: false,
                 paramName: "email",
                 typeInfo: {
                   paramType: "basic",
@@ -46,13 +46,13 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
               {
                 paramName: "id",
                 typeInfo: { typeAsString: "string", paramType: "basic" },
-                optional: false,
+                isOptional: false,
               },
             ],
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
   });
@@ -72,7 +72,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
               {
                 paramName: "name",
                 typeInfo: { typeAsString: "string", paramType: "basic" },
-                optional: false,
+                isOptional: false,
               },
             ],
           },
@@ -83,7 +83,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
               {
                 paramName: "age",
                 typeInfo: { typeAsString: "number", paramType: "basic" },
-                optional: false,
+                isOptional: false,
               },
             ],
           },
@@ -94,13 +94,13 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
               {
                 paramName: "email",
                 typeInfo: { typeAsString: "string", paramType: "basic" },
-                optional: false,
+                isOptional: false,
               },
             ],
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
   });

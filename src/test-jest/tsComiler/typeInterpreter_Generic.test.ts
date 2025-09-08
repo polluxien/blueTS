@@ -10,13 +10,13 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
     const expectedParam = {
       paramName: "genericArray",
       typeInfo: {
-        typeAsString: "string[]", 
+        typeAsString: "string[]",
         paramType: "array",
         arrayType: { typeAsString: "string", paramType: "basic" },
       },
-      optional: false,
+      isOptional: false,
     };
-    expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
+    expect(res[1].constructor!.parameters[0]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Promise<number>", () => {
@@ -30,9 +30,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
           genericArgs: [{ typeAsString: "number", paramType: "basic" }],
         },
       },
-      optional: false,
+      isOptional: false,
     };
-    expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
+    expect(res[1].constructor!.parameters[1]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Map<string, number>", () => {
@@ -49,9 +49,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
           ],
         },
       },
-      optional: false,
+      isOptional: false,
     };
-    expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
+    expect(res[1].constructor!.parameters[2]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Set<User> (mit custom type)", () => {
@@ -65,9 +65,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
           genericArgs: [{ typeAsString: "User", paramType: "instance" }],
         },
       },
-      optional: false,
+      isOptional: false,
     };
-    expect(res[0].constructor!.parameters[3]).toEqual(expectedParam);
+    expect(res[1].constructor!.parameters[3]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Promise<Array<string>>", () => {
@@ -76,17 +76,19 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       typeInfo: {
         typeAsString: "Promise<string[]>",
         paramType: "generic",
-        baseType: "Promise",
-        genericArgs: [
-          {
-            typeAsString: "string[]",
-            paramType: "array",
-            arrayType: { typeAsString: "string", paramType: "basic" },
-          },
-        ],
+        genericRes: {
+          baseType: "Promise",
+          genericArgs: [
+            {
+              typeAsString: "string[]",
+              paramType: "array",
+              arrayType: { typeAsString: "string", paramType: "basic" },
+            },
+          ],
+        },
       },
-      optional: false,
+      isOptional: false,
     };
-    expect(res[0].constructor!.parameters[4]).toEqual(expectedParam);
+    expect(res[1].constructor!.parameters[4]).toEqual(expectedParam);
   });
 });

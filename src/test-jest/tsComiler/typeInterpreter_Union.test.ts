@@ -19,7 +19,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           { typeAsString: "number", paramType: "basic" },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
   });
@@ -35,7 +35,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           { typeAsString: "boolean", paramType: "basic" },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
   });
@@ -55,7 +55,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
   });
@@ -82,7 +82,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     console.log(JSON.stringify(res[0].constructor!.parameters[3]));
 
@@ -107,13 +107,13 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
                   typeAsString: "string",
                   paramType: "basic",
                 },
-                optional: false,
+                isOptional: false,
               },
             ],
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     console.log(JSON.stringify(res[0].constructor!.parameters[4]));
 
@@ -140,7 +140,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           { typeAsString: "boolean", paramType: "basic" },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[5]).toEqual(expectedParam);
   });
@@ -169,7 +169,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[6]).toEqual(expectedParam);
   });
@@ -189,7 +189,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           { typeAsString: "boolean", paramType: "basic" },
         ],
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructor!.parameters[7]).toEqual(expectedParam);
   });
