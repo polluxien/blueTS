@@ -22,17 +22,9 @@ export async function activate(context: ExtensionContext) {
     await updateToolbarVisibility();
 
     //öffne view über Command-Palette -> immer möglich
-    const openFromCommandPalettCommand = commands.registerCommand(
-      "redj-ext.openFromCommandPalett",
-      () => {
-        createPanel(context);
-      }
-    );
-    context.subscriptions.push(openFromCommandPalettCommand);
-
     //öffne view über toolbar -> if extHasTsFiles
     const openFromToolbarCommand = commands.registerCommand(
-      "redj-ext.openFromToolbar",
+      "redj.openExtension",
       () => {
         createPanel(context);
       }

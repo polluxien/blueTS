@@ -16,11 +16,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "redj-ext.openFromCommandPalett",
-        "title": "open redJ extension"
-      },
-      {
-        "command": "redj-ext.openFromToolbar",
+        "command": "redj.openExtension",
         "title": "open redJ extension",
         "icon": "$(zap)"
       }
@@ -28,7 +24,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "redj-ext.openFromToolbar",
+          "command": "redj.openExtension",
           "group": "navigation",
           "when": "extHasTsFiles"
         }

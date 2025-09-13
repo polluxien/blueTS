@@ -124,7 +124,7 @@ export class TSParameterAnalyzer {
       return { typeAsString: "undefined", paramType: "undefined" };
     }
 
-    // Union types - gibt fehler bei ts-morph version daher verwendung von
+    // Union types - gibt fehler bei ts-morph version daher verwendung von vanilla
     if ((flags & ts.TypeFlags.Union) !== 0 && !type.isBoolean()) {
       return this.handleUnionType(type, tsType, typeAsString, depth, visited);
     }
@@ -147,6 +147,11 @@ export class TSParameterAnalyzer {
           visited
         ),
       };
+    }
+
+    // ! könnte man noch seperat behandeln momentan interface als object
+    if(type.isInterface()){
+
     }
 
     //* intersection type
