@@ -3,17 +3,13 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import { useState } from "react";
 
-import type {
-  MethodResource,
-  RunMethodeInInstanceType,
-} from "../../ressources/classRessources.ts";
-
-import ParameterFormControllComponent, {
-  type ValidationTypeResource,
-} from "../paramComponents/ParameterFormControllComponenet.tsx";
 import { Badge } from "react-bootstrap";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
-import { validateSubmit } from "../../helper/validateSubmit.ts";
+import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.ts";
+import { validateSubmit } from "../../../helper/validateSubmit.ts";
+import type { MethodResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
+import type { ValidationTypeResource } from "../../../ressources/frontend/paramResources.ts";
+import type { RunMethodInInstanceRequestType } from "../../../ressources/request/objectRequest.ts";
+import ParameterFormControllComponent from "../../paramComponents/ParameterFormControllComponenet.tsx";
 
 type InstanceMethodComponentProps = {
   met: MethodResource;
@@ -43,11 +39,11 @@ function InstanceMethodComponent({
 
   const metVariables = met.parameters || [];
 
-  function handleChange(paramName: string, value: string) {
-    setFormValues((prev) => ({ ...prev, [paramName]: value }));
+  function handleChange(paramName: string, newFormvalue: string) {
+    setFormValues((prev) => ({ ...prev, [paramName]: newFormvalue }));
   }
 
-  const handleParameterValidation = (
+  const handleParamValidation = (
     paramName: string,
     validationInfo: ValidationTypeResource
   ) => {
@@ -92,7 +88,7 @@ function InstanceMethodComponent({
       });
     }
 
-    const runMethodeInInstanceType: RunMethodeInInstanceType = {
+    const runMethodeInInstanceType: RunMethodInInstanceRequestType = {
       instanceName: insName,
       methodName: met.methodName,
       params: metParameter,
@@ -149,11 +145,11 @@ function InstanceMethodComponent({
                   <ParameterFormControllComponent
                     index={index}
                     param={param}
-                    value={formValues[param.paramName] || ""}
+                    formValue={formValues[param.paramName] || ""}
                     validated={validated}
                     error={errors[param.paramName]}
                     onChange={handleChange}
-                    onValidationChange={handleParameterValidation}
+                    onValidationChange={handleParamValidation}
                     instancesAsParamsMap={instancesAsParamsMap}
                   ></ParameterFormControllComponent>
                 </Container>

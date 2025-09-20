@@ -3,10 +3,11 @@ import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
 import type { ParameterResource } from "../../ressources/classRessources";
 import { Button, Col, FormGroup, Row } from "react-bootstrap";
-import ParameterFormControllComponent, {
-  type ParamFormTypeResource,
-  type ValidationTypeResource,
-} from "./ParameterFormControllComponenet";
+import type {
+  ParamFormTypeResource,
+  ValidationTypeResource,
+} from "../../ressources/frontend/paramResources";
+import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 
 function ArrayParameterComponent({
   paramFormType,
@@ -122,7 +123,7 @@ function ArrayParameterComponent({
                 ...elementParam,
                 paramName: getElementName(i),
               }}
-              value={internValues[getElementName(i)] || ""}
+              formValue={internValues[getElementName(i)] || ""}
               validated={paramFormType.validated}
               error={paramValidations[getElementName(i)]?.errors[0]}
               onChange={handelInternChange}

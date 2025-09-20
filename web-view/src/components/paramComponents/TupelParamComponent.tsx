@@ -1,11 +1,9 @@
 import { Col, Form, Row } from "react-bootstrap";
 import type { TypeResource } from "../../ressources/classRessources";
-import type {
-  ParamFormTypeResource,
-  ValidationTypeResource,
-} from "./ParameterFormControllComponenet";
+
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 import { useEffect, useState } from "react";
+import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
 //import { useState } from "react";
 
 function TupelParamComponent({
@@ -88,7 +86,7 @@ function TupelParamComponent({
                   isRest: tupelParam.isRest,
                 }),
               }}
-              value={internValues[getElementName(i)] || ""}
+              formValue={internValues[getElementName(i)] || ""}
               validated={paramFormType.validated}
               error={paramValidations[getElementName(i)]?.errors[0]}
               onValidationChange={handleChildChange}

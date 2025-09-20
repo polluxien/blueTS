@@ -5,12 +5,10 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "react-bootstrap";
-import ParameterFormControllComponent, {
-  type ParamFormTypeResource,
-  type ValidationTypeResource,
-} from "./ParameterFormControllComponenet";
 
 import { useEffect, useMemo, useState } from "react";
+import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 
 function UnionParamComponent({
   paramFormType,
@@ -121,7 +119,7 @@ function UnionParamComponent({
             ...paramFormType.param,
             typeInfo: selectedUnionType,
           }}
-          value={internValues[paramFormType.param.paramName] || ""}
+          formValue={internValues[paramFormType.param.paramName] || ""}
           validated={paramFormType.validated}
           error={paramFormType.error}
           onChange={handelInternChange}

@@ -2,16 +2,7 @@ import type {
   ParameterResource,
   TypeResource,
 } from "../ressources/classRessources";
-
-export type ValidationResult = {
-  err?: Error;
-  parsedValue?: unknown;
-};
-
-type InstanceParamType = {
-  className: string;
-  instanceName: string;
-};
+import type { InstanceParamType, ValidationResult } from "./validateTypeResources";
 
 export function validateFormControllType(
   paramRes: ParameterResource,

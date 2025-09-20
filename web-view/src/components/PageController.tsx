@@ -1,28 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import type {
-  ClassResource,
-  CompiledFunctionTyp,
-  CompiledMethodInInstanceTyp,
-  FunctionResource,
-  InstanceCheckResource,
-  InstanceResource,
-  TsCodeCheckResource,
-} from "../ressources/classRessources.ts";
+
 import Switch from "react-switch";
 
 import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
-import ObjectViewComponent from "./ObjectViewComponet.tsx";
 import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
-import FunctionViewComponent from "./FunctionViewComponent.tsx";
+import FunctionViewComponent from "./functionComponenets/FunctionViewComponent.tsx";
+import ObjectViewComponent from "./objectComponents/ObjectViewComponet.tsx";
+import type { DirectoryRespondeType } from "../ressources/response/directoryResponde.ts";
+import type { CompiledFunctionResponseTyp } from "../ressources/response/functionResponse.ts";
+import type { CompiledMethodInInstanceResponseTyp, InstanceCheckResponseType } from "../ressources/response/objectResponse.ts";
+import type { ClassResource, FunctionResource } from "../ressources/backend/tsCompilerAPIResources.ts";
+import type { InstanceResource, TsCodeCheckResource } from "../ressources/classRessources.ts";
 
-export type DirectoryResource = {
-  currentWorkspace: string;
-  fileCount: number;
-};
-
-function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
+function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * View Mode -> react switch select
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [viewMode, setViewMode] = useState<"object" | "function">("object");
 
   // * Enstprechende Card Componets
@@ -35,7 +26,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
 
   // ? Directory-Componet
   const [currentDirectoryRes, setCurrentDirectoryRes] =
-    useState<DirectoryResource>();
+    useState<DirectoryRespondeType>();
 
   // * Instace stuff
   //hier werden die vom frontend angelegten instances vorübergehend abgelegt, bis bestätigung vom Backend kommt das Instanz erstellt werden konnte
@@ -132,7 +123,6 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
           break;
         case "postCurrentDirectoryRes":
           handelCurrentDirectoryRes(data);
-          //hier implemnetieung directory
           break;
 
         case "error":
@@ -180,7 +170,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     setLoading(false);
   }
 
-  function handelPostInstanceCheck(data: InstanceCheckResource) {
+  function handelPostInstanceCheck(data: InstanceCheckResponseType) {
     console.log(`Massage from command has InstanceCheckRessource: ${data}`);
 
     const myInstance: InstanceResource | undefined =
@@ -217,7 +207,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     }
   }
 
-  function handelPostMethodCheck(data: CompiledMethodInInstanceTyp) {
+  function handelPostMethodCheck(data: CompiledMethodInInstanceResponseTyp) {
     console.log(
       `Massage from command has CompiledRunMethodInInstanceTyp: `,
       JSON.stringify(data, null, 2)
@@ -267,7 +257,7 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     }
   }
 
-  function handelPostFunctionCheck(data: CompiledFunctionTyp) {
+  function handelPostFunctionCheck(data: CompiledFunctionResponseTyp) {
     const myKey = `${data.functionName}_${data.tsFile.path}`;
 
     setFunctionResultsMap((prev) => {
@@ -282,7 +272,14 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
     setTestedTsFileMap(myTsCodeCheckMap);
   }
 
-  function handelCurrentDirectoryRes(data: DirectoryResource) {
+  // ! muss noch implementiert werden
+  /*
+  function handelsingelTsCodeCheck(data: TsCodeCheckResource){
+    testedTsFileMap.set()
+  }
+  */
+
+  function handelCurrentDirectoryRes(data: DirectoryRespondeType) {
     setCurrentDirectoryRes(data);
   }
 
@@ -389,4 +386,4 @@ function LandingPage({ vscode }: { vscode: VSCodeAPIWrapper }) {
   );
 }
 
-export default LandingPage;
+export default PageController;

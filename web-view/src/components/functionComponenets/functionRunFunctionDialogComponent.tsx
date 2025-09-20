@@ -1,14 +1,12 @@
 import { Badge, Button, Container, Form, Modal } from "react-bootstrap";
-import type {
-  FunctionResource,
-  RunFunctionType,
-} from "../../ressources/classRessources";
-import ParameterFormControllComponent, {
-  type ValidationTypeResource,
-} from "../paramComponents/ParameterFormControllComponenet";
+
 import { useState } from "react";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
 import { validateSubmit } from "../../helper/validateSubmit";
+import type { FunctionResource } from "../../ressources/backend/tsCompilerAPIResources";
+import type { ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import type { RunFunctionRequestType } from "../../ressources/request/functionRequest";
+import ParameterFormControllComponent from "../paramComponents/ParameterFormControllComponenet";
 
 type FunctionRunFunctionDialogComponentProps = {
   func: FunctionResource;
@@ -39,8 +37,8 @@ function FunctionRunFunctionDialogComponent({
 
   const funcVariables = func.parameters;
 
-  function handleChange(paramName: string, value: string) {
-    setFormValues((prev) => ({ ...prev, [paramName]: value }));
+  function handleChange(paramName: string, newFormValue: string) {
+    setFormValues((prev) => ({ ...prev, [paramName]: newFormValue }));
   }
 
   const handleParameterValidation = (
@@ -58,7 +56,7 @@ function FunctionRunFunctionDialogComponent({
     event.stopPropagation();
 
     if (funcVariables.length === 0) {
-      postMethodMessage();
+      postFunctionMessage();
       setValidated(true);
       return;
     }
@@ -73,13 +71,13 @@ function FunctionRunFunctionDialogComponent({
     setValidated(true);
 
     if (Object.keys(newErrors).length === 0) {
-      postMethodMessage(newParsedValues);
+      postFunctionMessage(newParsedValues);
     } else {
       console.log("Ich habe folgende Errors: ", errors);
     }
   }
 
-  function postMethodMessage(newParsedValues?: Record<string, unknown>) {
+  function postFunctionMessage(newParsedValues?: Record<string, unknown>) {
     let metParameter: unknown[] = [];
 
     if (newParsedValues) {
@@ -88,7 +86,7 @@ function FunctionRunFunctionDialogComponent({
       });
     }
 
-    const runMethodeInInstanceType: RunFunctionType = {
+    const runMethodeInInstanceType: RunFunctionRequestType = {
       functionName: func.functionName,
       params: metParameter,
       specs: { isAsync: func.specs.isAsync },
@@ -143,7 +141,7 @@ function FunctionRunFunctionDialogComponent({
                         <ParameterFormControllComponent
                           index={index}
                           param={param}
-                          value={formValues[param.paramName] || ""}
+                          formValue={formValues[param.paramName] || ""}
                           validated={validated}
                           error={errors[param.paramName]}
                           onChange={handleChange}

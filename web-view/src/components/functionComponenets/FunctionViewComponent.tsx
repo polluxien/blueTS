@@ -3,11 +3,11 @@ import { ArrowClockwise } from "react-bootstrap-icons";
 import type {
   FunctionResource,
   TsCodeCheckResource,
-} from "../ressources/classRessources";
-import LoadingComponent from "./LoadingComponent";
-import FunctionCardComponent from "./functionComponenets/functionCardComponent";
-import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
-import { getColumnSizes } from "../helper/uiHelper";
+} from "../../ressources/classRessources";
+import LoadingComponent from "../LoadingComponent";
+import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
+import { getColumnSizes } from "../../helper/uiHelper";
+import FunctionCardComponent from "./FunctionCardComponent";
 
 type FunctionViewComponentProps = {
   functions: FunctionResource[];

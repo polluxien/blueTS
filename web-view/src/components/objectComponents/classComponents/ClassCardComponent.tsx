@@ -1,18 +1,16 @@
-import type {
-  ClassResource,
-  InstanceResource,
-  TsCodeCheckResource,
-} from "../../ressources/classRessources.ts";
+
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useEffect, useState } from "react";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
-import CreateClassInstanceDialogComponent from "./CreateClassInstanceDialogComponent.tsx";
+import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.ts";
+import CreateClassInstanceDialogComponent from "./ClassCreateInstanceDialogComponent.tsx";
 import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
 import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
-import CompilerErrorModalComponent from "../CompilerErrorModalComponent.tsx";
+import CompilerErrorModalComponent from "../../errorComponents/CompilerErrorModalComponent.tsx";
+import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
+import type { InstanceResource, TsCodeCheckResource } from "../../../ressources/classRessources.ts";
 
 type ClassCardComponentProps = {
   cls: ClassResource;

@@ -1,7 +1,4 @@
-import type {
-  FunctionResource,
-  TsCodeCheckResource,
-} from "../../ressources/classRessources.ts";
+
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useEffect, useState } from "react";
@@ -10,8 +7,10 @@ import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
 import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
-import CompilerErrorModalComponent from "../CompilerErrorModalComponent.tsx";
-import FunctionRunFunctionDialogComponent from "./functionRunFunctionDialogComponent.tsx";
+import CompilerErrorModalComponent from "../errorComponents/CompilerErrorModalComponent.tsx";
+import type { FunctionResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
+import FunctionRunFunctionDialogComponent from "./FunctionRunFunctionDialogComponent.tsx";
+import type { TsCodeCheckResource } from "../../ressources/classRessources.ts";
 
 type FunctionCardComponentProps = {
   func: FunctionResource;

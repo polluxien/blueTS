@@ -5,17 +5,14 @@ import Container from "react-bootstrap/Container";
 import { FormControl, FormGroup } from "react-bootstrap";
 import { useState } from "react";
 
-import type {
-  ClassResource,
-  CreateClassInstanceResource,
-  InstanceResource,
-} from "../../ressources/classRessources.ts";
+import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.ts";
 
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
-import ParameterFormControllComponent, {
-  type ValidationTypeResource,
-} from "../paramComponents/ParameterFormControllComponenet.tsx";
-import { validateSubmit } from "../../helper/validateSubmit.ts";
+import { validateSubmit } from "../../../helper/validateSubmit.ts";
+import type { ValidationTypeResource } from "../../../ressources/frontend/paramResources.ts";
+import type { CreateClassInstanceRequestType } from "../../../ressources/request/objectRequest.ts";
+import ParameterFormControllComponent from "../../paramComponents/ParameterFormControllComponenet.tsx";
+import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
+import type { InstanceResource } from "../../../ressources/classRessources.ts";
 
 type CreateClassInstanceDialogComponentProps = {
   cls: ClassResource;
@@ -47,8 +44,8 @@ function CreateClassInstanceDialogComponent({
 
   const classVariables = cls.constructor?.parameters || [];
 
-  function handleChange(paramName: string, value: string) {
-    setFormValues((prev) => ({ ...prev, [paramName]: value }));
+  function handleChange(paramName: string, newFormValue: string) {
+    setFormValues((prev) => ({ ...prev, [paramName]: newFormValue }));
   }
 
   const handleParameterValidation = (
@@ -62,6 +59,8 @@ function CreateClassInstanceDialogComponent({
   };
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    console.log("submit pressed");
+    
     event.preventDefault();
     event.stopPropagation();
 
@@ -100,10 +99,10 @@ function CreateClassInstanceDialogComponent({
         return newParsedValues[param.paramName];
       });
 
-      const creClsInRes: CreateClassInstanceResource = {
+      const creClsInRes: CreateClassInstanceRequestType = {
         instanceName,
         className: cls.className,
-        constructorParameter,
+        params: constructorParameter,
         tsFile: cls.tsFile,
       };
       console.log("Create instance with value:", creClsInRes);
@@ -159,7 +158,7 @@ function CreateClassInstanceDialogComponent({
                     <ParameterFormControllComponent
                       index={index}
                       param={param}
-                      value={formValues[param.paramName] || ""}
+                      formValue={formValues[param.paramName] || ""}
                       validated={validated}
                       error={errors[param.paramName]}
                       onChange={handleChange}

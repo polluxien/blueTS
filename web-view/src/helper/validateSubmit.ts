@@ -1,5 +1,5 @@
-import type { ValidationTypeResource } from "../components/paramComponents/ParameterFormControllComponenet";
 import type { ParameterResource } from "../ressources/classRessources";
+import type { ValidationTypeResource } from "../ressources/frontend/paramResources";
 import { validateFormControllType } from "./validateType";
 
 export function validateSubmit(

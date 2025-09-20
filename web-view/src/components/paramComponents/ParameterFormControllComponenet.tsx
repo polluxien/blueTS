@@ -13,34 +13,12 @@ import { useEffect, useState } from "react";
 import { validateFormControllType } from "../../helper/validateType.ts";
 import ObjectParamComponent from "./ObjectParamComponent.tsx";
 import IntersectionParamComponent from "./IntersectionFormControllComponenet.tsx";
-
-export type ParamFormTypeResource = {
-  index: number;
-  param: ParameterResource;
-  value: string;
-  validated: boolean;
-  error?: Error;
-
-  onChange: (paramName: string, value: string) => void;
-  onValidationChange?: (
-    paramName: string,
-    validationRes: ValidationTypeResource
-  ) => void;
-
-  instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-  hideLabel?: boolean;
-};
-
-export type ValidationTypeResource = {
-  isValid: boolean;
-  errors: Error[];
-  parsedValue?: unknown;
-};
+import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources.ts";
 
 function ParameterFormControllComponent({
   index,
   param,
-  value,
+  formValue: value,
   validated,
   error,
   onChange,
@@ -163,7 +141,7 @@ function ParameterFormControllComponent({
   const paramFormType: ParamFormTypeResource = {
     index,
     param,
-    value,
+    formValue: value,
     validated,
     error,
     onChange,
@@ -337,6 +315,7 @@ function ParameterFormControllComponent({
             value={value}
             onChange={(e) => onChange(param.paramName, e.target.value)}
             isInvalid={validated && !!error}
+            isValid={validated && !error}
           />
           <Form.Control.Feedback type="invalid">
             {error?.message || "This field is required"}

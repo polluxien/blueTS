@@ -5,13 +5,14 @@ import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
 import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { Gear } from "react-bootstrap-icons";
-import type { DirectoryResource } from "./LandingPage";
+import type { DirectoryRespondeType } from "../ressources/response/directoryResponde";
 
 type DirectorySettingsComponentType = {
-  currentDirectoryRes: DirectoryResource | undefined;
+  currentDirectoryRes: DirectoryRespondeType | undefined;
 
   vscode: VSCodeAPIWrapper;
 };
+
 function DirectorySettingsComponent({
   currentDirectoryRes,
   vscode,

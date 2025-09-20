@@ -1,11 +1,11 @@
-import type { InstanceResource } from "../../ressources/classRessources.ts";
+import type { InstanceResource } from "../../../ressources/classRessources.ts";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useState } from "react";
 import InstanceDialogComponent from "./InstanceDialog.tsx";
 import { Info, X } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
+import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.ts";
 // import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 type InstanceCardComponentProps = {

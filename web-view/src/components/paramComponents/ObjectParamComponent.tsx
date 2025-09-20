@@ -1,10 +1,8 @@
 import { Form, FormGroup } from "react-bootstrap";
-import ParameterFormControllComponent, {
-  type ParamFormTypeResource,
-  type ValidationTypeResource,
-} from "./ParameterFormControllComponenet";
 import type { TypeResource } from "../../ressources/classRessources";
 import { useEffect, useState } from "react";
+import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 
 function ObjectParamComponent({
   paramFormType,
@@ -93,7 +91,7 @@ function ObjectParamComponent({
                   },
                   isOptional: paramFormType.param.isOptional,
                 }}
-                value={internValues[`${typeRes.typeAsString}_BLANKTYPE`] || ""}
+                formValue={internValues[`${typeRes.typeAsString}_BLANKTYPE`] || ""}
                 validated={paramFormType.validated}
                 error={
                   paramValidations[`${typeRes.typeAsString}_BLANKTYPE`]
@@ -112,7 +110,7 @@ function ObjectParamComponent({
               <ParameterFormControllComponent
                 index={i}
                 param={objParam}
-                value={internValues[objParam.paramName] || ""}
+                formValue={internValues[objParam.paramName] || ""}
                 instancesAsParamsMap={paramFormType.instancesAsParamsMap}
                 validated={paramFormType.validated}
                 error={paramValidations[objParam.paramName]?.errors[0]}
