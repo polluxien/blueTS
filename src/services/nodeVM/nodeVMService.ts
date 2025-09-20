@@ -1,10 +1,6 @@
 import fs from "fs";
 import ts from "typescript";
-import {
-  CreateClassInstanceRessource,
-  PropInstanceType,
-  RunMethodeInInstanceType,
-} from "../../_resources/nodeVMResources";
+import { PropInstanceType } from "../../_resources/nodeVMResources";
 import {
   CompileErrorResource,
   TsCodeCheckResource,
@@ -12,6 +8,10 @@ import {
 import { TsFileResource } from "../../_resources/FileResources";
 import { parseReturnResult } from "./nodeHelper";
 import { normalizeParam } from "./typeCheckerHelper";
+import {
+  CreateClassInstanceRequestType,
+  RunMethodInInstanceRequestType,
+} from "../../_resources/request/objectRequest";
 
 const vm = require("node:vm");
 
@@ -103,7 +103,7 @@ export async function checkTsCode(
 }
 
 export async function createClassInstanceVM(
-  createClsInstanceRes: CreateClassInstanceRessource
+  createClsInstanceRes: CreateClassInstanceRequestType
 ): Promise<object> {
   try {
     //code einlesen
@@ -135,8 +135,8 @@ export async function createClassInstanceVM(
 
     console.log("Constructor ausgabe: ", classConstructor);
     const myInstance = new classConstructor(
-      ...(createClsInstanceRes.constructorParameter.length > 0
-        ? createClsInstanceRes.constructorParameter
+      ...(createClsInstanceRes.params.length > 0
+        ? createClsInstanceRes.params
         : [])
     );
 
@@ -237,7 +237,7 @@ export async function extractClassInstanceProps(
 
 export async function compileInstanceMethod(
   instance: any,
-  runMethodeInInstanceType: RunMethodeInInstanceType
+  runMethodeInInstanceType: RunMethodInInstanceRequestType
 ): Promise<unknown> {
   const { methodName, params } = runMethodeInInstanceType;
   const { isAsync, methodKind } = runMethodeInInstanceType.specs;
@@ -305,7 +305,7 @@ export async function compileFunction(
 ): Promise<CompiledFunctionTyp> {
   // params parsen wenn nötig
   runFunctionType.params = runFunctionType.params.flatMap(normalizeParam);
-  
+
   const { functionName, params } = runFunctionType;
   const { isAsync } = runFunctionType.specs;
   let result: unknown;

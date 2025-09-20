@@ -1,11 +1,15 @@
 import {
-  CompiledRunMethodInInstanceTyp,
-  CreateClassInstanceRessource,
-  InstanceCheckRessource,
   InstanceParamType,
   PropInstanceType,
-  RunMethodeInInstanceType,
 } from "../../_resources/nodeVMResources";
+import {
+  CreateClassInstanceRequestType,
+  RunMethodInInstanceRequestType,
+} from "../../_resources/request/objectRequest";
+import {
+  CompiledMethodInInstanceResponseTyp,
+  InstanceCheckResponseType,
+} from "../../_resources/response/objectResponse";
 import { parseReturnResult } from "./nodeHelper";
 import {
   compileInstanceMethod,
@@ -48,9 +52,9 @@ function setNewProps(instanceName: string, newProps: PropInstanceType[]) {
 }
 
 export async function addInstanceToInstanceMap(
-  createClsInstanceRes: CreateClassInstanceRessource
-): Promise<InstanceCheckRessource> {
-  let result: InstanceCheckRessource = {
+  createClsInstanceRes: CreateClassInstanceRequestType
+): Promise<InstanceCheckResponseType> {
+  let result: InstanceCheckResponseType = {
     instanceName: createClsInstanceRes.instanceName,
     props: [],
     isValid: false,
@@ -66,8 +70,8 @@ export async function addInstanceToInstanceMap(
     let myCreateClsInstanceRes = createClsInstanceRes;
 
     //übergebenen params nach instances checken
-    myCreateClsInstanceRes.constructorParameter =
-      myCreateClsInstanceRes.constructorParameter.flatMap(normalizeParam);
+    myCreateClsInstanceRes.params =
+      myCreateClsInstanceRes.params.flatMap(normalizeParam);
 
     console.log("zu übergebene ressource an node-vm: ", myCreateClsInstanceRes);
 
@@ -86,15 +90,15 @@ export async function addInstanceToInstanceMap(
     instanceMap.set(createClsInstanceRes.instanceName, [instance, myProps]);
     result.isValid = true;
   } catch (err) {
-    result.error = err;
+    result.error = err as Error | undefined;
   }
   return result;
 }
 
 export async function compileMethodInClassObject(
-  runMethodeInInstanceType: RunMethodeInInstanceType
-): Promise<CompiledRunMethodInInstanceTyp> {
-  const compiledResult: CompiledRunMethodInInstanceTyp = {
+  runMethodeInInstanceType: RunMethodInInstanceRequestType
+): Promise<CompiledMethodInInstanceResponseTyp> {
+  const compiledResult: CompiledMethodInInstanceResponseTyp = {
     instanceName: runMethodeInInstanceType.instanceName,
     methodName: runMethodeInInstanceType.methodName,
     methodKind: runMethodeInInstanceType.specs.methodKind as
