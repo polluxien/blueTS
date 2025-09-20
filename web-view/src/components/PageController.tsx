@@ -8,21 +8,40 @@ import FunctionViewComponent from "./functionComponenets/FunctionViewComponent.t
 import ObjectViewComponent from "./objectComponents/ObjectViewComponet.tsx";
 import type { DirectoryRespondeType } from "../ressources/response/directoryResponde.ts";
 import type { CompiledFunctionResponseTyp } from "../ressources/response/functionResponse.ts";
-import type { CompiledMethodInInstanceResponseTyp, InstanceCheckResponseType } from "../ressources/response/objectResponse.ts";
-import type { ClassResource, FunctionResource } from "../ressources/backend/tsCompilerAPIResources.ts";
-import type { InstanceResource, TsCodeCheckResource } from "../ressources/classRessources.ts";
+import type {
+  CompiledMethodInInstanceResponseTyp,
+  InstanceCheckResponseType,
+} from "../ressources/response/objectResponse.ts";
+import type {
+  ClassResource,
+  FunctionResource,
+} from "../ressources/backend/tsCompilerAPIResources.ts";
+import type {
+  InstanceResource,
+  TsCodeCheckResource,
+} from "../ressources/classRessources.ts";
+import type { RefreshedResponseType } from "../ressources/response/fileCheckResponse.ts";
 
 function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * View Mode -> react switch select
   const [viewMode, setViewMode] = useState<"object" | "function">("object");
 
   // * Enstprechende Card Componets
-  // ? Object-View
-  const [classes, setClasses] = useState<ClassResource[]>([]);
+
+  // * Object-View
+
+  // ? Map<filePath, ClassResource[]>
+  const [classes, setClasses] = useState<Map<string, ClassResource[]>>(
+    new Map()
+  );
   const [instances, setInstance] = useState<InstanceResource[]>([]);
 
-  // ? Function-View
-  const [functions, setFunctions] = useState<FunctionResource[]>([]);
+  // * Function-View
+
+  //? Map<filePath, ClassResource[]>
+  const [functions, setFunctions] = useState<Map<string, FunctionResource[]>>(
+    new Map()
+  );
 
   // ? Directory-Componet
   const [currentDirectoryRes, setCurrentDirectoryRes] =
@@ -121,8 +140,16 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
         case "postTsCodeCheckMap":
           handelPostTsCodeCheckMap(data);
           break;
+        case "postRefreshFileData":
+          handelPostRefreshFileData(data);
+          break;
         case "postCurrentDirectoryRes":
           handelCurrentDirectoryRes(data);
+          break;
+
+        //Backend-Event-Driven
+        case "deleteTsCodeCheck":
+          handelDeleteTSCodeCheck(data);
           break;
 
         case "error":
@@ -143,15 +170,27 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // ? Message handler ----------------------------
 
   function handelPostAllClasses(data: ClassResource[]) {
+    //setClasses(new Map(data.map((cls) => [cls.tsFile.path, [cls]])));
+
     console.log(
       `Massage from command has data: ${JSON.stringify(data, null, 2)}`
     );
 
-    setClasses(data);
-    console.log("Received postAllClasses, length:", data);
-    data.map((cls: ClassResource) =>
-      console.log("Class names:", cls.className)
-    );
+    setClasses(() => {
+      const newMap = new Map<string, ClassResource[]>();
+
+      for (const cls of data) {
+        const path = cls.tsFile.path;
+
+        // nach existierende Klassen für diesen Pfad prüfen
+        const map = newMap.get(path) ?? [];
+
+        // neue Klasse hinzufügen
+        newMap.set(path, [...map, cls]);
+      }
+
+      return newMap;
+    });
 
     setLoading(false);
   }
@@ -161,7 +200,21 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
       `Massage from command has data: ${JSON.stringify(data, null, 2)}`
     );
 
-    setFunctions(data);
+    setFunctions(() => {
+      const newMap = new Map<string, FunctionResource[]>();
+
+      for (const func of data) {
+        const path = func.tsFile.path;
+
+        // nach existierende Klassen für diesen Pfad prüfen
+        const map = newMap.get(path) ?? [];
+
+        // neue Klasse hinzufügen
+        newMap.set(path, [...map, func]);
+      }
+
+      return newMap;
+    });
     console.log("Received postAllClasses, length:", data);
     data.map((foo: FunctionResource) =>
       console.log("Class names:", foo.functionName)
@@ -272,12 +325,48 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
     setTestedTsFileMap(myTsCodeCheckMap);
   }
 
-  // ! muss noch implementiert werden
-  /*
-  function handelsingelTsCodeCheck(data: TsCodeCheckResource){
-    testedTsFileMap.set()
+  function handelPostRefreshFileData(data: RefreshedResponseType) {
+    console.log(
+      `Massage from command has data: ${JSON.stringify(data, null, 2)}`
+    );
+
+    setTestedTsFileMap((prev) => {
+      console.log("Existing keys:", Array.from(prev.keys()));
+      console.log("Key to update:", data.tsFilePath);
+      console.log("Key exists:", prev.has(data.tsFilePath));
+
+      const newMap = new Map(prev);
+      newMap.set(data.tsFilePath, data.tsFileCheck);
+      return newMap;
+    });
+
+    setFunctions((prev) => {
+      console.log("Existing keys:", Array.from(prev.keys()));
+      console.log("Key to update:", data.tsFilePath);
+      console.log("Key exists:", prev.has(data.tsFilePath));
+
+      const newMap = new Map(prev);
+      newMap.set(data.tsFilePath, data.refreshedFunctions);
+      return newMap;
+    });
+
+    setClasses((prev) => {
+      console.log("Existing keys:", Array.from(prev.keys()));
+      console.log("Key to update:", data.tsFilePath);
+      console.log("Key exists:", prev.has(data.tsFilePath));
+      const newMap = new Map(prev);
+      newMap.set(data.tsFilePath, data.refreshedClasses);
+      return newMap;
+    });
   }
-  */
+
+  function handelDeleteTSCodeCheck(data: string) {
+    setTestedTsFileMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(data);
+      return newMap;
+    });
+  }
 
   function handelCurrentDirectoryRes(data: DirectoryRespondeType) {
     setCurrentDirectoryRes(data);
@@ -309,6 +398,9 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
   if (error) {
     return <div>{error}</div>;
   }
+
+  const getClasses = () => Array.from(classes.values()).flat();
+  const getFunctions = () => Array.from(functions.values()).flat();
 
   return (
     <>
@@ -356,7 +448,7 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
       {viewMode === "object" ? (
         <div>
           <ObjectViewComponent
-            classes={classes}
+            classes={getClasses()}
             instances={instances}
             loading={loading}
             methodResults={methodResults}
@@ -372,7 +464,7 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
       ) : (
         <div>
           <FunctionViewComponent
-            functions={functions}
+            functions={getFunctions()}
             functionResults={functionResultsMap}
             loading={loading}
             reLoad={reLoad}

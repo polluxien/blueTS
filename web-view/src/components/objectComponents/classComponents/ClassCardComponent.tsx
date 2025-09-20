@@ -1,4 +1,3 @@
-
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useEffect, useState } from "react";
@@ -10,7 +9,10 @@ import { Col, Row } from "react-bootstrap";
 import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
 import CompilerErrorModalComponent from "../../errorComponents/CompilerErrorModalComponent.tsx";
 import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
-import type { InstanceResource, TsCodeCheckResource } from "../../../ressources/classRessources.ts";
+import type {
+  InstanceResource,
+  TsCodeCheckResource,
+} from "../../../ressources/classRessources.ts";
 
 type ClassCardComponentProps = {
   cls: ClassResource;
@@ -52,12 +54,9 @@ function ClassCardComponent({
   const openErrorDialog = () => setErrorDialogOpen(true);
   const closeErrorDialog = () => setErrorDialogOpen(false);
 
-  const sendTsPathForTsCodeChecking = () => {
-    // ! funktioniert nicht -> ziel refresh class neue classRessource anfordern und neue CheckRessource
-    const message = { message: "refreshClass", data: cls.tsFile.path };
-    console.log("check pressed sending message: ", message);
-
-    vscode.postMessage([message]);
+  const refreshFile = () => {
+    console.log("check pressed sending message: ", cls.tsFile.path);
+    vscode.postMessage([{ command: "refreshFile", data: cls.tsFile }]);
   };
 
   return (
@@ -103,11 +102,11 @@ function ClassCardComponent({
                 //style={baseStyle(hoveredRun)}
                 // onMouseEnter={() => setHoveredRun(true)}
                 //  onMouseLeave={() => setHoveredRun(false)}
-                onClick={sendTsPathForTsCodeChecking}
+                onClick={refreshFile}
               >
                 <>
                   <PlayFill className="me-2" />
-                  refresh class
+                  refresh file
                 </>
               </Button>
             </Col>

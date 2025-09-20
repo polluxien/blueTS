@@ -117,12 +117,16 @@ async function updateToolbarVisibility() {
   );
 }
 
+//Event-driven Frontend kommunikation
 async function updateDiagnostics(document: vscode.TextDocument) {
-  console.log("Das ist die DocunmenetURI: ", document.uri);
-  const newTestedFilesMap = dropFilesFromTestedFileMap(document.uri);
+  const fileIsRelevant = dropFilesFromTestedFileMap(document.uri.fsPath);
+  if (!fileIsRelevant) {
+    return;
+  }
+
   currentPanel?.postMessage({
-    command: "postTsCodeCheckMap",
-    data: newTestedFilesMap,
+    command: "deleteTsCodeCheck",
+    data: document.uri.fsPath,
   });
 }
 

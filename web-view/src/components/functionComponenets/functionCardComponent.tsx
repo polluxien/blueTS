@@ -1,4 +1,3 @@
-
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useEffect, useState } from "react";
@@ -48,12 +47,9 @@ function FunctionCardComponent({
   const openErrorDialog = () => setErrorDialogOpen(true);
   const closeErrorDialog = () => setErrorDialogOpen(false);
 
-  const sendTsPathForTsCodeChecking = () => {
-    // ! funktioniert nicht -> ziel refresh class neue classRessource anfordern und neue CheckRessource
-    const message = { message: "refreshClass", data: func.tsFile.path };
-    console.log("check pressed sending message: ", message);
-
-    vscode.postMessage([message]);
+  const refreshFile = () => {
+    console.log("check pressed sending message: ", func.tsFile.path);
+    vscode.postMessage([{ command: "refreshFile", data: func.tsFile }]);
   };
 
   return (
@@ -99,11 +95,11 @@ function FunctionCardComponent({
                 //style={baseStyle(hoveredRun)}
                 // onMouseEnter={() => setHoveredRun(true)}
                 //  onMouseLeave={() => setHoveredRun(false)}
-                onClick={sendTsPathForTsCodeChecking}
+                onClick={refreshFile}
               >
                 <>
                   <PlayFill className="me-2" />
-                  refresh class
+                  refresh file
                 </>
               </Button>
             </Col>

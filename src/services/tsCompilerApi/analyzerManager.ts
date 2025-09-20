@@ -5,6 +5,7 @@ import {
 import { TSFunctionAnalyzer } from "./TSFunctionAnalyzer.class";
 import { TSClassAnalyzer } from "./TSClassAnalyzer.class";
 import { getTSFiles } from "../fileService/fileService";
+import { TsFileResource } from "../../_resources/FileResources";
 
 export async function getAlltsClasses(): Promise<ClassResource[]> {
   const classResArr: ClassResource[] = [];
@@ -31,19 +32,18 @@ export async function getAlltsFunctions(): Promise<FunctionResource[]> {
   return funcResArr;
 }
 
-// ! muss noch implementiert werden
-/*
-export async function getSpefictsClass(path?: Path): Promise<ClassResource[]> {
-  //benutzte aktuellen Workspace oder ausgewählten Workspace
-  let currentWorkspace = !path
-    ? vscode.workspace.workspaceFolders?.[0].uri.fsPath
-    : path;
-
-  //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
-  const scrFiles = await getAllTsFilesFromDirectory(currentWorkspace!);
-
+export async function getFileSpeficClasses(
+  tsFile: TsFileResource
+): Promise<ClassResource[]> {
   //Erstelle ClasenRessources
-  const tsClasses = new TSClassAnalyzer(scrFiles);
+  const tsClasses = new TSClassAnalyzer(tsFile);
   return tsClasses.parse();
 }
-  */
+
+export async function getFileSpeficFunctions(
+  tsFile: TsFileResource
+): Promise<FunctionResource[]> {
+  //Erstelle ClasenRessources
+  const tsFunctions = new TSFunctionAnalyzer(tsFile);
+  return tsFunctions.parse();
+}

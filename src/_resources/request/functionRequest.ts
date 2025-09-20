@@ -1,4 +1,4 @@
-import { TsFileResource } from "../FileResources";
+import type { TsFileResource } from "../backend/FileResources";
 
 //function Types
 export type RunFunctionRequestType = {

@@ -44,21 +44,25 @@ export async function addAllFilesToTestedFilesMap(): Promise<
   return Array.from(myTestedFileMap.entries());
 }
 
-export async function addFilesToTestedFilesMap(tsFilePath: string) {
-  const result = await checkTsCode(tsFilePath);
-  myTestedFileMap.set(tsFilePath, result);
+export async function addFilesToTestedFilesMap(
+  tsFileRes: TsFileResource
+): Promise<TsCodeCheckResource> {
+  const result = await checkTsCode(tsFileRes.path);
+  myTestedFileMap.set(tsFileRes.path, result);
 
-  return Array.from(myTestedFileMap.entries());
+  console.log("myTested FileMap:");
+  for (const [key, value] of myTestedFileMap.entries()) {
+    console.log(key, JSON.stringify(value));
+  }
+
+  return result;
 }
 
-export function dropFilesFromTestedFileMap(
-  tsFilePath: Uri
-): [string, TsCodeCheckResource][] | undefined {
-  const parsedUri = tsFilePath.toString();
-  if (!myTestedFileMap.get(parsedUri)) {
-    return;
+export function dropFilesFromTestedFileMap(filepath: string): boolean {
+  if (!myTestedFileMap.get(filepath)) {
+    return false;
   }
-  myTestedFileMap.delete(parsedUri);
 
-  return Array.from(myTestedFileMap.entries());
+  myTestedFileMap.delete(filepath);
+  return true;
 }

@@ -10,6 +10,8 @@ import {
 import {
   getAlltsClasses,
   getAlltsFunctions,
+  getFileSpeficClasses,
+  getFileSpeficFunctions,
 } from "./services/tsCompilerApi/analyzerManager";
 import {
   addInstanceToInstanceMap,
@@ -25,6 +27,8 @@ import {
   setWorkspace,
 } from "./services/workspaceService";
 import { compileFunction } from "./services/nodeVM/nodeVMService";
+import { RefreshedResponseType } from "./_resources/response/fileCheckResponse";
+import { TsFileResource } from "./_resources/FileResources";
 
 /**
  * Baut auf folgender Beispiel-Klasse von Microsoft auf:
@@ -231,21 +235,26 @@ export class Panel {
               break;
             }
             // ? File Messages
-            case "testTsFile": {
-              const messageData = await addFilesToTestedFilesMap(
-                curMessage.data
-              );
-              // ! wronggggg
+            case "getAllTsFileChecks": {
+              const messageData = await addAllFilesToTestedFilesMap();
               this.postMessage({
                 command: "postTsCodeCheckMap",
                 data: messageData,
               });
               break;
             }
-            case "getAllTsFileChecks": {
-              const messageData = await addAllFilesToTestedFilesMap();
+            case "refreshFile": {
+              const tsFileRes: TsFileResource = curMessage.data;
+              //file Aktalisierung schicken
+              const messageData: RefreshedResponseType = {
+                tsFilePath: tsFileRes.path,
+                tsFileCheck: await addFilesToTestedFilesMap(tsFileRes),
+                refreshedClasses: await getFileSpeficClasses(tsFileRes),
+                refreshedFunctions: await getFileSpeficFunctions(tsFileRes),
+              };
+
               this.postMessage({
-                command: "postTsCodeCheckMap",
+                command: "postRefreshFileData",
                 data: messageData,
               });
               break;
