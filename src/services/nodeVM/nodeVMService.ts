@@ -2,13 +2,14 @@ import fs from "fs";
 import ts from "typescript";
 import {
   CreateClassInstanceRessource,
+  PropInstanceType,
   RunMethodeInInstanceType,
 } from "../../_resources/nodeVMResources";
 import {
   CompileErrorResource,
   TsCodeCheckResource,
 } from "./checkTsCodeManager";
-import { TsFileResource } from "../../_resources/fileResources";
+import { TsFileResource } from "../../_resources/FileResources";
 import { parseReturnResult } from "./nodeHelper";
 import { normalizeParam } from "./typeCheckerHelper";
 
@@ -146,35 +147,10 @@ export async function createClassInstanceVM(
   }
 }
 
-//checke ob der kompilierte code koreckt ist
-export type verifyContext = {
-  context: string;
-  isValid: boolean;
-  error?: Error;
-};
-export async function runContext() {}
-
-//liefe alle props von instance zurück
-export type InstancePropsType = {
-  instanceName: string;
-  classNAme: string;
-  props: PropType[];
-};
-
-export type PropType = {
-  name: string;
-  type: string;
-  value?: string;
-  specs?: {
-    visibility: "public" | "private" | "protected";
-    isStatic: boolean;
-  };
-};
-
 export async function extractClassInstanceProps(
   instance: any
-): Promise<PropType[]> {
-  let propTypeArr: PropType[] = [];
+): Promise<PropInstanceType[]> {
+  let propTypeArr: PropInstanceType[] = [];
 
   try {
     // Hole alle props der Instanz

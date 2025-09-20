@@ -120,7 +120,10 @@ async function updateToolbarVisibility() {
 async function updateDiagnostics(document: vscode.TextDocument) {
   console.log("Das ist die DocunmenetURI: ", document.uri);
   const newTestedFilesMap = dropFilesFromTestedFileMap(document.uri);
-  currentPanel?.postMessage({ command: "postTsCodeCheckMap", data: newTestedFilesMap });
+  currentPanel?.postMessage({
+    command: "postTsCodeCheckMap",
+    data: newTestedFilesMap,
+  });
 }
 
 export function deactivate() {}

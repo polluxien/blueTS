@@ -11,7 +11,7 @@ import {
 } from "ts-morph";
 
 //eigene Imports
-import { TsFileResource } from "../../_resources/fileResources";
+import { TsFileResource } from "../../_resources/FileResources";
 import {
   ClassResource,
   ConstructorResource,

@@ -9,7 +9,7 @@ import {
 import path from "path";
 
 //eigene Imports
-import { TsFileResource } from "../../_resources/fileResources";
+import { TsFileResource } from "../../_resources/FileResources";
 import {
   FunctionResource,
   ParameterResource,

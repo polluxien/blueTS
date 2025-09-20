@@ -1,8 +1,6 @@
-import { PseudoBigInt } from "typescript";
-import { TsFileResource } from "./fileResources";
+import { TsFileResource } from "./FileResources";
 
 // * Param-Resource Types für Object- als auch Function-View
-
 export type FunctionParamTypeSignatureResource = {
   defaultImplementation: string;
   returnType?: TypeResource;

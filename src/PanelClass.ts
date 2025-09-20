@@ -235,6 +235,7 @@ export class Panel {
               const messageData = await addFilesToTestedFilesMap(
                 curMessage.data
               );
+              // ! wronggggg
               this.postMessage({
                 command: "postTsCodeCheckMap",
                 data: messageData,

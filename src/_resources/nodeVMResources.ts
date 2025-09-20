@@ -1,4 +1,4 @@
-import { TsFileResource } from "./fileResources";
+import { TsFileResource } from "./FileResources";
 import { ParameterResource } from "./tsCompilerAPIResources";
 
 export type CreateClassInstanceRessource = {
@@ -38,10 +38,37 @@ export type EnumParamType = {
   enumMembers: string[];
 };
 
+
+//checke ob der kompilierte code koreckt ist
+export type verifyContext = {
+  context: string;
+  isValid: boolean;
+  error?: Error;
+};
+
+//liefe alle props von instance zurück
+export type InstancePropsType = {
+  instanceName: string;
+  classNAme: string;
+  props: InstancePropType[];
+};
+
+export type InstancePropType = {
+  name: string;
+  type: string;
+  value?: string;
+  specs?: {
+    visibility: "public" | "private" | "protected";
+    isStatic: boolean;
+  };
+};
+
 //vom Frontend wird rest übergeben
+
 export type RestParamType = {
   restParams: unknown[];
 };
+
 
 //übergabe vom Frontend
 export type RunMethodeInInstanceType = {

@@ -1,11 +1,7 @@
 import * as vscode from "vscode";
 import fs from "fs";
 import { getTSFiles } from "./fileService/fileService";
-
-export type DirectoryResource = {
-  currentWorkspace: string;
-  fileCount: number;
-};
+import { DirectoryRespondeType } from "../_resources/response/directoryResponde";
 
 const vsWorkspace = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
 let currentWorkspace: string | undefined;
@@ -18,7 +14,7 @@ export function getWorkspace(): string {
   return currentWorkspace!;
 }
 
-export async function getWorkspaceRessourceForMessage(): Promise<DirectoryResource> {
+export async function getWorkspaceRessourceForMessage(): Promise<DirectoryRespondeType> {
   const files = await getTSFiles();
 
   return {

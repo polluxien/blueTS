@@ -1,5 +1,5 @@
 import { Uri } from "vscode";
-import { TsFileResource } from "../../_resources/fileResources";
+import { TsFileResource } from "../../_resources/FileResources";
 import { getTSFiles } from "../fileService/fileService";
 import { checkTsCode } from "./nodeVMService";
 
@@ -23,7 +23,9 @@ export type CompileErrorResource = {
   row: number | undefined;
 };
 
-export async function addAllFilesToTestedFilesMap() {
+export async function addAllFilesToTestedFilesMap(): Promise<
+  [string, TsCodeCheckResource][]
+> {
   const myFileSet = filterFiles(await getTSFiles());
 
   for (const filePath of myFileSet) {
@@ -38,6 +40,7 @@ export async function addAllFilesToTestedFilesMap() {
   }
   */
 
+  // * ich kann den Datentype Map nicht verschicken --> tupelArray
   return Array.from(myTestedFileMap.entries());
 }
 
