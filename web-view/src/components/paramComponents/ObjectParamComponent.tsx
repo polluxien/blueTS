@@ -1,8 +1,11 @@
 import { Form, FormGroup } from "react-bootstrap";
-import type { TypeResource } from "../../ressources/classRessources";
 import { useEffect, useState } from "react";
-import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import type {
+  ParamFormTypeResource,
+  ValidationTypeResource,
+} from "../../ressources/frontend/paramResources";
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
+import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources";
 
 function ObjectParamComponent({
   paramFormType,
@@ -65,7 +68,7 @@ function ObjectParamComponent({
     <FormGroup key={paramFormType.index}>
       <Form.Label>
         <strong>{paramFormType.param.paramName}</strong>
-        {paramFormType.param.isOptional&& "?"}:{" "}
+        {paramFormType.param.isOptional && "?"}:{" "}
         {paramFormType.param.typeInfo.typeAsString}
       </Form.Label>
       {typeRes.objectParameters && (
@@ -86,12 +89,14 @@ function ObjectParamComponent({
                 param={{
                   paramName: `${typeRes.typeAsString}_BLANKTYPE`,
                   typeInfo: {
-                    paramType: "basic",
+                    paramType: "primitive-basic",
                     typeAsString: "emptyObjectType",
                   },
                   isOptional: paramFormType.param.isOptional,
                 }}
-                formValue={internValues[`${typeRes.typeAsString}_BLANKTYPE`] || ""}
+                formValue={
+                  internValues[`${typeRes.typeAsString}_BLANKTYPE`] || ""
+                }
                 validated={paramFormType.validated}
                 error={
                   paramValidations[`${typeRes.typeAsString}_BLANKTYPE`]

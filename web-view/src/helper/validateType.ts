@@ -1,8 +1,9 @@
+
+import type { ParameterResource, TypeResource } from "../ressources/backend/tsCompilerAPIResources";
 import type {
-  ParameterResource,
-  TypeResource,
-} from "../ressources/classRessources";
-import type { InstanceParamType, ValidationResult } from "./validateTypeResources";
+  InstanceParamType,
+  ValidationResult,
+} from "./validateTypeResources";
 
 export function validateFormControllType(
   paramRes: ParameterResource,
@@ -24,7 +25,7 @@ export function validateFormControllType(
   }
 
   //basic types oder literalType defined
-  if (typeRes.paramType === "basic" || typeRes.literalType) {
+  if (typeRes.paramType === "primitive-basic" || typeRes.literalType) {
     if (typeRes.typeAsString === "string" || typeRes.literalType === "string") {
       if (
         formValue.length >= 2 &&
@@ -69,13 +70,12 @@ export function validateFormControllType(
     }
   }
 
-  // ! das mit dem enum funktioniert noch nicht, ich übergebe noch kein object
   //enum type
   if (typeRes.paramType === "enum") {
     return {
       parsedValue: {
         enumValue: `${typeRes.typeAsString}.${formValue}`,
-        enumMembers: typeRes.enumMembers
+        enumMembers: typeRes.enumMembers,
       },
     };
   }
@@ -124,25 +124,47 @@ export function validateFormControllType(
 
   //akteptiere alles
   if (
-    typeRes.paramType === "any" ||
-    typeRes.paramType === "unknown" ||
+    typeRes.typeAsString === "any" ||
+    typeRes.typeAsString === "unknown" ||
     typeRes.typeAsString === "emptyObjectType"
   ) {
     return parseDynamicValue(formValue);
   }
 
   //void einziger akzepierter typ undefined deswegen überge -> keine auswahl erlaubt
-  if (typeRes.paramType === "void") {
+  if (typeRes.typeAsString === "void") {
     return { parsedValue: undefined };
   }
 
-  if (typeRes.paramType === "null") {
+  if (typeRes.typeAsString === "null") {
     return { parsedValue: null };
   }
 
   //never kann niemal vorkommen -> keine auswahl erlaubt -> übergebe nur err
-  if (typeRes.paramType === "never") {
+  if (typeRes.typeAsString === "never") {
     return { err: new Error("never can't be used !") };
+  }
+
+  if (typeRes.typeAsString === "symbol") {
+    const regexS = /^Symbol\((?:[a-zA-Z_][a-zA-Z0-9_]*|(["'`])(.*?)\1)\)$/;
+    const regexSF = /^Symbol\.for\(["'`](.*?)["'`]\)$/;
+
+    // Fall: Symbol("...")
+    if (regexS.test(formValue)) {
+      const match = formValue.match(regexS);
+      // match[2] enthält den Inhalt falls in Quotes, ansonsten ist match[0] ein Identifier
+      const key = match?.[2] ?? "";
+      return { parsedValue: Symbol(key) };
+    }
+
+    // Fall: Symbol.for("...")
+    if (regexSF.test(formValue)) {
+      const match = formValue.match(regexSF);
+      const key = match?.[1] ?? "";
+      return { parsedValue: Symbol.for(key) };
+    }
+
+    return { err: new Error('Invalid symbol (Symbol("...") or  Symbol.for("...") ) ') };
   }
 
   return { parsedValue: formValue };

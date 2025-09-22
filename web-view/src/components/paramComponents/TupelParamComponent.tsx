@@ -1,9 +1,9 @@
 import { Col, Form, Row } from "react-bootstrap";
-import type { TypeResource } from "../../ressources/classRessources";
 
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 import { useEffect, useState } from "react";
 import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources";
 //import { useState } from "react";
 
 function TupelParamComponent({

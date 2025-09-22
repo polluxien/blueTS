@@ -12,7 +12,7 @@ import type { ValidationTypeResource } from "../../../ressources/frontend/paramR
 import type { CreateClassInstanceRequestType } from "../../../ressources/request/objectRequest.ts";
 import ParameterFormControllComponent from "../../paramComponents/ParameterFormControllComponenet.tsx";
 import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
-import type { InstanceResource } from "../../../ressources/classRessources.ts";
+import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";
 
 type CreateClassInstanceDialogComponentProps = {
   cls: ClassResource;

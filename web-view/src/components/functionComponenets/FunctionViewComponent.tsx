@@ -1,13 +1,14 @@
 import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import type {
-  FunctionResource,
+
   TsCodeCheckResource,
 } from "../../ressources/classRessources";
 import LoadingComponent from "../LoadingComponent";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
 import { getColumnSizes } from "../../helper/uiHelper";
 import FunctionCardComponent from "./FunctionCardComponent";
+import type { FunctionResource } from "../../ressources/backend/tsCompilerAPIResources";
 
 type FunctionViewComponentProps = {
   functions: FunctionResource[];

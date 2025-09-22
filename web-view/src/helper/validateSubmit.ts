@@ -1,4 +1,4 @@
-import type { ParameterResource } from "../ressources/classRessources";
+import type { ParameterResource } from "../ressources/backend/tsCompilerAPIResources";
 import type { ValidationTypeResource } from "../ressources/frontend/paramResources";
 import { validateFormControllType } from "./validateType";
 

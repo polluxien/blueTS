@@ -2,11 +2,12 @@ import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import type { ClassResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
-import type { InstanceResource, TsCodeCheckResource } from "../../ressources/classRessources.ts";
 import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 import LoadingComponent from "../LoadingComponent.tsx";
 import { getColumnSizes } from "../../helper/uiHelper.ts";
+import type { InstanceResource } from "../../ressources/frontend/instanceTypes.ts";
+import type { TsCodeCheckResource } from "../../ressources/classRessources.ts";
 
 
 type ObjectViewComponentProps = {

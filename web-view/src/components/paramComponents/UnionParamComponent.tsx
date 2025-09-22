@@ -1,4 +1,3 @@
-import type { TypeResource } from "../../ressources/classRessources";
 import {
   Form,
   FormGroup,
@@ -7,8 +6,12 @@ import {
 } from "react-bootstrap";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import type {
+  ParamFormTypeResource,
+  ValidationTypeResource,
+} from "../../ressources/frontend/paramResources";
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
+import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources";
 
 function UnionParamComponent({
   paramFormType,

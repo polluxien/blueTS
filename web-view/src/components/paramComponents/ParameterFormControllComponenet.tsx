@@ -1,10 +1,5 @@
 import Form from "react-bootstrap/Form";
-import { FormControl, FormGroup } from "react-bootstrap";
-
-import type {
-  ParameterResource,
-  TypeResource,
-} from "../../ressources/classRessources.ts";
+import { Alert, FormControl, FormGroup } from "react-bootstrap";
 
 import ArrayParameterComponent from "./ArrayParamComponent.tsx";
 import UnionParamComponent from "./UnionParamComponent.tsx";
@@ -13,7 +8,11 @@ import { useEffect, useState } from "react";
 import { validateFormControllType } from "../../helper/validateType.ts";
 import ObjectParamComponent from "./ObjectParamComponent.tsx";
 import IntersectionParamComponent from "./IntersectionFormControllComponenet.tsx";
-import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources.ts";
+import type {
+  ParamFormTypeResource,
+  ValidationTypeResource,
+} from "../../ressources/frontend/paramResources.ts";
+import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
 
 function ParameterFormControllComponent({
   index,
@@ -57,15 +56,11 @@ function ParameterFormControllComponent({
 
   useEffect(
     () => {
-      if (!fixedTypes.includes(typeRes.paramType)) return;
+      if (!fixedTypes.includes(typeRes.typeAsString)) {
+        return;
+      }
 
-      let expectedValue = "";
-
-      if (typeRes.paramType === "null") expectedValue = "null";
-      else if (typeRes.paramType === "void") expectedValue = "undefined";
-      else if (typeRes.paramType === "never") expectedValue = "never";
-      else if (typeRes.paramType === "literal")
-        expectedValue = typeRes.typeAsString;
+      const expectedValue = typeRes.typeAsString;
 
       // nur setzen, wenn sich Wert unterscheidet
       if (expectedValue && value !== expectedValue) {
@@ -149,12 +144,30 @@ function ParameterFormControllComponent({
     instancesAsParamsMap,
   };
 
-  const getFormLabel = (param: ParameterResource) => {
+  const getFormLabel = () => {
     return (
       <Form.Label>
         <strong>{param.paramName}</strong>
         {param.isOptional && "?"}: {param.typeInfo.typeAsString}
       </Form.Label>
+    );
+  };
+
+  const getWarningLabel = () => {
+    return (
+      <Alert variant="warning" dismissible>
+        <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+        <p>This Type is kinda supported</p>
+      </Alert>
+    );
+  };
+
+  const getErrorLabel = () => {
+    return (
+      <Alert variant="danger" dismissible>
+        <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+        <p>{typeRes.errorWarning}</p>
+      </Alert>
     );
   };
 
@@ -203,7 +216,7 @@ function ParameterFormControllComponent({
     case "enum": {
       return (
         <FormGroup key={index}>
-          {!hideLabel && getFormLabel(param)}
+          {!hideLabel && getFormLabel()}
           <Form.Select
             required={!param.isOptional}
             value={value}
@@ -239,7 +252,7 @@ function ParameterFormControllComponent({
       }
       return (
         <FormGroup key={index}>
-          {!hideLabel && getFormLabel(param)}
+          {!hideLabel && getFormLabel()}
           <Form.Select
             required={!param.isOptional}
             value={value}
@@ -261,34 +274,11 @@ function ParameterFormControllComponent({
       );
     }
 
-    case "void":
-    case "never":
-    case "null": {
-      let placeholder = "";
-      if (typeRes.paramType === "null") placeholder = "null";
-      if (typeRes.paramType === "void") placeholder = "undefined";
-      return (
-        <FormGroup key={index}>
-          {!hideLabel && getFormLabel(param)}
-          <FormControl
-            type="text"
-            placeholder={placeholder}
-            // value={value || placeholder}
-            // onChange={() => onChange(param.paramName, typeRes.paramType)}
-            readOnly
-            isInvalid={validated && !!error}
-          />
-          <Form.Control.Feedback type="invalid">
-            {error?.message}
-          </Form.Control.Feedback>
-        </FormGroup>
-      );
-    }
-
+    //feste values
     case "literal": {
       return (
         <FormGroup key={index}>
-          {!hideLabel && getFormLabel(param)}
+          {!hideLabel && getFormLabel()}
           <FormControl
             type="text"
             placeholder={typeRes.typeAsString}
@@ -304,24 +294,49 @@ function ParameterFormControllComponent({
       );
     }
 
-    //hier alle basic Param types
-    default: {
+    //feste values
+    case "special-locked": {
       return (
         <FormGroup key={index}>
-          {!hideLabel && getFormLabel(param)}
+          {!hideLabel && getFormLabel()}
           <FormControl
             type="text"
-            required={!param.isOptional}
-            value={value}
-            onChange={(e) => onChange(param.paramName, e.target.value)}
+            placeholder={
+              typeRes.typeAsString !== "never" ? typeRes.typeAsString : ""
+            }
+            // value={value || placeholder}
+            // onChange={() => onChange(param.paramName, typeRes.paramType)}
+            readOnly
             isInvalid={validated && !!error}
-            isValid={validated && !error}
           />
           <Form.Control.Feedback type="invalid">
-            {error?.message || "This field is required"}
+            {error?.message}
           </Form.Control.Feedback>
         </FormGroup>
       );
+    }
+
+    //hier alle primive-basics und fallback types
+    default: {
+      if (typeRes.paramType)
+        return (
+          <FormGroup key={index}>
+            {typeRes.paramType === "fallback" && getErrorLabel()}
+            {typeRes.paramType === "function" && getWarningLabel()}
+            {!hideLabel && getFormLabel()}
+            <FormControl
+              type="text"
+              required={!param.isOptional}
+              value={value}
+              onChange={(e) => onChange(param.paramName, e.target.value)}
+              isInvalid={validated && !!error}
+              isValid={validated && !error}
+            />
+            <Form.Control.Feedback type="invalid">
+              {error?.message || "This field is required"}
+            </Form.Control.Feedback>
+          </FormGroup>
+        );
     }
   }
 }

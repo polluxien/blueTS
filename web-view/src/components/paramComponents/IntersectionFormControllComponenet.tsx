@@ -1,9 +1,9 @@
 import { Form, FormGroup } from "react-bootstrap";
 
-import type { TypeResource } from "../../ressources/classRessources";
 import { useEffect, useState } from "react";
 import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
+import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources";
 
 function IntersectionParamComponent({
   paramFormType,

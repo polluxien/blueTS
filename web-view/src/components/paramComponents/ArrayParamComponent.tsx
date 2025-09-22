@@ -1,13 +1,13 @@
 import Form from "react-bootstrap/Form";
 
 import { useEffect, useState } from "react";
-import type { ParameterResource } from "../../ressources/classRessources";
 import { Button, Col, FormGroup, Row } from "react-bootstrap";
 import type {
   ParamFormTypeResource,
   ValidationTypeResource,
 } from "../../ressources/frontend/paramResources";
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
+import type { ParameterResource } from "../../ressources/backend/tsCompilerAPIResources";
 
 function ArrayParameterComponent({
   paramFormType,

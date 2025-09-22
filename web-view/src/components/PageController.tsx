@@ -17,10 +17,10 @@ import type {
   FunctionResource,
 } from "../ressources/backend/tsCompilerAPIResources.ts";
 import type {
-  InstanceResource,
   TsCodeCheckResource,
 } from "../ressources/classRessources.ts";
 import type { RefreshedResponseType } from "../ressources/response/fileCheckResponse.ts";
+import type { InstanceResource } from "../ressources/frontend/instanceTypes.ts";
 
 function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
   // * View Mode -> react switch select

@@ -10,9 +10,9 @@ import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Boots
 import CompilerErrorModalComponent from "../../errorComponents/CompilerErrorModalComponent.tsx";
 import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
 import type {
-  InstanceResource,
   TsCodeCheckResource,
 } from "../../../ressources/classRessources.ts";
+import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";
 
 type ClassCardComponentProps = {
   cls: ClassResource;

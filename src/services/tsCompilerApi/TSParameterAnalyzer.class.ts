@@ -58,19 +58,27 @@ export class TSParameterAnalyzer {
       typeAsString = type.getText();
     } catch (err) {
       console.warn(`Type name could not be extracted`);
-      typeAsString = "NOTYPE_NAME";
+      typeAsString = "NO_TYPE_NAME";
     }
 
     //zu großen Struckturen
     if (depth > this.MAX_DEPTH) {
       console.warn(`max depth reached for param ${typeAsString}`);
-      return { typeAsString, paramType: "max-depth" };
+      return {
+        typeAsString,
+        paramType: "fallback",
+        errorWarning: "max depth for type struct reached",
+      };
     }
 
     //Rekursiver Schutz
     if (visited.has(typeAsString)) {
       console.warn(`rekursiv reference reached for param ${typeAsString}`);
-      return { typeAsString, paramType: "recursive-reference" };
+      return {
+        typeAsString,
+        paramType: "fallback",
+        errorWarning: "type has recursive-reference",
+      };
     }
 
     visited.add(typeAsString);
@@ -96,18 +104,24 @@ export class TSParameterAnalyzer {
     const tsType = this.getTsTypeFromTsMorphType(type);
     const flags = type.getFlags();
 
-    //* special types
-    if (["any", "unknown", "void", "never"].includes(typeAsString)) {
+    //* special-locked
+    if (["void", "never"].includes(typeAsString)) {
       return {
         typeAsString,
-        paramType: typeAsString as "any" | "never" | "void" | "unknown",
+        paramType: "special-locked",
       };
     }
-    if (type.isNull()) {
-      return { typeAsString, paramType: "null" };
+
+    //* special
+    if (typeAsString === "any" || type.isUndefined()) {
+      return {
+        typeAsString,
+        paramType: "special",
+      };
     }
-    if (type.isUndefined()) {
-      return { typeAsString, paramType: "undefined" };
+    // * primitive-special-types
+    if (["symbol", "unknown"].includes(typeAsString) || type.isNull()) {
+      return { typeAsString, paramType: "primitive-special" };
     }
 
     //* enum type
@@ -116,15 +130,15 @@ export class TSParameterAnalyzer {
     }
 
     // ? ts nativ api - compiler api ----------------------------------------------------------------------------
-    // Handle null and undefined
+    // Handle null and undefined --> Fallback
     if ((flags & ts.TypeFlags.Null) !== 0) {
-      return { typeAsString: "null", paramType: "null" };
+      return { typeAsString: "null", paramType: "special-locked" };
     }
     if ((flags & ts.TypeFlags.Undefined) !== 0) {
-      return { typeAsString: "undefined", paramType: "undefined" };
+      return { typeAsString: "undefined", paramType: "special" };
     }
 
-    // Union types - gibt fehler bei ts-morph version daher verwendung von vanilla
+    // Union types - gibt fehler bei ts-morph version daher verwendung von nativ
     if ((flags & ts.TypeFlags.Union) !== 0 && !type.isBoolean()) {
       return this.handleUnionType(type, tsType, typeAsString, depth, visited);
     }
@@ -150,8 +164,7 @@ export class TSParameterAnalyzer {
     }
 
     // ! könnte man noch seperat behandeln momentan interface als object
-    if(type.isInterface()){
-
+    if (type.isInterface()) {
     }
 
     //* intersection type
@@ -206,7 +219,7 @@ export class TSParameterAnalyzer {
     ) {
       return {
         typeAsString,
-        paramType: "basic",
+        paramType: "primitive-basic",
       };
     }
 
@@ -214,40 +227,11 @@ export class TSParameterAnalyzer {
     console.warn(`type was not recognized from param ${typeAsString}`);
     return {
       typeAsString,
-      paramType: "unknown",
+      paramType: "fallback",
+      errorWarning:
+        "param type was not recognized or is currenttly not supportet",
     };
   }
-
-  // ? an sich kein schlechter ansatz, aber problem ist bei verschachtelten typen ...
-  /*
-  private handleNullableType(
-    type: Type,
-    typeAsString: string,
-    depth: number,
-    visited: Set<string>,
-    nullUndefinedInfo: { hasNull: boolean; hasUndefined: boolean }
-  ): TypeResource {
-    const unionValues: TypeResource[] = [];
-
-    // Füge null/undefined hinzu
-    if (nullUndefinedInfo.hasNull) {
-      unionValues.push({ typeAsString: "null", paramType: "null" });
-    }
-    if (nullUndefinedInfo.hasUndefined) {
-      unionValues.push({ typeAsString: "undefined", paramType: "undefined" });
-    }
-
-    unionValues.push(this.typeAnalyzer(type, depth, visited, true));
-
-    return {
-      typeAsString: `${typeAsString}${
-        nullUndefinedInfo.hasNull ? " | null" : ""
-      }${nullUndefinedInfo.hasUndefined ? " | undefined" : ""}`,
-      paramType: "union",
-      unionValues,
-    };
-  }
-    */
 
   private handelTupelType(
     type: Type<ts.TupleType>,
@@ -305,7 +289,7 @@ export class TSParameterAnalyzer {
     visited: Set<string>
   ): TypeResource {
     if (tsMorphType.isBoolean()) {
-      return { typeAsString: "boolean", paramType: "basic" };
+      return { typeAsString: "boolean", paramType: "primitive-basic" };
     }
 
     // Use native TS API to get union types - more reliable
@@ -322,12 +306,15 @@ export class TSParameterAnalyzer {
 
         if ((flags & ts.TypeFlags.Null) !== 0) {
           hasNull = true;
-          unionValues.push({ typeAsString: "null", paramType: "null" });
+          unionValues.push({
+            typeAsString: "null",
+            paramType: "special-locked",
+          });
         } else if ((flags & ts.TypeFlags.Undefined) !== 0) {
           hasUndefined = true;
           unionValues.push({
             typeAsString: "undefined",
-            paramType: "undefined",
+            paramType: "special",
           });
         }
       }
@@ -361,7 +348,10 @@ export class TSParameterAnalyzer {
     //Boolean Literal Behandlung
     //Wenn beide Values true && false vorkommen pushe basic boolean
     if (booleanLiterals.length === 2) {
-      unionValues.push({ typeAsString: "boolean", paramType: "basic" });
+      unionValues.push({
+        typeAsString: "boolean",
+        paramType: "primitive-basic",
+      });
     } else if (booleanLiterals.length === 1) {
       const literalType = booleanLiterals[0];
       unionValues.push({
@@ -411,7 +401,7 @@ export class TSParameterAnalyzer {
     typeAsString: string
   ): TypeResource {
     let literalType = "";
-    if (type.isStringLiteral()) {
+    if (type.isStringLiteral() || type.isTemplateLiteral()) {
       literalType = "string";
     } else if (type.isNumberLiteral()) {
       literalType = "number";
@@ -442,8 +432,13 @@ export class TSParameterAnalyzer {
       }
     } catch (err) {
       console.warn(`Error analyzing enum type ${typeAsString}: `, err);
+      return {
+        typeAsString,
+        paramType: "enum",
+        enumMembers: [],
+        errorWarning: `Error: ${err}`,
+      };
     }
-
     return { typeAsString, paramType: "enum", enumMembers: [] };
   }
 
@@ -512,14 +507,15 @@ export class TSParameterAnalyzer {
           typeInfo: this.typeAnalyzer(propType, depth, visited),
           isOptional: prop.isOptional?.() ?? false,
         });
-      } catch (error) {
-        console.warn(
-          `Error analyzing object property ${prop.getName()}:`,
-          error
-        );
+      } catch (err) {
+        console.warn(`Error analyzing object property ${prop.getName()}:`, err);
         paramArr.push({
           paramName: prop.getName(),
-          typeInfo: { typeAsString: "unknown", paramType: "unknown" },
+          typeInfo: {
+            typeAsString: "unknown",
+            paramType: "fallback",
+            errorWarning: `Error: ${err}`,
+          },
           isOptional: true,
         });
       }

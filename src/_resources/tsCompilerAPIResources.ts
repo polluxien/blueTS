@@ -13,28 +13,29 @@ export type GenericParamTypeResource = {
 
 export type TypeResource = {
   typeAsString: string;
-  paramType:
-    | "basic"
-    | "union"
-    | "object"
-    | "array"
-    | "tuple"
+  paramType: // ? string, number, boolean, BigInt
+  | "primitive-basic"
+    // ? unknown, symbol
+    | "primitive-special"
+    // ? any, undefined
+    | "special"
+    // ? null, void, never,
+    | "special-locked"
+    // ? fallback -> max depth, recursiv reference, type not found, analyze error
+    | "fallback"
     | "enum"
+    | "array"
+    | "union"
+    | "intersection"
+    | "object"
+    | "tuple"
     | "literal"
     | "function"
     | "instance"
-    | "any"
-    | "null"
-    | "undefined"
-    | "never"
-    | "void"
-    | "unknown"
-    | "intersection"
-    | "generic"
-    | "max-depth"
-    | "recursive-reference";
+    | "generic";
   isOptional?: boolean;
   isRest?: boolean;
+  errorWarning?: string;
   // * typeSpecific
   literalType?: string;
   enumMembers?: string[];
