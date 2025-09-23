@@ -51,12 +51,15 @@ function ParameterFormControllComponent({
     );
   }, [value, param.paramName, param.typeInfo.paramType, onValidationChange]);
 
-  // für feste Typen
-  const fixedTypes = ["null", "void", "never", "literal"];
+  // für feste Typen von typeAsString
+  const fixedTypes = ["null", "void", "never"]; 
 
   useEffect(
     () => {
-      if (!fixedTypes.includes(typeRes.typeAsString)) {
+      if (
+        !fixedTypes.includes(typeRes.typeAsString) &&
+        typeRes.paramType !== "literal"
+      ) {
         return;
       }
 
@@ -80,6 +83,7 @@ function ParameterFormControllComponent({
     [value, typeRes.paramType, typeRes.typeAsString, param.paramName]
   );
 
+  //für verschachtelte Typen vom paramType
   const nestedTypes = ["union", "tuple", "object", "array"];
 
   //Nested types -> externe überprüfung schon stattgefunden und muss nur übernommen werden
@@ -275,26 +279,7 @@ function ParameterFormControllComponent({
     }
 
     //feste values
-    case "literal": {
-      return (
-        <FormGroup key={index}>
-          {!hideLabel && getFormLabel()}
-          <FormControl
-            type="text"
-            placeholder={typeRes.typeAsString}
-            // value={value || typeRes.typeAsString}
-            // onChange={() => onChange(param.paramName, typeRes.typeAsString)}
-            readOnly
-            isInvalid={validated && !!error}
-          />
-          <Form.Control.Feedback type="invalid">
-            {error?.message}
-          </Form.Control.Feedback>
-        </FormGroup>
-      );
-    }
-
-    //feste values
+    case "literal":
     case "special-locked": {
       return (
         <FormGroup key={index}>

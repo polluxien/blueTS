@@ -5,7 +5,6 @@ import type {
   TsCodeCheckResource,
 } from "../../ressources/classRessources";
 import LoadingComponent from "../LoadingComponent";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
 import { getColumnSizes } from "../../helper/uiHelper";
 import FunctionCardComponent from "./FunctionCardComponent";
 import type { FunctionResource } from "../../ressources/backend/tsCompilerAPIResources";
@@ -20,8 +19,6 @@ type FunctionViewComponentProps = {
 
   testedTsFileMap: Map<string, TsCodeCheckResource>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-
-  vscode: VSCodeAPIWrapper;
 };
 
 function FunctionViewComponent({
@@ -31,7 +28,6 @@ function FunctionViewComponent({
   reLoad,
   testedTsFileMap,
   instancesAsParamsMap,
-  vscode,
 }: FunctionViewComponentProps) {
   const reLoadFunctions = () => reLoad("functions");
   const functionResultKey = (funcName: string, tsFilePath: string) => {
@@ -78,7 +74,6 @@ function FunctionViewComponent({
                         foo.tsFile.path
                       )}
                       tsCodeValidation={getTsCodeValidation(foo.tsFile.path)}
-                      vscode={vscode}
                       instancesAsParamsMap={instancesAsParamsMap}
                     ></FunctionCardComponent>
                   </Col>

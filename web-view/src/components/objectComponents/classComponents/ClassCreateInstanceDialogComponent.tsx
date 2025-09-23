@@ -3,9 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import { FormControl, FormGroup } from "react-bootstrap";
-import { useState } from "react";
-
-import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.ts";
+import { useContext, useState } from "react";
 
 import { validateSubmit } from "../../../helper/validateSubmit.ts";
 import type { ValidationTypeResource } from "../../../ressources/frontend/paramResources.ts";
@@ -13,12 +11,12 @@ import type { CreateClassInstanceRequestType } from "../../../ressources/request
 import ParameterFormControllComponent from "../../paramComponents/ParameterFormControllComponenet.tsx";
 import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";
+import { VscodeContext } from "../../../api/vscodeAPIContext.ts";
 
 type CreateClassInstanceDialogComponentProps = {
   cls: ClassResource;
   close: () => void;
   addToInstanceWaitingList: (instance: InstanceResource) => void;
-  vscode: VSCodeAPIWrapper;
   instanceNameSet: React.RefObject<Set<string>>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 };
@@ -27,10 +25,11 @@ function CreateClassInstanceDialogComponent({
   cls,
   close,
   addToInstanceWaitingList,
-  vscode,
   instanceNameSet,
   instancesAsParamsMap,
 }: CreateClassInstanceDialogComponentProps) {
+  const vscode = useContext(VscodeContext);
+  
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
 

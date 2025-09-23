@@ -1,7 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { useEffect, useState } from "react";
-import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.ts";
+import { useContext, useEffect, useState } from "react";
 import CreateClassInstanceDialogComponent from "./ClassCreateInstanceDialogComponent.tsx";
 import { Col, Row } from "react-bootstrap";
 
@@ -9,17 +8,16 @@ import { Col, Row } from "react-bootstrap";
 import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
 import CompilerErrorModalComponent from "../../errorComponents/CompilerErrorModalComponent.tsx";
 import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
-import type {
-  TsCodeCheckResource,
-} from "../../../ressources/classRessources.ts";
+import type { TsCodeCheckResource } from "../../../ressources/classRessources.ts";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";
+import { VscodeContext } from "../../../api/vscodeAPIContext.ts";
 
 type ClassCardComponentProps = {
   cls: ClassResource;
   tsCodeValidation: TsCodeCheckResource | undefined;
 
   addToInstanceWaitingList: (instance: InstanceResource) => void;
-  vscode: VSCodeAPIWrapper;
+
   instanceNameSet: React.RefObject<Set<string>>;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 };
@@ -28,10 +26,11 @@ function ClassCardComponent({
   cls,
   tsCodeValidation,
   addToInstanceWaitingList,
-  vscode,
   instanceNameSet,
   instancesAsParamsMap,
 }: ClassCardComponentProps) {
+  const vscode = useContext(VscodeContext);
+
   const [classDialogOpen, setClassDialogOpen] = useState<boolean>(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState<boolean>(false);
 
@@ -149,7 +148,6 @@ function ClassCardComponent({
           cls={cls}
           close={closeclassDialog}
           addToInstanceWaitingList={addToInstanceWaitingList}
-          vscode={vscode}
           instanceNameSet={instanceNameSet}
           instancesAsParamsMap={instancesAsParamsMap}
         ></CreateClassInstanceDialogComponent>

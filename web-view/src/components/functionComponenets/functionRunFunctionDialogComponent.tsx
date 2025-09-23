@@ -1,12 +1,12 @@
 import { Badge, Button, Container, Form, Modal } from "react-bootstrap";
 
-import { useState } from "react";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI";
+import { useContext, useState } from "react";
 import { validateSubmit } from "../../helper/validateSubmit";
 import type { FunctionResource } from "../../ressources/backend/tsCompilerAPIResources";
 import type { ValidationTypeResource } from "../../ressources/frontend/paramResources";
 import type { RunFunctionRequestType } from "../../ressources/request/functionRequest";
 import ParameterFormControllComponent from "../paramComponents/ParameterFormControllComponenet";
+import { VscodeContext } from "../../api/vscodeAPIContext";
 
 type FunctionRunFunctionDialogComponentProps = {
   func: FunctionResource;
@@ -14,16 +14,15 @@ type FunctionRunFunctionDialogComponentProps = {
 
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
   functionResult: string | Error | undefined;
-
-  vscode: VSCodeAPIWrapper;
 };
 function FunctionRunFunctionDialogComponent({
   func,
   close,
   functionResult,
   instancesAsParamsMap,
-  vscode,
 }: FunctionRunFunctionDialogComponentProps) {
+  const vscode = useContext(VscodeContext);
+
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
 

@@ -1,22 +1,21 @@
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import type { VSCodeAPIWrapper } from "../api/vscodeAPI";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { Gear } from "react-bootstrap-icons";
 import type { DirectoryRespondeType } from "../ressources/response/directoryResponde";
+import { VscodeContext } from "../api/vscodeAPIContext";
 
 type DirectorySettingsComponentType = {
   currentDirectoryRes: DirectoryRespondeType | undefined;
-
-  vscode: VSCodeAPIWrapper;
 };
 
 function DirectorySettingsComponent({
   currentDirectoryRes,
-  vscode,
 }: DirectorySettingsComponentType) {
+  const vscode = useContext(VscodeContext);
+
   const [directory, setDirectory] = useState<string>();
   const [useDefaultDirectory, setUseDefaultDirectory] = useState<boolean>(true);
 

@@ -2,7 +2,6 @@ import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import InstanceCardComponent from "./instanceComponents/InstanceCardComponent.tsx";
 import type { ClassResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 import ClassCardComponent from "./classComponents/ClassCardComponent.tsx";
 import LoadingComponent from "../LoadingComponent.tsx";
 import { getColumnSizes } from "../../helper/uiHelper.ts";
@@ -25,7 +24,6 @@ type ObjectViewComponentProps = {
   dropInstance: (insName: string) => void;
   addToInstanceWaitingList: (instance: InstanceResource) => void;
 
-  vscode: VSCodeAPIWrapper;
 };
 
 function ObjectViewComponent({
@@ -38,7 +36,6 @@ function ObjectViewComponent({
   testedTsFileMap,
   reLoad,
   addToInstanceWaitingList,
-  vscode,
   dropInstance,
 }: ObjectViewComponentProps) {
   const reLoadClasses = () => reLoad("classes");
@@ -85,7 +82,6 @@ function ObjectViewComponent({
                           tsCodeValidation={getTsCodeValidation(
                             cls.tsFile.path
                           )}
-                          vscode={vscode}
                         />
                       </Col>
                     ))
@@ -123,7 +119,6 @@ function ObjectViewComponent({
                     <Col key={index} {...getColumnSizes(classes.length)}>
                       <InstanceCardComponent
                         ins={ins}
-                        vscode={vscode}
                         methodResults={methodResults.get(ins.instanceName)}
                         dropInstance={dropInstance}
                         instancesAsParamsMap={instancesAsParamsMap}

@@ -1,15 +1,17 @@
+
 import { ErrorBoundary } from "react-error-boundary";
 import PageController from "./components/PageController.tsx";
 import ErrorFallback from "./components/errorComponents/ErrorFallback.tsx";
+import { vscode, VscodeContext } from "./api/vscodeAPIContext.ts";
 
-//wichtig zur weitergabe der API -> kann nur einmalig instanziert werden
-import { vscode } from "./api/vscodeAPI.ts";
 
 function App() {
   return (
     <>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <PageController vscode={vscode} />
+        <VscodeContext.Provider value={vscode}>
+        <PageController />
+        </VscodeContext.Provider>
       </ErrorBoundary>
     </>
   );

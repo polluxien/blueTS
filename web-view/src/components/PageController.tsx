@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import Switch from "react-switch";
 
-import type { VSCodeAPIWrapper } from "../api/vscodeAPI.ts";
 import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
 import FunctionViewComponent from "./functionComponenets/FunctionViewComponent.tsx";
 import ObjectViewComponent from "./objectComponents/ObjectViewComponet.tsx";
@@ -16,13 +15,14 @@ import type {
   ClassResource,
   FunctionResource,
 } from "../ressources/backend/tsCompilerAPIResources.ts";
-import type {
-  TsCodeCheckResource,
-} from "../ressources/classRessources.ts";
+import type { TsCodeCheckResource } from "../ressources/classRessources.ts";
 import type { RefreshedResponseType } from "../ressources/response/fileCheckResponse.ts";
 import type { InstanceResource } from "../ressources/frontend/instanceTypes.ts";
+import { VscodeContext } from "../api/vscodeAPIContext.ts";
 
-function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
+function PageController() {
+  const vscode = useContext(VscodeContext);
+
   // * View Mode -> react switch select
   const [viewMode, setViewMode] = useState<"object" | "function">("object");
 
@@ -408,7 +408,6 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
       <div className="mb-3">
         <DirectorySettingsComponent
           currentDirectoryRes={currentDirectoryRes}
-          vscode={vscode}
         ></DirectorySettingsComponent>
       </div>
 
@@ -458,7 +457,6 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
             addToInstanceWaitingList={addToInstanceWaitingList}
             dropInstance={dropInstance}
             testedTsFileMap={testedTsFileMap}
-            vscode={vscode}
           ></ObjectViewComponent>
         </div>
       ) : (
@@ -470,7 +468,6 @@ function PageController({ vscode }: { vscode: VSCodeAPIWrapper }) {
             reLoad={reLoad}
             testedTsFileMap={testedTsFileMap}
             instancesAsParamsMap={instancesAsParamsMap}
-            vscode={vscode}
           ></FunctionViewComponent>
         </div>
       )}

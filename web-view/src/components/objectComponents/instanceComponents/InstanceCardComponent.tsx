@@ -1,16 +1,16 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import InstanceDialogComponent from "./InstanceDialog.tsx";
 import { Info, X } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
-import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.ts";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";
+import { VscodeContext } from "../../../api/vscodeAPIContext.ts";
 // import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
 
 type InstanceCardComponentProps = {
   ins: InstanceResource;
-  vscode: VSCodeAPIWrapper;
+
   methodResults: Record<string, string | Error> | undefined;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
 
@@ -19,11 +19,12 @@ type InstanceCardComponentProps = {
 
 function InstanceCardComponent({
   ins,
-  vscode,
   methodResults,
   instancesAsParamsMap,
   dropInstance,
 }: InstanceCardComponentProps) {
+  const vscode = useContext(VscodeContext);
+  
   const [instanceDialogOpen, setInstanceDialogOpen] = useState<boolean>(false);
 
   const openDialog = () => setInstanceDialogOpen(true);

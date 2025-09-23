@@ -1,7 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { useEffect, useState } from "react";
-import type { VSCodeAPIWrapper } from "../../api/vscodeAPI.ts";
+import { useContext, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
@@ -10,6 +9,7 @@ import CompilerErrorModalComponent from "../errorComponents/CompilerErrorModalCo
 import type { FunctionResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
 import FunctionRunFunctionDialogComponent from "./FunctionRunFunctionDialogComponent.tsx";
 import type { TsCodeCheckResource } from "../../ressources/classRessources.ts";
+import { VscodeContext } from "../../api/vscodeAPIContext.ts";
 
 type FunctionCardComponentProps = {
   func: FunctionResource;
@@ -17,8 +17,6 @@ type FunctionCardComponentProps = {
 
   functionResult: string | Error | undefined;
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
-
-  vscode: VSCodeAPIWrapper;
 };
 
 function FunctionCardComponent({
@@ -26,8 +24,9 @@ function FunctionCardComponent({
   functionResult,
   tsCodeValidation,
   instancesAsParamsMap,
-  vscode,
 }: FunctionCardComponentProps) {
+  const vscode = useContext(VscodeContext);
+
   const [functionDialogOpen, setFunctionDialogOpen] = useState<boolean>(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState<boolean>(false);
 
@@ -143,7 +142,6 @@ function FunctionCardComponent({
           functionResult={functionResult}
           instancesAsParamsMap={instancesAsParamsMap}
           close={closeFunctionDialog}
-          vscode={vscode}
         ></FunctionRunFunctionDialogComponent>
       )}
       {errorDialogOpen && tsCodeValidation && !isValid && (
