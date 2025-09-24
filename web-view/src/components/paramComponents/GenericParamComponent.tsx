@@ -14,6 +14,19 @@ function GenericParameterComponent({
 }: {
   paramFormType: ParamFormTypeResource;
 }) {
+  const { baseType, genericArgs } = paramFormType.param.typeInfo.genericRes!;
+
+  //Listen struckturen
+  const containerTypes = [
+    "Array",
+    "Readonly",
+    "Set",
+    "WeakSet",
+    "Map",
+    "WeakMap",
+    "Record",
+  ];
+
   const [arraySize, setArraySize] = useState<number>(1);
   const [internValues, setInternValues] = useState<Record<string, string>>({});
 
@@ -92,6 +105,10 @@ function GenericParameterComponent({
       delete newValidations[`${paramFormType.param.paramName}[${newSize}]`];
       return newValidations;
     });
+
+    // ! ich könnte wenn es sich um containerTypes handelt array auslösen
+    // ! wenn mehr als ein args tupel
+    // ! und sonst könnte ich standart lösen
   };
 
   return (
@@ -114,42 +131,82 @@ function GenericParameterComponent({
           padding: "1.5rem",
         }}
       >
-        <p>{"["}</p>
-        {[...Array(arraySize)].map((_, i) => (
-          <div key={i}>
-            <ParameterFormControllComponent
-              index={i}
-              param={{
-                ...elementParam,
-                paramName: getElementName(i),
-              }}
-              formValue={internValues[getElementName(i)] || ""}
-              validated={paramFormType.validated}
-              error={paramValidations[getElementName(i)]?.errors[0]}
-              onChange={handelInternChange}
-              onValidationChange={handleChildChange}
-              instancesAsParamsMap={paramFormType.instancesAsParamsMap}
-            />
-            <Form.Control.Feedback type="invalid">
-              {paramFormType.error?.message || "This field is required"}
-            </Form.Control.Feedback>
+        {containerTypes.includes(baseType) ? (
+          <div>
+            <p>{"["}</p>
+            {[...Array(arraySize)].map((_, i) => (
+              <div key={i}>
+                <Row className="mb-3">
+                  {genericArgs &&
+                    genericArgs.map((arg, i) => (
+                      <Col>
+                        <ParameterFormControllComponent
+                          index={i}
+                          param={{
+                            paramName: "",
+                            typeInfo: arg,
+                            isOptional: arg.isOptional ?? false,
+                            isRest: arg.isRest,
+                          }}
+                          formValue={internValues[getElementName(i)] || ""}
+                          validated={paramFormType.validated}
+                          error={paramValidations[getElementName(i)]?.errors[0]}
+                          onValidationChange={handleChildChange}
+                          onChange={handelInternChange}
+                          hideLabel={true}
+                          instancesAsParamsMap={
+                            paramFormType.instancesAsParamsMap
+                          }
+                        />
+                      </Col>
+                    ))}
+                </Row>
+              </div>
+            ))}
+
+            <Row className="justify-content-md-center mt-4">
+              <Col xs="auto">
+                <Button variant="outline-success" onClick={addToArray}>
+                  +
+                </Button>
+              </Col>
+              {arraySize > 1 && (
+                <Col xs="auto">
+                  <Button variant="outline-danger" onClick={minToArray}>
+                    -
+                  </Button>
+                </Col>
+              )}
+            </Row>
+            <p>{"]"}</p>
           </div>
-        ))}
-        <Row className="justify-content-md-center mt-4">
-          <Col xs="auto">
-            <Button variant="outline-success" onClick={addToArray}>
-              +
-            </Button>
-          </Col>
-          {arraySize > 1 && (
-            <Col xs="auto">
-              <Button variant="outline-danger" onClick={minToArray}>
-                -
-              </Button>
-            </Col>
-          )}
-        </Row>
-        <p>{"]"}</p>
+        ) : (
+          <div>
+            <Row className="mb-3">
+              {genericArgs &&
+                genericArgs.map((arg, i) => (
+                  <Col>
+                    <ParameterFormControllComponent
+                      index={i}
+                      param={{
+                        paramName: "",
+                        typeInfo: arg,
+                        isOptional: arg.isOptional ?? false,
+                        isRest: arg.isRest,
+                      }}
+                      formValue={internValues[getElementName(i)] || ""}
+                      validated={paramFormType.validated}
+                      error={paramValidations[getElementName(i)]?.errors[0]}
+                      onValidationChange={handleChildChange}
+                      onChange={handelInternChange}
+                      hideLabel={true}
+                      instancesAsParamsMap={paramFormType.instancesAsParamsMap}
+                    />
+                  </Col>
+                ))}
+            </Row>
+          </div>
+        )}
       </div>
     </FormGroup>
   );

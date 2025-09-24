@@ -13,7 +13,7 @@ import type {
   ValidationTypeResource,
 } from "../../ressources/frontend/paramResources.ts";
 import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
-//import GenericParameterComponent from "./GenericParamComponent.tsx";
+import GenericParameterComponent from "./GenericParamComponent.tsx";
 
 function ParameterFormControllComponent({
   index,
@@ -211,16 +211,14 @@ function ParameterFormControllComponent({
         ></ObjectParamComponent>
       );
     }
-    /*
+
     case "generic": {
       return (
         <GenericParameterComponent
           paramFormType={paramFormType}
         ></GenericParameterComponent>
       );
-     
     }
-       */
 
     // ? -------------------------------------
 

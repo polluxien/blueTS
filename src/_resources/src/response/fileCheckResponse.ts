@@ -1,4 +1,4 @@
-import { TsCodeCheckResource } from "../../../src/services/nodeVM/checkTsCodeManager";
+import { TsCodeCheckResource } from "../../../services/nodeVM/checkTsCodeManager";
 import { ClassResource, FunctionResource } from "../../tsCompilerAPIResources";
 
 export type RefreshedResponseType = {

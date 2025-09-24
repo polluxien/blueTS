@@ -9,14 +9,13 @@ export type GenericParamTypeResource = {
 
 export type TypeResource = {
   typeAsString: string;
-  paramType: 
-    // ? string, number, boolean, BigInt
-    | "primitive-basic"
+  paramType: // ? string, number, boolean, BigInt
+  | "primitive-basic"
     // ? unknown, symbol
     | "primitive-special"
     // ? any, undefined
     | "special"
-    // ? null, void, never
+    // ? null, void, never,
     | "special-locked"
     // ? fallback -> max depth, recursiv reference, type not found, analyze error
     | "fallback"
@@ -41,6 +40,7 @@ export type TypeResource = {
   unionValues?: TypeResource[];
   arrayType?: TypeResource;
   objectParameters?: ParameterResource[];
+  //* sehr Spezielle Typen
   genericRes?: GenericParamTypeResource;
 };
 

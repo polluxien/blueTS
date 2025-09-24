@@ -13,7 +13,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "string",
-        paramType: "basic",
+        paramType: "primitive-basic",
       },
       isOptional: false,
     };
@@ -28,7 +28,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "number",
-        paramType: "basic",
+        paramType: "primitive-basic",
       },
       isOptional: false,
     };
@@ -43,7 +43,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "boolean",
-        paramType: "basic",
+        paramType: "primitive-basic",
       },
       isOptional: false,
     };

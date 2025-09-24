@@ -193,12 +193,10 @@ export class TSParameterAnalyzer {
     }
 
     //* generic type
-    // ! problem ist das funktioniert nur auf der obersten ebene, deshalb muss schon alles vorher aussgeschlossen werden
-    // ! --> nur noch basic und Fallback danach
     if (
-      typeAsString.includes("<") &&
-      typeAsString.includes(">") &&
-      type.getTypeArguments().length > 0
+      type.getTypeArguments().length > 0 ||
+      //überprüfe Alias hat TypeArguments --> Record
+      (type as any).getAliasTypeArguments?.()?.length > 0
     ) {
       return this.handleGenericType(
         type as Type<ts.GenericType>,
@@ -209,7 +207,7 @@ export class TSParameterAnalyzer {
     }
 
     //* object type ( || interface)
-    // quasi Fallback, nimmt sehr viel
+    // ! nimmt sehr viel auf | alles gehört quasi type object an
     if (type.isObject()) {
       return this.handelObjectType(type, typeAsString, depth, visited);
     }
@@ -284,7 +282,7 @@ export class TSParameterAnalyzer {
     };
   }
 
-  // ! sowohl nativ ts compiler api noch ts-morph erkennen ---> | undefined | null
+  // ! sowohl nativ ts compiler api, noch ts-morph erkennen ---> | undefined | null
   private handleUnionType(
     tsMorphType: Type,
     nativeType: ts.Type,
@@ -540,16 +538,27 @@ export class TSParameterAnalyzer {
     depth: number,
     visited: Set<string>
   ): TypeResource {
-    const typeArgs = type.getTypeArguments() ?? [];
     const symbol = type.getSymbol();
-    const baseType = symbol?.getName() ?? "No NAME";
+    const aliasSymbol = type.getAliasSymbol();
+
+    let typeArgs: any = [];
+    let baseType: string = "unknown";
+
+    if (aliasSymbol) {
+      baseType =
+        aliasSymbol?.getName() ?? typeAsString.split("<")[0] ?? "unknown";
+      typeArgs = type.getAliasTypeArguments?.();
+    } else if (symbol) {
+      baseType = symbol?.getName() ?? typeAsString.split("<")[0] ?? "unknown";
+      typeArgs = type.getTypeArguments();
+    }
 
     return {
       typeAsString,
       paramType: "generic",
       genericRes: {
         baseType,
-        genericArgs: typeArgs.map((arg) =>
+        genericArgs: typeArgs.map((arg: Type<ts.Type>) =>
           this.typeAnalyzer(arg, depth, visited)
         ),
       },

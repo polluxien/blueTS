@@ -14,7 +14,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
         paramType: "array",
         arrayType: {
           typeAsString: "string",
-          paramType: "basic",
+          paramType: "primitive-basic",
         },
       },
       isOptional: false,
@@ -30,7 +30,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
         paramType: "array",
         arrayType: {
           typeAsString: "number",
-          paramType: "basic",
+          paramType: "primitive-basic",
         },
       },
       isOptional: false,
@@ -46,7 +46,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
         paramType: "array",
         arrayType: {
           typeAsString: "boolean",
-          paramType: "basic",
+          paramType: "primitive-basic",
         },
       },
       isOptional: false,
@@ -64,8 +64,8 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           typeAsString: "[string, number]",
           paramType: "tuple",
           tupleElements: [
-            { typeAsString: "string", paramType: "basic" },
-            { typeAsString: "number", paramType: "basic" },
+            { typeAsString: "string", paramType: "primitive-basic" },
+            { typeAsString: "number", paramType: "primitive-basic" },
           ],
         },
       },
@@ -88,7 +88,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
               paramName: "name",
               typeInfo: {
                 typeAsString: "string",
-                paramType: "basic",
+                paramType: "primitive-basic",
               },
               isOptional: false,
             },
@@ -96,7 +96,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
               paramName: "age",
               typeInfo: {
                 typeAsString: "number",
-                paramType: "basic",
+                paramType: "primitive-basic",
               },
               isOptional: false,
             },
@@ -119,7 +119,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
         arrayType: {
           typeAsString: "string[]",
           paramType: "array",
-          arrayType: { typeAsString: "string", paramType: "basic" },
+          arrayType: { typeAsString: "string", paramType: "primitive-basic" },
         },
       },
       isOptional: false,
@@ -139,15 +139,15 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
           unionValues: [
             {
               typeAsString: "string",
-              paramType: "basic",
+              paramType: "primitive-basic",
             },
             {
               typeAsString: "number",
-              paramType: "basic",
+              paramType: "primitive-basic",
             },
             {
               typeAsString: "boolean",
-              paramType: "basic",
+              paramType: "primitive-basic",
             },
           ],
         },
@@ -165,7 +165,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
         paramType: "array",
         arrayType: {
           typeAsString: "string",
-          paramType: "basic",
+          paramType: "primitive-basic",
         },
       },
       isOptional: false,
@@ -182,7 +182,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ARRAY", () 
         paramType: "array",
         arrayType: {
           typeAsString: "string",
-          paramType: "basic",
+          paramType: "primitive-basic",
         },
       },
       isOptional: false,

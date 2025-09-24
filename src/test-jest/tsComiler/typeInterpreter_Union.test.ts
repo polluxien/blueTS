@@ -15,8 +15,8 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
         typeAsString: "string | number",
         paramType: "union",
         unionValues: [
-          { typeAsString: "string", paramType: "basic" },
-          { typeAsString: "number", paramType: "basic" },
+          { typeAsString: "string", paramType: "primitive-basic" },
+          { typeAsString: "number", paramType: "primitive-basic" },
         ],
       },
       isOptional: false,
@@ -31,8 +31,8 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
         typeAsString: "number | boolean",
         paramType: "union",
         unionValues: [
-          { typeAsString: "number", paramType: "basic" },
-          { typeAsString: "boolean", paramType: "basic" },
+          { typeAsString: "number", paramType: "primitive-basic" },
+          { typeAsString: "boolean", paramType: "primitive-basic" },
         ],
       },
       isOptional: false,
@@ -47,11 +47,11 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
         typeAsString: "string | string[]",
         paramType: "union",
         unionValues: [
-          { typeAsString: "string", paramType: "basic" },
+          { typeAsString: "string", paramType: "primitive-basic" },
           {
             typeAsString: "string[]",
             paramType: "array",
-            arrayType: { typeAsString: "string", paramType: "basic" },
+            arrayType: { typeAsString: "string", paramType: "primitive-basic" },
           },
         ],
       },
@@ -70,14 +70,14 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
           {
             typeAsString: "string[]",
             paramType: "array",
-            arrayType: { typeAsString: "string", paramType: "basic" },
+            arrayType: { typeAsString: "string", paramType: "primitive-basic" },
           },
           {
             typeAsString: "[number, number]",
             paramType: "tuple",
             tupleElements: [
-              { typeAsString: "number", paramType: "basic" },
-              { typeAsString: "number", paramType: "basic" },
+              { typeAsString: "number", paramType: "primitive-basic" },
+              { typeAsString: "number", paramType: "primitive-basic" },
             ],
           },
         ],
@@ -105,7 +105,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
                 paramName: "name",
                 typeInfo: {
                   typeAsString: "string",
-                  paramType: "basic",
+                  paramType: "primitive-basic",
                 },
                 isOptional: false,
               },
@@ -137,7 +137,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
             typeAsString: '"stop"',
             paramType: "literal",
           },
-          { typeAsString: "boolean", paramType: "basic" },
+          { typeAsString: "boolean", paramType: "primitive-basic" },
         ],
       },
       isOptional: false,
@@ -154,7 +154,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
         unionValues: [
           {
             typeAsString: "string",
-            paramType: "basic",
+            paramType: "primitive-basic",
           },
           {
             functionRes: {
@@ -184,9 +184,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
         unionValues: [
           { typeAsString: "null", paramType: "null" },
           { typeAsString: "undefined", paramType: "undefined" },
-          { typeAsString: "string", paramType: "basic" },
-          { typeAsString: "number", paramType: "basic" },
-          { typeAsString: "boolean", paramType: "basic" },
+          { typeAsString: "string", paramType: "primitive-basic" },
+          { typeAsString: "number", paramType: "primitive-basic" },
+          { typeAsString: "boolean", paramType: "primitive-basic" },
         ],
       },
       isOptional: false,

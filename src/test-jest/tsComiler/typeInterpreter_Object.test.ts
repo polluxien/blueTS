@@ -15,12 +15,12 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
         objectParameters: [
           {
             paramName: "name",
-            typeInfo: { typeAsString: "string", paramType: "basic" },
+            typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
             isOptional: false,
           },
           {
             paramName: "age",
-            typeInfo: { typeAsString: "number", paramType: "basic" },
+            typeInfo: { typeAsString: "number", paramType: "primitive-basic" },
             isOptional: false,
           },
         ],
@@ -39,12 +39,12 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
         objectParameters: [
           {
             paramName: "name",
-            typeInfo: { typeAsString: "string", paramType: "basic" },
+            typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
             isOptional: false,
           },
           {
             paramName: "age",
-            typeInfo: { typeAsString: "number", paramType: "basic" },
+            typeInfo: { typeAsString: "number", paramType: "primitive-basic" },
             isOptional: true,
           },
           {
@@ -52,7 +52,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
             typeInfo: {
               typeAsString: "string[]",
               paramType: "array",
-              arrayType: { typeAsString: "string", paramType: "basic" },
+              arrayType: { typeAsString: "string", paramType: "primitive-basic" },
             },
             isOptional: false,
           },
@@ -79,12 +79,12 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
               objectParameters: [
                 {
                   paramName: "name",
-                  typeInfo: { typeAsString: "string", paramType: "basic" },
+                  typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
                   isOptional: false,
                 },
                 {
                   paramName: "email",
-                  typeInfo: { typeAsString: "string", paramType: "basic" },
+                  typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
                   isOptional: false,
                 },
               ],
@@ -99,7 +99,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
               objectParameters: [
                 {
                   paramName: "theme",
-                  typeInfo: { typeAsString: "string", paramType: "basic" },
+                  typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
                   isOptional: false,
                 },
               ],
@@ -122,7 +122,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
         genericRes: {
           baseType: "Record",
           genericArgs: [
-            { typeAsString: "string", paramType: "basic" },
+            { typeAsString: "string", paramType: "primitive-basic" },
             { typeAsString: "any", paramType: "any" },
           ],
         },

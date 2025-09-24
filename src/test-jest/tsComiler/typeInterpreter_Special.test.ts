@@ -11,7 +11,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "never",
-        paramType: "never",
+        paramType: "special-locked",
       },
       isOptional: false,
     };
@@ -26,7 +26,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "any",
-        paramType: "any",
+        paramType: "special",
       },
       isOptional: false,
     };
@@ -41,7 +41,22 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "unknown",
-        paramType: "unknown",
+        paramType: "primitive-special",
+      },
+      isOptional: false,
+    };
+    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: symbol", () => {
+    const myAnalyser = new TSClassAnalyzer(giveMeTSResource("ClassSymbol"));
+    const res: ClassResource[] = myAnalyser.parse();
+
+    const expectedParam = {
+      paramName: "x",
+      typeInfo: {
+        typeAsString: "symbol",
+        paramType: "primitive-special",
       },
       isOptional: false,
     };
@@ -56,7 +71,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "undefined",
-        paramType: "undefined",
+        paramType: "special",
       },
       isOptional: false,
     };
@@ -71,7 +86,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       paramName: "x",
       typeInfo: {
         typeAsString: "null",
-        paramType: "null",
+        paramType: "special-locked",
       },
       isOptional: false,
     };

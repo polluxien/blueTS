@@ -25,7 +25,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
                 isOptional: false,
                 paramName: "name",
                 typeInfo: {
-                  paramType: "basic",
+                  paramType: "primitive-basic",
                   typeAsString: "string",
                 },
               },
@@ -33,7 +33,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
                 isOptional: false,
                 paramName: "email",
                 typeInfo: {
-                  paramType: "basic",
+                  paramType: "primitive-basic",
                   typeAsString: "string",
                 },
               },
@@ -45,7 +45,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
             objectParameters: [
               {
                 paramName: "id",
-                typeInfo: { typeAsString: "string", paramType: "basic" },
+                typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
                 isOptional: false,
               },
             ],
@@ -71,7 +71,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
             objectParameters: [
               {
                 paramName: "name",
-                typeInfo: { typeAsString: "string", paramType: "basic" },
+                typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
                 isOptional: false,
               },
             ],
@@ -82,7 +82,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
             objectParameters: [
               {
                 paramName: "age",
-                typeInfo: { typeAsString: "number", paramType: "basic" },
+                typeInfo: { typeAsString: "number", paramType: "primitive-basic" },
                 isOptional: false,
               },
             ],
@@ -93,7 +93,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
             objectParameters: [
               {
                 paramName: "email",
-                typeInfo: { typeAsString: "string", paramType: "basic" },
+                typeInfo: { typeAsString: "string", paramType: "primitive-basic" },
                 isOptional: false,
               },
             ],

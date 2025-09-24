@@ -13,8 +13,8 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
         typeAsString: "[string, number]",
         paramType: "tuple",
         tupleElements: [
-          { typeAsString: "string", paramType: "basic" },
-          { typeAsString: "number", paramType: "basic" },
+          { typeAsString: "string", paramType: "primitive-basic" },
+          { typeAsString: "number", paramType: "primitive-basic" },
         ],
       },
       isOptional: false,
@@ -30,11 +30,11 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
         typeAsString: "[string, number, boolean?]",
         paramType: "tuple",
         tupleElements: [
-          { typeAsString: "string", paramType: "basic" },
-          { typeAsString: "number", paramType: "basic" },
+          { typeAsString: "string", paramType: "primitive-basic" },
+          { typeAsString: "number", paramType: "primitive-basic" },
           {
             typeAsString: "boolean",
-            paramType: "basic",
+            paramType: "primitive-basic",
             isOptional: true,
           },
         ],
@@ -54,10 +54,10 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
         typeAsString: "[string, ...number[]]",
         paramType: "tuple",
         tupleElements: [
-          { typeAsString: "string", paramType: "basic" },
+          { typeAsString: "string", paramType: "primitive-basic" },
           {
             typeAsString: "number",
-            paramType: "basic",
+            paramType: "primitive-basic",
             isRest: true,
           },
         ],
