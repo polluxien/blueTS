@@ -13,6 +13,7 @@ import type {
   ValidationTypeResource,
 } from "../../ressources/frontend/paramResources.ts";
 import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
+//import GenericParameterComponent from "./GenericParamComponent.tsx";
 
 function ParameterFormControllComponent({
   index,
@@ -168,6 +169,8 @@ function ParameterFormControllComponent({
   };
 
   //----------- !!! -----------------
+
+  // ? Komplexe Typen ----------------------
   switch (typeRes.paramType) {
     case "union": {
       return (
@@ -208,6 +211,20 @@ function ParameterFormControllComponent({
         ></ObjectParamComponent>
       );
     }
+    /*
+    case "generic": {
+      return (
+        <GenericParameterComponent
+          paramFormType={paramFormType}
+        ></GenericParameterComponent>
+      );
+     
+    }
+       */
+
+    // ? -------------------------------------
+
+    // ? Simple Typen ------------------------
 
     case "enum": {
       return (
@@ -290,13 +307,34 @@ function ParameterFormControllComponent({
       );
     }
 
+    //nicht so ganz supported
+    case "function": {
+      return (
+        <FormGroup key={index}>
+          {getWarningLabel()}
+          {!hideLabel && getFormLabel()}
+          <FormControl
+            as="textarea"
+            rows={2}
+            required={!param.isOptional}
+            value={formValue}
+            onChange={(e) => onChange(param.paramName, e.target.value)}
+            isInvalid={validated && !!error}
+            isValid={validated && !error}
+          />
+          <Form.Control.Feedback type="invalid">
+            {error?.message || "This field is required"}
+          </Form.Control.Feedback>
+        </FormGroup>
+      );
+    }
+
     //hier alle primive-basics und fallback types
     default: {
       if (typeRes.paramType)
         return (
           <FormGroup key={index}>
             {typeRes.paramType === "fallback" && getErrorLabel()}
-            {typeRes.paramType === "function" && getWarningLabel()}
             {!hideLabel && getFormLabel()}
             <FormControl
               type="text"
@@ -313,6 +351,8 @@ function ParameterFormControllComponent({
         );
     }
   }
+
+  // ? -------------------------------------
 }
 
 export default ParameterFormControllComponent;

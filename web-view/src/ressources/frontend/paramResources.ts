@@ -15,6 +15,8 @@ export type ParamFormTypeResource = {
 
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
   hideLabel?: boolean;
+  showWarning?: boolean;
+  showError?: boolean;
 };
 
 export type ValidationTypeResource = {

@@ -1,10 +1,6 @@
 import type { TsFileResource } from "./FileResources";
 
 // * Param-Resource Types für Object- als auch Function-View
-export type FunctionParamTypeSignatureResource = {
-  defaultImplementation: string;
-  returnType?: TypeResource;
-};
 
 export type GenericParamTypeResource = {
   baseType: string;
@@ -45,8 +41,6 @@ export type TypeResource = {
   unionValues?: TypeResource[];
   arrayType?: TypeResource;
   objectParameters?: ParameterResource[];
-  //* sehr Spezielle Typen
-  functionRes?: FunctionParamTypeSignatureResource;
   genericRes?: GenericParamTypeResource;
 };
 
