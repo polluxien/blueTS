@@ -105,7 +105,8 @@ export class TSParameterAnalyzer {
     const flags = type.getFlags();
 
     //* special-locked
-    if (["void", "never"].includes(typeAsString)) {
+    // (null ist auch primitiv, aber für Einfchheit im frontend...)
+    if (["void", "never"].includes(typeAsString) || type.isNull()) {
       return {
         typeAsString,
         paramType: "special-locked",
@@ -120,7 +121,7 @@ export class TSParameterAnalyzer {
       };
     }
     // * primitive-special-types
-    if (["symbol", "unknown"].includes(typeAsString) || type.isNull()) {
+    if (["symbol", "unknown"].includes(typeAsString)) {
       return { typeAsString, paramType: "primitive-special" };
     }
 
@@ -163,7 +164,7 @@ export class TSParameterAnalyzer {
       };
     }
 
-    // ! könnte man noch seperat behandeln momentan interface als object
+    // ! könnte man noch seperat behandeln, momentan interface als object
     if (type.isInterface()) {
     }
 

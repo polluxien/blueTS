@@ -1,5 +1,7 @@
-
-import type { ParameterResource, TypeResource } from "../ressources/backend/tsCompilerAPIResources";
+import type {
+  ParameterResource,
+  TypeResource,
+} from "../ressources/backend/tsCompilerAPIResources";
 import type {
   InstanceParamType,
   ValidationResult,
@@ -11,17 +13,20 @@ export function validateFormControllType(
 ): ValidationResult {
   const typeRes: TypeResource = paramRes.typeInfo;
 
-  console.log("VALUE TO VALIDATE: ", formValue);
-  console.log("NAME: ", typeRes.typeAsString);
+  console.info("VALUE TO VALIDATE: ", formValue);
+  console.info("NAME: ", typeRes.typeAsString);
 
   //wenn field garnicht benutzt aber required return sofort
-  if (!formValue && !paramRes.isOptional) {
+  if (!formValue && !paramRes.isOptional && !typeRes.isOptional) {
     return { err: new Error(`field is required`) };
   }
 
   //wenn nichts gegeben aber nicht gefordert return undefined || speziel undefined angegebn bei optional
-  if ((paramRes.isOptional && !formValue) || formValue === "undefined") {
-    return { parsedValue: undefined };
+  if (
+    (!formValue && (paramRes.isOptional || typeRes.isOptional)) ||
+    (formValue === "undefined" && typeRes.typeAsString === "undefined")
+  ) {
+    return { parsedValue: { specialLockedType: "undefined" } };
   }
 
   //basic types oder literalType defined
@@ -131,13 +136,14 @@ export function validateFormControllType(
     return parseDynamicValue(formValue);
   }
 
+  // ! hier ist der knackpunkt - aber warum?
   //void einziger akzepierter typ undefined deswegen überge -> keine auswahl erlaubt
   if (typeRes.typeAsString === "void") {
-    return { parsedValue: undefined };
+    return { parsedValue: { specialLockedType: "undefined" } };
   }
 
   if (typeRes.typeAsString === "null") {
-    return { parsedValue: null };
+    return { parsedValue: { specialLockedType: "null" } };
   }
 
   //never kann niemal vorkommen -> keine auswahl erlaubt -> übergebe nur err
@@ -164,7 +170,9 @@ export function validateFormControllType(
       return { parsedValue: Symbol.for(key) };
     }
 
-    return { err: new Error('Invalid symbol (Symbol("...") or  Symbol.for("...") ) ') };
+    return {
+      err: new Error('Invalid symbol (Symbol("...") or  Symbol.for("...") ) '),
+    };
   }
 
   return { parsedValue: formValue };

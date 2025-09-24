@@ -17,7 +17,7 @@ import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResourc
 function ParameterFormControllComponent({
   index,
   param,
-  formValue: value,
+  formValue,
   validated,
   error,
   onChange,
@@ -27,7 +27,7 @@ function ParameterFormControllComponent({
 }: ParamFormTypeResource) {
   const typeRes: TypeResource = param.typeInfo;
 
-  //in components müssden diese überprüften types in richtige syntax gebracht werden
+  //in sub-components müssden diese überprüften types in richtige syntax gebracht werden
 
   const [paramValidations, setParamValidations] = useState<
     Record<string, ValidationTypeResource>
@@ -45,14 +45,14 @@ function ParameterFormControllComponent({
     console.log(
       "Effect triggered for",
       param.paramName,
-      param.typeInfo.paramType,
-      value,
+      typeRes.paramType,
+      formValue,
       onValidationChange
     );
-  }, [value, param.paramName, param.typeInfo.paramType, onValidationChange]);
+  }, [formValue, param.paramName, typeRes.paramType, onValidationChange]);
 
   // für feste Typen von typeAsString
-  const fixedTypes = ["null", "void", "never"]; 
+  const fixedTypes = ["null", "void", "never"];
 
   useEffect(
     () => {
@@ -62,25 +62,16 @@ function ParameterFormControllComponent({
       ) {
         return;
       }
-
       const expectedValue = typeRes.typeAsString;
 
       // nur setzen, wenn sich Wert unterscheidet
-      if (expectedValue && value !== expectedValue) {
+      if (formValue !== expectedValue) {
         onChange(param.paramName, expectedValue);
         return;
       }
-
-      const { err, parsedValue } = validateFormControllType(param, value);
-
-      onValidationChange!(param.paramName, {
-        isValid: !err,
-        errors: err ? [err] : [],
-        parsedValue,
-      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [value, typeRes.paramType, typeRes.typeAsString, param.paramName]
+    [typeRes.paramType, typeRes.typeAsString, param.paramName]
   );
 
   //für verschachtelte Typen vom paramType
@@ -123,9 +114,10 @@ function ParameterFormControllComponent({
     () => {
       if (!onValidationChange || nestedTypes.includes(typeRes.paramType))
         return;
-      //console.log("primitive type");
 
-      const { err, parsedValue } = validateFormControllType(param, value);
+      const { err, parsedValue } = validateFormControllType(param, formValue);
+
+      console.log("primitive type", parsedValue);
 
       onValidationChange(param.paramName, {
         isValid: !err,
@@ -134,13 +126,13 @@ function ParameterFormControllComponent({
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [value, param.paramName, typeRes.paramType]
+    [formValue, param.paramName, typeRes.paramType]
   );
 
   const paramFormType: ParamFormTypeResource = {
     index,
     param,
-    formValue: value,
+    formValue: formValue,
     validated,
     error,
     onChange,
@@ -223,7 +215,7 @@ function ParameterFormControllComponent({
           {!hideLabel && getFormLabel()}
           <Form.Select
             required={!param.isOptional}
-            value={value}
+            value={formValue}
             onChange={(e) => onChange(param.paramName, e.target.value)}
             isInvalid={validated && !!error}
           >
@@ -259,7 +251,7 @@ function ParameterFormControllComponent({
           {!hideLabel && getFormLabel()}
           <Form.Select
             required={!param.isOptional}
-            value={value}
+            value={formValue}
             disabled={hasNoInstances}
             onChange={(e) => onChange(param.paramName, e.target.value)}
             isInvalid={validated && !!error}
@@ -281,16 +273,13 @@ function ParameterFormControllComponent({
     //feste values
     case "literal":
     case "special-locked": {
+      //benötigt kein value oder onChange -> readonly und placeholder
       return (
         <FormGroup key={index}>
           {!hideLabel && getFormLabel()}
           <FormControl
             type="text"
-            placeholder={
-              typeRes.typeAsString !== "never" ? typeRes.typeAsString : ""
-            }
-            // value={value || placeholder}
-            // onChange={() => onChange(param.paramName, typeRes.paramType)}
+            placeholder={typeRes.typeAsString}
             readOnly
             isInvalid={validated && !!error}
           />
@@ -312,7 +301,7 @@ function ParameterFormControllComponent({
             <FormControl
               type="text"
               required={!param.isOptional}
-              value={value}
+              value={formValue}
               onChange={(e) => onChange(param.paramName, e.target.value)}
               isInvalid={validated && !!error}
               isValid={validated && !error}

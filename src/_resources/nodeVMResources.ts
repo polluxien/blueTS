@@ -24,6 +24,10 @@ export type EnumParamType = {
   enumMembers: string[];
 };
 
+export type SpecailLockedType = {
+  specialLockedType: "undefined" | "null";
+};
+
 //checke ob der kompilierte code koreckt ist
 export type verifyContext = {
   context: string;

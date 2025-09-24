@@ -2,35 +2,36 @@ import {
   EnumParamType,
   InstanceParamType,
   RestParamType,
+  SpecailLockedType,
 } from "../../_resources/nodeVMResources";
 import { getInstanceFromInstanceMap } from "./instanceManager";
 
 const isInstanceParamType = (param: any): param is InstanceParamType => {
   return (
-    typeof param === "object" &&
     typeof param.className === "string" &&
     typeof param.instanceName === "string"
   );
 };
 
 const isRestParamType = (param: any): param is RestParamType => {
-  return (
-    typeof param === "object" &&
-    param !== null &&
-    Array.isArray(param.restParams)
-  );
+  return param !== null && Array.isArray(param.restParams);
 };
 
 const isEnumParamType = (param: any): param is EnumParamType => {
   return (
-    typeof param === "object" &&
-    typeof param.enumValue === "string" &&
-    typeof param.enumMembers === "object"
+    typeof param.enumValue === "string" && typeof param.enumMembers === "object"
+  );
+};
+
+const isSpecialLockedType = (param: any): param is SpecailLockedType => {
+  return (
+    param.specialLockedType === "null" ||
+    param.specialLockedType === "undefined"
   );
 };
 
 export function normalizeParam(param: any): any[] {
-  if (typeof param !== "object") {
+  if (!param || typeof param !== "object") {
     return param;
   }
 
@@ -39,9 +40,13 @@ export function normalizeParam(param: any): any[] {
     return [ins];
   }
 
-  // * eventuell im context noch erstellen 
+  // * eventuell im context noch erstellen
   if (isEnumParamType(param)) {
     return [param.enumValue];
+  }
+
+  if (isSpecialLockedType(param)) {
+    return param.specialLockedType === "null" ? [null] : [undefined];
   }
 
   if (isRestParamType(param)) {
