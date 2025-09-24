@@ -19,6 +19,8 @@ import type { TsCodeCheckResource } from "../ressources/classRessources.ts";
 import type { RefreshedResponseType } from "../ressources/response/fileCheckResponse.ts";
 import type { InstanceResource } from "../ressources/frontend/instanceTypes.ts";
 import { VscodeContext } from "../api/vscodeAPIContext.ts";
+import ConsoleLogComponent from "./ConsoleLogComponent.tsx";
+import { Col, Row } from "react-bootstrap";
 
 function PageController() {
   const vscode = useContext(VscodeContext);
@@ -331,29 +333,18 @@ function PageController() {
     );
 
     setTestedTsFileMap((prev) => {
-      console.log("Existing keys:", Array.from(prev.keys()));
-      console.log("Key to update:", data.tsFilePath);
-      console.log("Key exists:", prev.has(data.tsFilePath));
-
       const newMap = new Map(prev);
       newMap.set(data.tsFilePath, data.tsFileCheck);
       return newMap;
     });
 
     setFunctions((prev) => {
-      console.log("Existing keys:", Array.from(prev.keys()));
-      console.log("Key to update:", data.tsFilePath);
-      console.log("Key exists:", prev.has(data.tsFilePath));
-
       const newMap = new Map(prev);
       newMap.set(data.tsFilePath, data.refreshedFunctions);
       return newMap;
     });
 
     setClasses((prev) => {
-      console.log("Existing keys:", Array.from(prev.keys()));
-      console.log("Key to update:", data.tsFilePath);
-      console.log("Key exists:", prev.has(data.tsFilePath));
       const newMap = new Map(prev);
       newMap.set(data.tsFilePath, data.refreshedClasses);
       return newMap;
@@ -403,7 +394,7 @@ function PageController() {
   const getFunctions = () => Array.from(functions.values()).flat();
 
   return (
-    <>
+    <div style={{ width: "100%" }}>
       {/* Directory settings */}
       <div className="mb-3">
         <DirectorySettingsComponent
@@ -420,6 +411,7 @@ function PageController() {
         >
           Object
         </span>
+        {/* React-Switch Example inspo --> https://react-switch.netlify.app*/}
         <Switch
           onChange={() =>
             setViewMode(viewMode === "object" ? "function" : "object")
@@ -443,9 +435,10 @@ function PageController() {
           Function
         </span>
       </div>
-      {/* View  */}
-      {viewMode === "object" ? (
-        <div>
+
+      {/* Views */}
+      <div style={{ paddingBottom: "30vh" }}>
+        {viewMode === "object" ? (
           <ObjectViewComponent
             classes={getClasses()}
             instances={instances}
@@ -458,9 +451,7 @@ function PageController() {
             dropInstance={dropInstance}
             testedTsFileMap={testedTsFileMap}
           ></ObjectViewComponent>
-        </div>
-      ) : (
-        <div>
+        ) : (
           <FunctionViewComponent
             functions={getFunctions()}
             functionResults={functionResultsMap}
@@ -469,9 +460,23 @@ function PageController() {
             testedTsFileMap={testedTsFileMap}
             instancesAsParamsMap={instancesAsParamsMap}
           ></FunctionViewComponent>
+        )}
+      </div>
+
+      {/* Konsolenausgabe */}
+      <div
+        className="fixed-bottom border-top bg-white"
+        style={{ height: "24vh" }}
+      >
+        <div className="container-fluid h-100">
+          <Row className="h-100">
+            <Col xs={12}>
+              <ConsoleLogComponent />
+            </Col>
+          </Row>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }
 
