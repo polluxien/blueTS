@@ -1,4 +1,4 @@
-import { TsFileResource } from "../src/FileResources";
+import { TsFileResource } from "../FileResources";
 
 //Zum versenden zur Extension
 export type CreateClassInstanceRequestType = {

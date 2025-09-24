@@ -1,5 +1,5 @@
-import { InstancePropType } from "../src/nodeVMResources";
-import { ClassResource } from "../src/tsCompilerAPIResources";
+import { InstancePropType } from "../nodeVMResources";
+import { ClassResource } from "../tsCompilerAPIResources";
 
 
 // die methode Daten befinden sich schon im Frontend lediglich bestätigung der Funktionalität

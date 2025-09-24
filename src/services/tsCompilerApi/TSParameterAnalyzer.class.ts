@@ -197,8 +197,8 @@ export class TSParameterAnalyzer {
     // ! --> nur noch basic und Fallback danach
     if (
       typeAsString.includes("<") &&
-      typeAsString.includes(">")
-      //&& type.getTypeArguments().length > 0
+      typeAsString.includes(">") &&
+      type.getTypeArguments().length > 0
     ) {
       return this.handleGenericType(
         type as Type<ts.GenericType>,
@@ -542,7 +542,7 @@ export class TSParameterAnalyzer {
   ): TypeResource {
     const typeArgs = type.getTypeArguments() ?? [];
     const symbol = type.getSymbol();
-    const baseType = symbol!.getName();
+    const baseType = symbol?.getName() ?? "No NAME";
 
     return {
       typeAsString,
