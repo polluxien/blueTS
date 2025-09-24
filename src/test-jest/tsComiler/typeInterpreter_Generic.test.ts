@@ -12,7 +12,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       typeInfo: {
         typeAsString: "string[]",
         paramType: "array",
-        arrayType: { typeAsString: "string", paramType: "basic" },
+        arrayType: { typeAsString: "string", paramType: "primitive-basic" },
       },
       isOptional: false,
     };
@@ -27,7 +27,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
         paramType: "generic",
         genericRes: {
           baseType: "Promise",
-          genericArgs: [{ typeAsString: "number", paramType: "basic" }],
+          genericArgs: [
+            { typeAsString: "number", paramType: "primitive-basic" },
+          ],
         },
       },
       isOptional: false,
@@ -44,8 +46,8 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
         genericRes: {
           baseType: "Map",
           genericArgs: [
-            { typeAsString: "string", paramType: "basic" },
-            { typeAsString: "number", paramType: "basic" },
+            { typeAsString: "string", paramType: "primitive-basic" },
+            { typeAsString: "number", paramType: "primitive-basic" },
           ],
         },
       },
@@ -82,7 +84,10 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
             {
               typeAsString: "string[]",
               paramType: "array",
-              arrayType: { typeAsString: "string", paramType: "basic" },
+              arrayType: {
+                typeAsString: "string",
+                paramType: "primitive-basic",
+              },
             },
           ],
         },
@@ -90,5 +95,24 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       isOptional: false,
     };
     expect(res[1].constructor!.parameters[4]).toEqual(expectedParam);
+  });
+
+  test("erkenne Eingabeparameter: Record<string, User>", () => {
+    const expectedParam = {
+      paramName: "recordParam",
+      typeInfo: {
+        typeAsString: "Record<string, User>",
+        paramType: "generic",
+        genericRes: {
+          baseType: "Record",
+          genericArgs: [
+            { typeAsString: "string", paramType: "primitive-basic" },
+            { typeAsString: "User", paramType: "instance" },
+          ],
+        },
+      },
+      isOptional: false,
+    };
+    expect(res[1].constructor!.parameters[5]).toEqual(expectedParam);
   });
 });

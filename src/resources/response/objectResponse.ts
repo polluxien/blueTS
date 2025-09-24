@@ -1,5 +1,6 @@
-import type { InstancePropType } from "../backend/nodeVMResources";
-import type { ClassResource } from "../backend/tsCompilerAPIResources";
+import { InstancePropType } from "../src/nodeVMResources";
+import { ClassResource } from "../src/tsCompilerAPIResources";
+
 
 // die methode Daten befinden sich schon im Frontend lediglich bestätigung der Funktionalität
 export type InstanceCheckResponseType = {

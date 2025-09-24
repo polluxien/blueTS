@@ -8,6 +8,7 @@ export class ClassGeneric {
     promiseNumber: Promise<number>,
     stringToNumberMap: Map<string, number>,
     userSet: Set<User>,
-    nestedGeneric: Promise<Array<string>>
+    nestedGeneric: Promise<Array<string>>,
+    recordParam: Record<string, User>
   ) {}
 }

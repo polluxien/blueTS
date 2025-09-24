@@ -1,15 +1,13 @@
 import path from "path";
-import {
-  CreateClassInstanceRessource,
-  InstanceCheckRessource,
-  PropInstanceType,
-} from "../../_resources/nodeVMResources";
 
 import { Path } from "typescript";
 import {
   addInstanceToInstanceMap,
   clearInstanceMap,
 } from "../../services/nodeVM/instanceManager";
+import { PropInstanceType } from "../../_resources/nodeVMResources";
+import { CreateClassInstanceRequestType } from "../../_resources/request/objectRequest";
+import { InstanceCheckResponseType } from "../../_resources/response/objectResponse";
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   //hier sind die testrelevanten Props abgelegt
@@ -17,7 +15,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
 
   //erstelle zu anfang aller tests eine neue Instanz
   beforeAll(async () => {
-    const myCreateClsInstanceRes: CreateClassInstanceRessource = {
+    const myCreateClsInstanceRes: CreateClassInstanceRequestType = {
       instanceName: "testii",
       className: "AllTheTypes",
       tsFile: {
@@ -27,12 +25,12 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
           `../mockCode/nodeVM/ClassPropsTest.ts`
         ) as Path,
       },
-      constructorParameter: [],
+      params: [],
     };
-    const insCheck: InstanceCheckRessource = await addInstanceToInstanceMap(
+    const insCheck: InstanceCheckResponseType = await addInstanceToInstanceMap(
       myCreateClsInstanceRes
     );
-    propsResultArr = insCheck.props;
+    propsResultArr = insCheck.props!;
     console.log("Props ---->", propsResultArr.flat());
   });
 

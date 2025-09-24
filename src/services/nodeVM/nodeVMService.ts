@@ -1,17 +1,13 @@
 import fs from "fs";
 import ts from "typescript";
-import { PropInstanceType } from "../../_resources/nodeVMResources";
 import {
   CompileErrorResource,
   TsCodeCheckResource,
 } from "./checkTsCodeManager";
-import { TsFileResource } from "../../_resources/FileResources";
 import { parseReturnResult } from "./nodeHelper";
 import { normalizeParam } from "./typeCheckerHelper";
-import {
-  CreateClassInstanceRequestType,
-  RunMethodInInstanceRequestType,
-} from "../../_resources/request/objectRequest";
+
+import {CreateClassInstanceRequestType} from '@resources/request/objectRequest';
 
 const vm = require("node:vm");
 

@@ -1,5 +1,6 @@
-import type { TsFileResource } from "../backend/FileResources";
-import type { FunctionResource } from "../backend/tsCompilerAPIResources";
+import { TsFileResource } from "../src/FileResources";
+import { FunctionResource } from "../src/tsCompilerAPIResources";
+
 
 export type CompiledFunctionResponseTyp = {
   functionName: string;

@@ -1,17 +1,20 @@
 import path from "path";
-import {
-  CompiledRunMethodInInstanceTyp,
-  CreateClassInstanceRessource,
-  RunMethodeInInstanceType,
-} from "../../_resources/nodeVMResources";
-import { Path } from "typescript";
-import { addInstanceToInstanceMap, clearInstanceMap, compileMethodInClassObject } from "../../services/nodeVM/instanceManager";
 
+import { Path } from "typescript";
+import {
+  addInstanceToInstanceMap,
+  clearInstanceMap,
+  compileMethodInClassObject,
+} from "../../services/nodeVM/instanceManager";
+import {
+  CreateClassInstanceRequestType,
+  RunMethodInInstanceRequestType,
+} from "../../_resources/request/objectRequest";
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   //erstelle zu anfang jedem tests eine neue Instanz
   beforeEach(async () => {
-    const myCreateClsInstanceRes: CreateClassInstanceRessource = {
+    const myCreateClsInstanceRes: CreateClassInstanceRequestType = {
       instanceName: "testii",
       className: "Person",
       tsFile: {
@@ -21,7 +24,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
           `../mockCode/nodeVM/ClassMethodsTest.ts`
         ) as Path,
       },
-      constructorParameter: ["Albert", 40],
+      params: ["Albert", 40],
     };
     const result = await addInstanceToInstanceMap(myCreateClsInstanceRes);
     //console.log("Aktueller Instance-Zustand:", result);
@@ -33,7 +36,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   });
 
   test("teste get age(): number", async () => {
-    const myRunMethodeInInstanceType: RunMethodeInInstanceType = {
+    const myRunMethodeInInstanceType: RunMethodInInstanceRequestType = {
       instanceName: "testii",
       methodName: "age",
       params: [],
@@ -51,7 +54,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
       methodName: "age",
       methodKind: "get",
       returnValue: "40",
-    } as CompiledRunMethodInInstanceTyp);
+    });
   });
 
   test("teste get age(): number -> mit Parametern (Fehler)", async () => {
@@ -71,7 +74,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   });
 
   test("teste set age(number): void", async () => {
-    let myRunMethodeInInstanceType: RunMethodeInInstanceType = {
+    let myRunMethodeInInstanceType: RunMethodInInstanceRequestType = {
       instanceName: "testii",
       methodName: "age",
       params: [70],
@@ -156,7 +159,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   });
 
   test("teste greet(string): string ", async () => {
-    const myRunMethodeInInstanceType: RunMethodeInInstanceType = {
+    const myRunMethodeInInstanceType: RunMethodInInstanceRequestType = {
       instanceName: "testii",
       methodName: "greet",
       params: ["Basti"],
@@ -196,7 +199,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   });
 
   test("teste async fetchData(): Promise<string>", async () => {
-    const myRunMethodeInInstanceType: RunMethodeInInstanceType = {
+    const myRunMethodeInInstanceType: RunMethodInInstanceRequestType = {
       instanceName: "testii",
       methodName: "fetchData",
       params: [],

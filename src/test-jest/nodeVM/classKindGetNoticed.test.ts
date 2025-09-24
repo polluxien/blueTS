@@ -1,7 +1,8 @@
 import { Path } from "typescript";
 import path from "path";
-import { InstanceCheckRessource } from "../../_resources/nodeVMResources";
 import { addInstanceToInstanceMap } from "../../services/nodeVM/instanceManager";
+import { InstanceCheckResponseType } from "../../_resources/response/objectResponse";
+import { CreateClassInstanceRequestType } from "../../_resources/request/objectRequest";
 
 const tsFile = {
   name: "classKinds.ts",
@@ -9,13 +10,13 @@ const tsFile = {
 };
 describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   test("default KLasse (ohne export)", async () => {
-    const instanceCheckRes: InstanceCheckRessource =
+    const instanceCheckRes: InstanceCheckResponseType =
       await addInstanceToInstanceMap({
         instanceName: "testi_01",
         className: "Testi_01",
         tsFile,
-        constructorParameter: [],
-      });
+        params: [],
+      } as CreateClassInstanceRequestType);
 
     expect(instanceCheckRes).toBeDefined();
     expect(instanceCheckRes.error).toBeUndefined();
@@ -23,12 +24,12 @@ describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   });
 
   test("Klasse mit export", async () => {
-    const instanceCheckRes: InstanceCheckRessource =
+    const instanceCheckRes: InstanceCheckResponseType =
       await addInstanceToInstanceMap({
         instanceName: "testi_02",
         className: "Testi_02",
         tsFile,
-        constructorParameter: [],
+        params: [],
       });
 
     expect(instanceCheckRes).toBeDefined();
@@ -37,12 +38,12 @@ describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   });
 
   test("Klasse mit nachträglichen export", async () => {
-    const instanceCheckRes: InstanceCheckRessource =
+    const instanceCheckRes: InstanceCheckResponseType =
       await addInstanceToInstanceMap({
         instanceName: "testi_03",
         className: "Testi_03",
         tsFile,
-        constructorParameter: [],
+        params: [],
       });
 
     expect(instanceCheckRes).toBeDefined();
@@ -51,12 +52,12 @@ describe("Teste ob Alle bekannten TS-Arten von Klassen erkannt werden", () => {
   });
 
   test("Klasse mit default export", async () => {
-    const instanceCheckRes: InstanceCheckRessource =
+    const instanceCheckRes: InstanceCheckResponseType =
       await addInstanceToInstanceMap({
         instanceName: "testi_04",
         className: "Testi_04",
         tsFile,
-        constructorParameter: [],
+        params: [],
       });
 
     expect(instanceCheckRes).toBeDefined();

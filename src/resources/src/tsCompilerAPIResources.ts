@@ -1,4 +1,4 @@
-import { TsFileResource } from "./FileResources";
+import { TsFileResource } from "../FileResources";
 
 // * Param-Resource Types für Object- als auch Function-View
 export type FunctionParamTypeSignatureResource = {

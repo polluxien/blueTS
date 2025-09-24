@@ -180,7 +180,8 @@ export class TSParameterAnalyzer {
 
     //* function type
     if (type.getCallSignatures().length > 0) {
-      return this.handleFunctionType(type, typeAsString, depth, visited);
+      return { typeAsString, paramType: "function" };
+      //return this.handleFunctionType(type, typeAsString, depth, visited);
     }
 
     //* instance type
@@ -192,10 +193,12 @@ export class TSParameterAnalyzer {
     }
 
     //* generic type
+    // ! problem ist das funktioniert nur auf der obersten ebene, deshalb muss schon alles vorher aussgeschlossen werden
+    // ! --> nur noch basic und Fallback danach
     if (
       typeAsString.includes("<") &&
-      typeAsString.includes(">") &&
-      type.getTypeArguments().length > 0
+      typeAsString.includes(">")
+      //&& type.getTypeArguments().length > 0
     ) {
       return this.handleGenericType(
         type as Type<ts.GenericType>,
@@ -443,6 +446,7 @@ export class TSParameterAnalyzer {
     return { typeAsString, paramType: "enum", enumMembers: [] };
   }
 
+  /*
   private handleFunctionType(
     type: Type,
     typeAsString: string,
@@ -489,6 +493,7 @@ export class TSParameterAnalyzer {
       },
     };
   }
+    */
 
   private handelObjectType(
     type: Type<ts.ObjectType>,
@@ -535,9 +540,9 @@ export class TSParameterAnalyzer {
     depth: number,
     visited: Set<string>
   ): TypeResource {
-    const typeArgs = type.getTypeArguments();
+    const typeArgs = type.getTypeArguments() ?? [];
     const symbol = type.getSymbol();
-    const baseType = symbol ? symbol.getName() : typeAsString.split("<")[0];
+    const baseType = symbol!.getName();
 
     return {
       typeAsString,
