@@ -236,7 +236,7 @@ function PageController() {
     instanceWaitingMap.current.delete(data.instanceName);
 
     //füge props hinzu
-    myInstance!.props = data.props;
+    myInstance!.compiledProperties = data.props;
 
     if (data.isValid && myInstance) {
       setInstance((ins) => [...ins, myInstance]);
@@ -292,7 +292,7 @@ function PageController() {
       setInstance((prevInstances) => {
         const updatedInstances = prevInstances.map((ins) =>
           ins.instanceName === data.instanceName
-            ? { ...ins, props: data.newProps }
+            ? { ...ins, compiledProperties: data.newProps }
             : ins
         );
 
@@ -417,7 +417,7 @@ function PageController() {
             setViewMode(viewMode === "object" ? "function" : "object")
           }
           checked={viewMode === "function"}
-          onColor="#007bff"
+          onColor="#304674"
           onHandleColor="#ffffff"
           handleDiameter={24}
           uncheckedIcon={false}

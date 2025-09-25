@@ -41,17 +41,24 @@ export class TSClassAnalyzer {
 
     for (let sourceFile of this.project.getSourceFiles()) {
       for (let cls of sourceFile.getClasses()) {
+        const clsConstructor = cls.getConstructors()[0];
+
         const myClass: ClassResource = {
           className: cls.getName()!,
           tsFile: this.tsFile,
-          constructorParams:
-            this.extractParameters(cls.getConstructors()[0]) ?? [],
+          constructorParams: clsConstructor
+            ? this.extractParameters(
+                cls.getConstructors()[0],
+                cls.getName()!,
+                "constructor"
+              )
+            : [],
           methods: this.extractMethodes(cls),
           properties: this.extractProperties(cls),
           specs: {
-            extendsClass: cls.getExtends()?.getText(),
-            implementsInterfaces:
-              cls.getImplements().map((impl) => impl.getText()) ?? [],
+            extendsClass: undefined, //cls.getExtends()?.getText(),
+            implementsInterfaces: [],
+            //cls.getImplements().map((impl) => impl.getText()) ?? [],
           },
         };
         this.classResourceArr.push(myClass);
@@ -61,20 +68,22 @@ export class TSClassAnalyzer {
   }
 
   private extractMethodes(cls: ClassDeclaration): MethodResource[] {
+    const clsName = cls.getName()!;
+
     const methodRessourceArr: MethodResource[] = [];
 
     let myMethod;
     for (let met of cls.getMethods()) {
-      myMethod = this.methodRessourceBuilder(met, "default");
+      myMethod = this.methodRessourceBuilder(met, "default", clsName);
       methodRessourceArr.push(myMethod);
     }
     for (let met of cls.getGetAccessors()) {
-      myMethod = this.methodRessourceBuilder(met, "get");
+      myMethod = this.methodRessourceBuilder(met, "get", clsName);
       methodRessourceArr.push(myMethod);
     }
 
     for (let met of cls.getSetAccessors()) {
-      myMethod = this.methodRessourceBuilder(met, "set");
+      myMethod = this.methodRessourceBuilder(met, "set", clsName);
       methodRessourceArr.push(myMethod);
     }
     return methodRessourceArr;
@@ -82,7 +91,8 @@ export class TSClassAnalyzer {
 
   private methodRessourceBuilder(
     met: MethodDeclaration | GetAccessorDeclaration | SetAccessorDeclaration,
-    methodKind: "default" | "get" | "set"
+    methodKind: "default" | "get" | "set",
+    clsName: string
   ): MethodResource {
     //Sichtbarkeit
     let visibility: "public" | "private" | "protected" = "public";
@@ -99,9 +109,10 @@ export class TSClassAnalyzer {
       isAsync = (met as MethodDeclaration).isAsync();
     }
 
+    const methodName = met.getName();
     return {
-      methodName: met.getName(),
-      parameters: this.extractParameters(met),
+      methodName,
+      parameters: this.extractParameters(met, clsName, methodName),
       specs: {
         methodKind,
         visibility,
@@ -142,18 +153,25 @@ export class TSClassAnalyzer {
   }
 
   private extractParameters(
-    foo: 
-      //Methoden algemein, getter und setter
-      | MethodDeclaration
+    foo: //Methoden algemein, getter und setter
+    | MethodDeclaration
       | GetAccessorDeclaration
       | SetAccessorDeclaration
       //Konstrucktor
-      | ConstructorDeclaration
+      | ConstructorDeclaration,
+    clsName: string,
+    sigName: string
   ): ParameterResource[] {
     const parameterRessourceArr: ParameterResource[] = [];
-    for (let param of foo.getParameters()) {
-      const myParameter = new TSParameterAnalyzer(param, this.program!);
-      parameterRessourceArr.push(myParameter.paramAnalyzer());
+    try {
+      for (let param of foo.getParameters()) {
+        const myParameter = new TSParameterAnalyzer(param, this.program!);
+        parameterRessourceArr.push(myParameter.paramAnalyzer());
+      }
+    } catch (err) {
+      console.warn(
+        `Error bei Parameteranalye von Klasse ${clsName} at signature of ${sigName}`
+      );
     }
     return parameterRessourceArr;
   }

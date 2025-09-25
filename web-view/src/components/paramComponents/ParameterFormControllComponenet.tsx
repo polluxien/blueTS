@@ -145,7 +145,9 @@ function ParameterFormControllComponent({
     return (
       <Form.Label>
         <strong>{param.paramName}</strong>
-        {param.isOptional && "?"}: {param.typeInfo.typeAsString}
+        {param.isOptional && !param.defaultValue && "?"}:{" "}
+        {param.typeInfo.typeAsString}{" "}
+        {param.defaultValue && ` = ${param.defaultValue}`}
       </Form.Label>
     );
   };

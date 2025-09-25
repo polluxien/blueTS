@@ -1,6 +1,6 @@
 import {
   InstanceParamType,
-  PropInstanceType,
+  CompiledPropInstanceType,
 } from "../../_resources/nodeVMResources";
 import {
   CreateClassInstanceRequestType,
@@ -21,7 +21,7 @@ import { normalizeParam } from "./typeCheckerHelper";
 // ! eventuell hier ehr Map<string, {VM-Objectobject, MorphInstanceAnalyse[] ,PropInstanceType[]}>
 
 //Map<instanceName, [instanceObject, CurrentProps]>
-const instanceMap = new Map<string, [object, PropInstanceType[]]>([]);
+const instanceMap = new Map<string, [object, CompiledPropInstanceType[]]>([]);
 
 export function deleteInstanceInInstanceMap(instanceName: string) {
   instanceMap.delete(instanceName);
@@ -35,7 +35,7 @@ export function clearInstanceMap() {
 export function getInstanceFromInstanceMap(
   instanceName: string,
   getProps: boolean = false
-): object | [object, PropInstanceType[]] {
+): object | [object, CompiledPropInstanceType[]] {
   const tupelValue = instanceMap.get(instanceName);
   if (!tupelValue) {
     throw new Error(`Instance with name ${instanceName} was not found`);
@@ -43,7 +43,7 @@ export function getInstanceFromInstanceMap(
   return getProps ? tupelValue : tupelValue[0];
 }
 
-function setNewProps(instanceName: string, newProps: PropInstanceType[]) {
+function setNewProps(instanceName: string, newProps: CompiledPropInstanceType[]) {
   const tupelValue = instanceMap.get(instanceName);
   if (!tupelValue) {
     throw new Error(`Instance with name ${instanceName} was not found`);
@@ -81,7 +81,7 @@ export async function addInstanceToInstanceMap(
     }
 
     //hole Props
-    const myProps: PropInstanceType[] = await extractClassInstanceProps(
+    const myProps: CompiledPropInstanceType[] = await extractClassInstanceProps(
       instance
     );
     console.log("My Props: ", JSON.stringify(myProps, null, 2));
@@ -115,7 +115,7 @@ export async function compileMethodInClassObject(
     const tupelInstanceValue = getInstanceFromInstanceMap(
       runMethodeInInstanceType.instanceName,
       true
-    ) as [object, PropInstanceType[]];
+    ) as [object, CompiledPropInstanceType[]];
 
     if (!tupelInstanceValue) {
       throw new Error("Instanz nicht gefunden.");
@@ -133,7 +133,7 @@ export async function compileMethodInClassObject(
     const curIns = getInstanceFromInstanceMap(
       runMethodeInInstanceType.instanceName
     );
-    const newProps: PropInstanceType[] = await extractClassInstanceProps(
+    const newProps: CompiledPropInstanceType[] = await extractClassInstanceProps(
       curIns
     );
 

@@ -22,7 +22,7 @@ export type ClassInstanceConstructionRessource = {
 export type InstanceCheckRessource = {
   instanceName: string;
   isValid: boolean;
-  props: PropInstanceType[];
+  props: CompiledPropInstanceType[];
   error: unknown;
 };
 
@@ -86,19 +86,15 @@ export type CompiledRunMethodInInstanceTyp = {
   instanceName: string;
   methodName: string;
   methodKind: "default" | "get" | "set";
-  newProps?: PropInstanceType[];
+  newProps?: CompiledPropInstanceType[];
   isValid: boolean;
   returnValue?: string;
   error?: Error;
 };
 
 //type für interene props von Instanz
-export type PropInstanceType = {
+export type CompiledPropInstanceType = {
   name: string;
   type: string;
   value?: string;
-  specs?: {
-    visibility: "public" | "private" | "protected";
-    isStatic: boolean;
-  };
 };

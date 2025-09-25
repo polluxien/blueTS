@@ -59,12 +59,8 @@ export type RestParamType = {
 };
 
 //type für interene props von Instanz
-export type PropInstanceType = {
+export type CompiledPropInstanceType = {
   name: string;
   type: string;
   value?: string;
-  specs?: {
-    visibility: "public" | "private" | "protected";
-    isStatic: boolean;
-  };
 };

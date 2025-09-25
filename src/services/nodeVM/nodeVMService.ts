@@ -1,6 +1,6 @@
 import fs from "fs";
 import ts from "typescript";
-import { PropInstanceType } from "../../_resources/nodeVMResources";
+import { CompiledPropInstanceType } from "../../_resources/nodeVMResources";
 import {
   CompileErrorResource,
   TsCodeCheckResource,
@@ -149,8 +149,8 @@ export async function createClassInstanceVM(
 
 export async function extractClassInstanceProps(
   instance: any
-): Promise<PropInstanceType[]> {
-  let propTypeArr: PropInstanceType[] = [];
+): Promise<CompiledPropInstanceType[]> {
+  let propTypeArr: CompiledPropInstanceType[] = [];
 
   try {
     // Hole alle props der Instanz
@@ -160,17 +160,6 @@ export async function extractClassInstanceProps(
       try {
         let value: any;
         let type: string;
-
-        // ! visabilility wird nicht richtgig erkannt
-        /*
-        let visibility: "public" | "private" | "protected" = "public";
-
-        // Bestimme Sichtbarkeit anhand des Namens
-        if (propName.startsWith("_")) {
-          visibility = propName.startsWith("__") ? "private" : "protected";
-        } else if (instance[propName]) {
-        }
-        */
 
         // get prop value
         try {
@@ -218,12 +207,6 @@ export async function extractClassInstanceProps(
           name: propName,
           type,
           value: valueStr,
-          /*
-          ? specs: {
-          ?   visibility,
-          ?   isStatic,
-          },
-          */
         });
       } catch {
         propTypeArr.push({ name: propName, type: "unknown" });

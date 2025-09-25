@@ -21,12 +21,18 @@ export class TSParameterAnalyzer {
   ): ParameterResource {
     //hier wieder in vanilla typescript ast auflösen
     const compilerNode = param.compilerNode as ts.ParameterDeclaration;
-    const isOptional = !!compilerNode.questionToken;
+    //ist auch optional wenn es ein default value gibt
+    const isOptional = !!compilerNode.questionToken || param.hasInitializer();
 
     return {
       paramName: param.getName(),
       typeInfo: this.typeAnalyzer(param.getType()),
       isOptional: isOptional,
+
+      // nur setzten wenn vorhanden
+      ...(param.hasInitializer() && {
+        defaultValue: param.getInitializer()?.getText(),
+      }),
 
       //nur setzten wenn rest == true
       ...(param.isRestParameter() && { isRest: true }),

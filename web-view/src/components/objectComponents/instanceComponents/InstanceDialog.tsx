@@ -5,6 +5,8 @@ import { Accordion, Alert, Table } from "react-bootstrap";
 import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.js";
 import InstanceMethodComponent from "./InstanceRunMethodComponent.js";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.js";
+import type { CompiledPropInstanceType } from "../../../ressources/backend/nodeVMResources.js";
+import type { PropertyResource } from "../../../ressources/backend/tsCompilerAPIResources.js";
 
 type InstanceDialogComponentProps = {
   ins: InstanceResource;
@@ -23,6 +25,30 @@ function InstanceDialogComponent({
   methodResults,
   instancesAsParamsMap,
 }: InstanceDialogComponentProps) {
+  const analyzedProps = ins.properties;
+
+  const getPropInfo = (prop: CompiledPropInstanceType) => {
+    const myProp = analyzedProps.find(
+      (p) => prop.name === (p as PropertyResource)!.name
+    );
+
+    if (!myProp) {
+      return <>{`${prop.name}: ${prop.type}`}</>;
+    }
+
+    return (
+      <>
+        {myProp.specs.visibility &&
+          myProp.specs.visibility !== "public" &&
+          myProp.specs.visibility + " "}
+        {myProp.specs.isStatic && "static" + " "}
+        {myProp.specs.isReadonly && "readonly" + " "}
+        <strong>{myProp.name}: </strong>
+        {myProp.type}
+      </>
+    );
+  };
+
   return (
     <Modal show={true} onHide={close} size="lg" centered>
       <Modal.Header closeButton>
@@ -34,7 +60,7 @@ function InstanceDialogComponent({
       <Modal.Body>
         {/* hier werden die Variablen im inspect angezeigt */}
         <h5 className="mt-4 mb-3">Instance Properties</h5>
-        {ins.props && ins.props.length > 0 ? (
+        {ins.compiledProperties && ins.compiledProperties.length > 0 ? (
           <Table
             responsive="sm"
             striped
@@ -52,11 +78,9 @@ function InstanceDialogComponent({
             </thead>
             */}
             <tbody>
-              {ins.props.map((prop, i) => (
+              {ins.compiledProperties.map((prop, i) => (
                 <tr key={i}>
-                  <td>
-                    {prop.name}: {prop.type}{" "}
-                  </td>
+                  <td>{getPropInfo(prop)}</td>
                   <td>{prop.value} </td>
                 </tr>
               ))}

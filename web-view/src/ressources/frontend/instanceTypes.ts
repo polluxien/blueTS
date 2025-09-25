@@ -1,9 +1,10 @@
-import type { PropInstanceType } from "../backend/nodeVMResources";
-import type { MethodResource } from "../backend/tsCompilerAPIResources";
+import type { CompiledPropInstanceType } from "../backend/nodeVMResources";
+import type { MethodResource, PropertyResource } from "../backend/tsCompilerAPIResources";
 
 export type InstanceResource = {
   instanceName: string;
   className: string;
-  props?: PropInstanceType[];
+  properties: PropertyResource[]
+  compiledProperties?: CompiledPropInstanceType[];
   methods: MethodResource[];
 };

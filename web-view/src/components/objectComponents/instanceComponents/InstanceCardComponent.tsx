@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useContext, useState } from "react";
 import InstanceDialogComponent from "./InstanceDialog.tsx";
-import { Info, X } from "react-bootstrap-icons";
+import { Info, Trash } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";
 import { VscodeContext } from "../../../api/vscodeAPIContext.ts";
@@ -24,7 +24,7 @@ function InstanceCardComponent({
   dropInstance,
 }: InstanceCardComponentProps) {
   const vscode = useContext(VscodeContext);
-  
+
   const [instanceDialogOpen, setInstanceDialogOpen] = useState<boolean>(false);
 
   const openDialog = () => setInstanceDialogOpen(true);
@@ -49,7 +49,7 @@ function InstanceCardComponent({
         className="h-100 shadow-sm"
         style={{
           //width: "280px",
-          background: "#cfb98b",
+          background: "#306874",
           borderRadius: "16px",
           border: "none",
           width: "100%",
@@ -58,20 +58,6 @@ function InstanceCardComponent({
         <Card.Body>
           <Card.Title>
             {ins.instanceName}: {ins.className}{" "}
-            <Button
-              onClick={deleteInstance}
-              style={{
-                background: "none",
-                border: "none",
-                color: "white",
-                fontSize: "1.7rem",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-              aria-label="Delete"
-            >
-              <X />
-            </Button>
           </Card.Title>
 
           <Row className="gap-2">
@@ -97,8 +83,38 @@ function InstanceCardComponent({
                 </>
               </Button>
             </Col>
+            <Col>
+              <Button
+                //w-100 = 100% des cols, gap-2 = abstabnd zwischen icon und text
+                className="w-100 d-flex align-items-center justify-content-center gap-2"
+                variant="outline-light"
+                size="sm"
+                style={{
+                  height: "44px",
+                  borderRadius: "12px",
+                  // border: "none",
+                }}
+                //style={baseStyle(hoveredRun)}
+                // onMouseEnter={() => setHoveredRun(true)}
+                //  onMouseLeave={() => setHoveredRun(false)}
+                onClick={deleteInstance}
+              >
+                <>
+                  <Trash className="me-2" />
+                  delete
+                </>
+              </Button>
+            </Col>
           </Row>
         </Card.Body>
+        <Card.Footer
+          style={{
+            border: "none",
+            borderBottomLeftRadius: "16px",
+            borderBottomRightRadius: "16px",
+            background: "#304674",
+          }}
+        ></Card.Footer>
       </Card>
       {instanceDialogOpen && (
         <InstanceDialogComponent

@@ -48,6 +48,7 @@ export type ParameterResource = {
   paramName: string;
   typeInfo: TypeResource;
   isOptional: boolean;
+  defaultValue?: string;
   isRest?: boolean;
 };
 

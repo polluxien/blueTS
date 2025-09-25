@@ -5,13 +5,13 @@ import {
   addInstanceToInstanceMap,
   clearInstanceMap,
 } from "../../services/nodeVM/instanceManager";
-import { PropInstanceType } from "../../_resources/nodeVMResources";
+import { CompiledPropInstanceType } from "../../_resources/nodeVMResources";
 import { CreateClassInstanceRequestType } from "../../_resources/request/objectRequest";
 import { InstanceCheckResponseType } from "../../_resources/response/objectResponse";
 
 describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
   //hier sind die testrelevanten Props abgelegt
-  let propsResultArr: PropInstanceType[];
+  let propsResultArr: CompiledPropInstanceType[];
 
   //erstelle zu anfang aller tests eine neue Instanz
   beforeAll(async () => {

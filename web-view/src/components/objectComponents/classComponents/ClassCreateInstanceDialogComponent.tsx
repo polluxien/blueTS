@@ -42,7 +42,7 @@ function CreateClassInstanceDialogComponent({
     Record<string, ValidationTypeResource>
   >({});
 
-  const classParams = cls.constructorParams;
+  const classParams = cls.constructorParams ?? [];
 
   function handleChange(paramName: string, newFormValue: string) {
     setFormValues((prev) => ({ ...prev, [paramName]: newFormValue }));
@@ -86,6 +86,7 @@ function CreateClassInstanceDialogComponent({
         instanceName,
         className: cls.className,
         methods: cls.methods || [],
+        properties: cls.properties,
       };
       addToInstanceWaitingList(instRes);
       instanceNameSet.current.add(instanceName);
