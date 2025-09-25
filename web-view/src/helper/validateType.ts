@@ -244,6 +244,6 @@ export function validateInstanceName(
   const allowedReg = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
   if (!allowedReg.test(varName)) {
-    return new Error("Not an allowed variable name syntax");
+    return new Error("no valid variable name syntax");
   }
 }

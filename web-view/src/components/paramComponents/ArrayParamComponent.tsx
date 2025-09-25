@@ -76,7 +76,7 @@ function ArrayParameterComponent({
 
   const addToArray = () => setArraySize(arraySize + 1);
   const minToArray = () => {
-    if (arraySize <= 1) return;
+    if (arraySize <= 0) return;
 
     const newSize = arraySize - 1;
     setArraySize(newSize);
@@ -141,7 +141,7 @@ function ArrayParameterComponent({
               +
             </Button>
           </Col>
-          {arraySize > 1 && (
+          {arraySize > 0 && (
             <Col xs="auto">
               <Button variant="outline-danger" onClick={minToArray}>
                 -

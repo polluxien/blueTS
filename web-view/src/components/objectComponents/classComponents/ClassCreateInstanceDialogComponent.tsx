@@ -42,7 +42,7 @@ function CreateClassInstanceDialogComponent({
     Record<string, ValidationTypeResource>
   >({});
 
-  const classVariables = cls.constructor?.parameters || [];
+  const classParams = cls.constructorParams;
 
   function handleChange(paramName: string, newFormValue: string) {
     setFormValues((prev) => ({ ...prev, [paramName]: newFormValue }));
@@ -65,7 +65,7 @@ function CreateClassInstanceDialogComponent({
     event.stopPropagation();
 
     const { newErrors, newParsedValues } = validateSubmit(
-      classVariables,
+      classParams,
       paramValidations,
       formValues
     );
@@ -91,7 +91,7 @@ function CreateClassInstanceDialogComponent({
       instanceNameSet.current.add(instanceName);
 
       //zum Prüfen ans Backend
-      const constructorParameter = classVariables.map((param) => {
+      const constructorParameter = classParams.map((param) => {
         return newParsedValues[param.paramName];
       });
 
@@ -135,15 +135,15 @@ function CreateClassInstanceDialogComponent({
           </FormGroup>{" "}
           {
             <p>
-              new {cls.className + "(" + (classVariables.length > 0 ? "" : ")")}
+              new {cls.className + "(" + (classParams.length > 0 ? "" : ")")}
             </p>
           }
-          {classVariables.length > 0 && (
+          {classParams.length > 0 && (
             <div className="mb-4">
               <Container
                 style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}
               >
-                {classVariables.map((param, index) => (
+                {classParams.map((param, index) => (
                   <Container
                     style={{
                       backgroundColor: "#f7f9fb",
@@ -166,7 +166,7 @@ function CreateClassInstanceDialogComponent({
               </Container>
             </div>
           )}
-          <p>{classVariables.length > 0 ? ")" : ""}</p>
+          <p>{classParams.length > 0 ? ")" : ""}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" type="button" onClick={close}>

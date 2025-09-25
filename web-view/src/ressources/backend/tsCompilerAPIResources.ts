@@ -1,10 +1,10 @@
-import type { TsFileResource } from "./FileResources";
-
 // * Param-Resource Types für Object- als auch Function-View
+
+import type { TsFileResource } from "./FileResources";
 
 export type GenericParamTypeResource = {
   baseType: string;
-  genericArgs?: TypeResource[];
+  genericArgs: TypeResource[];
 };
 
 export type TypeResource = {
@@ -51,13 +51,17 @@ export type ParameterResource = {
   isRest?: boolean;
 };
 
-// * Class-Resource Types für Object View
-
-export type ConstructorResource = {
-  parameters: ParameterResource[];
-  //returnType wird aktuell nicht benutzt
-  //returnType?: string;
+export type PropertyResource = {
+  name: string;
+  type: string;
+  specs: {
+    visibility: "public" | "private" | "protected";
+    isStatic: boolean;
+    isReadonly: boolean;
+  };
 };
+
+// * Class-Resource Types für Object View
 
 export type MethodResource = {
   methodName: string;
@@ -75,8 +79,13 @@ export type MethodResource = {
 export type ClassResource = {
   className: string;
   tsFile: TsFileResource;
-  constructor: ConstructorResource | undefined;
+  constructorParams: ParameterResource[];
   methods: MethodResource[];
+  properties: PropertyResource[];
+  specs: {
+    extendsClass: string | undefined;
+    implementsInterfaces: string[];
+  };
 };
 
 // * Function-Resource Types für Function-View
@@ -87,10 +96,7 @@ export type FunctionResource = {
   parameters: ParameterResource[];
   specs: {
     isDefault: boolean;
-    isExported: boolean;
     isAsync: boolean;
-    //Keine ahnung wie ich das ermitteln soll
-    //isDeclare: boolean;
     functionType:
       | "function-declaration"
       | "arrow-function"
