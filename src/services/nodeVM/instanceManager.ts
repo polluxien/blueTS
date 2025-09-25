@@ -43,7 +43,10 @@ export function getInstanceFromInstanceMap(
   return getProps ? tupelValue : tupelValue[0];
 }
 
-function setNewProps(instanceName: string, newProps: CompiledPropInstanceType[]) {
+function setNewProps(
+  instanceName: string,
+  newProps: CompiledPropInstanceType[]
+) {
   const tupelValue = instanceMap.get(instanceName);
   if (!tupelValue) {
     throw new Error(`Instance with name ${instanceName} was not found`);
@@ -75,19 +78,25 @@ export async function addInstanceToInstanceMap(
 
     console.log("zu übergebene ressource an node-vm: ", myCreateClsInstanceRes);
 
-    const instance = await createClassInstanceVM(myCreateClsInstanceRes);
-    if (!instance) {
+    const { myInstance, collectedLogsArr } = await createClassInstanceVM(
+      myCreateClsInstanceRes
+    );
+
+    if (!myInstance) {
       throw new Error("Instance konnte nicht erstellt werden");
+    }
+    if (collectedLogsArr.length > 0) {
+      result.logs = collectedLogsArr;
     }
 
     //hole Props
     const myProps: CompiledPropInstanceType[] = await extractClassInstanceProps(
-      instance
+      myInstance
     );
     console.log("My Props: ", JSON.stringify(myProps, null, 2));
     result.props = myProps;
 
-    instanceMap.set(createClsInstanceRes.instanceName, [instance, myProps]);
+    instanceMap.set(createClsInstanceRes.instanceName, [myInstance, myProps]);
     result.isValid = true;
   } catch (err) {
     result.error = err as Error | undefined;
@@ -121,10 +130,15 @@ export async function compileMethodInClassObject(
       throw new Error("Instanz nicht gefunden.");
     }
 
-    const result = await compileInstanceMethod(
+    const { result, collectedLogsArr } = await compileInstanceMethod(
       tupelInstanceValue[0],
       runMethodeInInstanceType
     );
+
+    if (collectedLogsArr.length > 0) {
+      compiledResult.logs = collectedLogsArr;
+    }
+    
     compiledResult.isValid = true;
 
     compiledResult.returnValue = parseReturnResult(result);
@@ -133,9 +147,8 @@ export async function compileMethodInClassObject(
     const curIns = getInstanceFromInstanceMap(
       runMethodeInInstanceType.instanceName
     );
-    const newProps: CompiledPropInstanceType[] = await extractClassInstanceProps(
-      curIns
-    );
+    const newProps: CompiledPropInstanceType[] =
+      await extractClassInstanceProps(curIns);
 
     //vergleiche alten props mit aktuellen props und gebe bei bedarf die neuen props mit
     const propsChanged =

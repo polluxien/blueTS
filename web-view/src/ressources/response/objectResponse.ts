@@ -7,6 +7,7 @@ export type InstanceCheckResponseType = {
   isValid: boolean;
   props?: InstancePropType[];
   error?: Error;
+  logs?: string[];
 };
 
 //delete einer instance lediglich name benötigt
@@ -22,9 +23,10 @@ export type CompiledMethodInInstanceResponseTyp = {
   isValid: boolean;
   returnValue?: string;
   error?: Error;
+  logs?: string[];
 };
 
-//wenn file aktualisierung angefordeert wird 
+//wenn file aktualisierung angefordeert wird
 export type RefreshClassesRespondeType = {
   filePath: string;
   clsRes: ClassResource[];

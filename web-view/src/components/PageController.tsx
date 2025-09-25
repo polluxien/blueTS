@@ -78,6 +78,9 @@ function PageController() {
     Map<string, string | Error>
   >(new Map());
 
+  // * Compied Code Logs
+  const [logsAsStringArr, setLogsAsStringArr] = useState<string[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -235,6 +238,10 @@ function PageController() {
     }
     instanceWaitingMap.current.delete(data.instanceName);
 
+    if (data.logs) {
+      setLogsAsStringArr(data.logs);
+    }
+
     //füge props hinzu
     myInstance!.compiledProperties = data.props;
 
@@ -267,6 +274,10 @@ function PageController() {
       `Massage from command has CompiledRunMethodInInstanceTyp: `,
       JSON.stringify(data, null, 2)
     );
+
+    if (data.logs) {
+      setLogsAsStringArr(data.logs);
+    }
 
     //setzte rückgabe an richtige steller
     setMethodResults((prev) => {
@@ -314,6 +325,10 @@ function PageController() {
 
   function handelPostFunctionCheck(data: CompiledFunctionResponseTyp) {
     const myKey = `${data.functionName}_${data.tsFile.path}`;
+
+    if (data.logs) {
+      setLogsAsStringArr(data.logs);
+    }
 
     setFunctionResultsMap((prev) => {
       const myMap = new Map(prev);
@@ -472,7 +487,7 @@ function PageController() {
         <div className="container-fluid h-100">
           <Row className="h-100">
             <Col xs={12}>
-              <ConsoleLogComponent />
+              <ConsoleLogComponent logsAsStringArr={logsAsStringArr} />
             </Col>
           </Row>
         </div>

@@ -15,35 +15,73 @@ import {
 
 const vm = require("node:vm");
 
+//für alle Operationen einheitliches collectedLogsArr
+const collectedLogsArr: string[] = [];
+
+const setConsoleLogTxt = (logType: string, ...args: any[]) => {
+  const txt = `${new Date().toLocaleTimeString()} • ${
+    logType !== "DEFAULT" ? logType + ": " : ""
+  } ${args.join(" ")}`;
+
+  collectedLogsArr.push(txt);
+};
+
 //context für node-vm
 // ? Module können nicht doppelt vorkommen im gleichen context
-function createNewContext() {
+const createNewContext = () => {
   return {
     //fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
     //...globalThis,
 
-    //debugging
-    console,
+    // ? logging
+    /**
+     * https://stackoverflow.com/questions/12805125/access-logs-from-console-log-in-node-js-vm-module
+     * log, warn und error werden überschrieben innerhalb des vm-context
+     */
+    console: {
+      log: (...args: any[]) => {
+        setConsoleLogTxt("DEFAULT", args);
+      },
+      warn: (...args: any[]) => setConsoleLogTxt("WARN", args),
+      error: (...args: any[]) => setConsoleLogTxt("ERROR", args),
+    },
 
-    //hole alle module
+    // ? hole alle module
     exports: {},
     module: { exports: {} },
     require: require,
 
-    //für async functions
+    // ? für async functions
     Promise: Promise,
 
-    //für  Timer functions
+    // ? für  Timer functions
     setTimeout: setTimeout,
     clearTimeout: clearTimeout,
     setInterval: setInterval,
     clearInterval: clearInterval,
 
-    //global object
+    // ? global object
     global: {},
   };
+};
+
+function compileTS(filePath: string): string {
+  const tsCode = fs.readFileSync(filePath, { encoding: "utf8" });
+  return ts.transpileModule(tsCode, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS },
+  }).outputText;
 }
 
+function runInVM(jsCode: string, timeout = 5000) {
+  const context = createNewContext();
+  vm.createContext(context);
+  return vm.runInContext(jsCode, context, { timeout });
+}
+
+/**
+ * es ist mir leider nicht möglich spezifische teile (KLassen, Funktionen, Module) zu testen
+ * ganze Datei -> immer als einheit kompiliert
+ */
 export async function checkTsCode(
   filePath: string
 ): Promise<TsCodeCheckResource> {
@@ -54,11 +92,7 @@ export async function checkTsCode(
       encoding: "utf8",
     });
 
-    /**
-     * es ist mir leider nicht möglich spezifische teile (KLassen, Funktionen, Module) zu testen
-     * ganze Datei -> immer als einheit kompiliert
-     */
-    // Syntaxcheck
+    // * Syntax check
     const transpiled = ts.transpileModule(tsCode, {
       compilerOptions: {
         module: ts.ModuleKind.CommonJS,
@@ -86,7 +120,7 @@ export async function checkTsCode(
       }
     }
 
-    // Laufzeit-Check
+    // * Laufzeit-Check
     try {
       const script = new vm.Script(transpiled.outputText, {
         filePath: filePath,
@@ -104,32 +138,17 @@ export async function checkTsCode(
 
 export async function createClassInstanceVM(
   createClsInstanceRes: CreateClassInstanceRequestType
-): Promise<object> {
+): Promise<{ myInstance: object; collectedLogsArr: string[] }> {
   try {
-    //code einlesen
-    const tsCode = fs.readFileSync(createClsInstanceRes.tsFile.path, {
-      encoding: "utf8",
-    });
-    //code zu js kompilieren
-    const transpiled = ts.transpileModule(tsCode, {
-      compilerOptions: {
-        module: ts.ModuleKind.CommonJS,
-        //für moderne JS-Feature
-        //target: ts.ScriptTarget.ES2020,
-      },
-    });
-    const jsCode = transpiled.outputText;
+    //transpiliere
+    const jsCode = compileTS(createClsInstanceRes.tsFile.path);
 
     //erstelle context
-    const context = createNewContext();
-    vm.createContext(context);
-    vm.runInContext(jsCode, context, {
-      timeout: 5000, // nach 5 Sekunden Timeout für code
-    });
+    const runningContext = runInVM(jsCode);
 
     //finde und identifiziere KLasse
     const classConstructor = identifyClassOrFunction(
-      context,
+      runningContext,
       createClsInstanceRes.className
     );
 
@@ -140,7 +159,7 @@ export async function createClassInstanceVM(
         : [])
     );
 
-    return myInstance;
+    return { myInstance, collectedLogsArr };
   } catch (err: any) {
     console.warn(err.message ? err.message : "Error: " + err);
     throw err;
@@ -174,6 +193,7 @@ export async function extractClassInstanceProps(
         }
 
         // Bestimme Typ
+        // das funktioniert nur sehr oberflächlich nach transpilierung
         if (typeof value === "function") {
           // ! skippe eventuell function
           type = "function";
@@ -221,7 +241,7 @@ export async function extractClassInstanceProps(
 export async function compileInstanceMethod(
   instance: any,
   runMethodeInInstanceType: RunMethodInInstanceRequestType
-): Promise<unknown> {
+): Promise<{ result: unknown; collectedLogsArr: string[] }> {
   const { methodName, params } = runMethodeInInstanceType;
   const { isAsync, methodKind } = runMethodeInInstanceType.specs;
   let result: unknown;
@@ -234,7 +254,7 @@ export async function compileInstanceMethod(
 
       //ich schaue noch nicht ob set exestiert
       instance[methodName] = params[0];
-      return undefined;
+      return { result: undefined, collectedLogsArr };
     } else if (methodKind === "get") {
       if (params.length !== 0) {
         throw new Error(`Getter '${methodName}' benötigt keine Parameter`);
@@ -242,7 +262,7 @@ export async function compileInstanceMethod(
 
       //ich schaue noch nicht ob get exestiert
       result = instance[methodName];
-      return result;
+      return { result, collectedLogsArr };
     } else {
       const method = instance[methodName];
 
@@ -259,7 +279,7 @@ export async function compileInstanceMethod(
         : method.apply(instance, params);
     }
 
-    return result;
+    return { result, collectedLogsArr };
   } catch (err) {
     throw err;
   }
@@ -276,11 +296,12 @@ export type RunFunctionType = {
 
 export type CompiledFunctionTyp = {
   functionName: string;
+  tsFile: TsFileResource;
   isValid: boolean;
   returnValue?: string;
   error?: Error;
+  logs?: string[];
   //unique über functionName + tsFile.path
-  tsFile: TsFileResource;
 };
 
 export async function compileFunction(
@@ -294,28 +315,13 @@ export async function compileFunction(
   let result: unknown;
 
   try {
-    //code einlesen
-    const tsCode = fs.readFileSync(runFunctionType.tsFile.path, {
-      encoding: "utf8",
-    });
-    //code zu js kompilieren
-    const transpiled = ts.transpileModule(tsCode, {
-      compilerOptions: {
-        module: ts.ModuleKind.CommonJS,
-        //für moderne JS-Feature
-        //target: ts.ScriptTarget.ES2020,
-      },
-    });
-    const jsCode = transpiled.outputText;
-    //erstelle context
-    const context = createNewContext();
-    vm.createContext(context);
-    vm.runInContext(jsCode, context, {
-      timeout: 5000, // nach 5 Sekunden Timeout für code
-      displayErrors: true,
-    });
+    //transpiliere
+    const jsCode = compileTS(runFunctionType.tsFile.path);
 
-    const func = identifyClassOrFunction(context, functionName);
+    //erstelle context
+    const runningContext = runInVM(jsCode);
+
+    const func = identifyClassOrFunction(runningContext, functionName);
 
     if (!func) {
       throw new Error(
@@ -334,6 +340,7 @@ export async function compileFunction(
       isValid: true,
       returnValue: parseReturnResult(result),
       tsFile: runFunctionType.tsFile,
+      ...(collectedLogsArr.length > 0 && { logs: collectedLogsArr }),
     };
   } catch (err) {
     return {
@@ -341,6 +348,7 @@ export async function compileFunction(
       isValid: false,
       error: err instanceof Error ? err : new Error(String(err)),
       tsFile: runFunctionType.tsFile,
+      ...(collectedLogsArr.length > 0 && { logs: collectedLogsArr }),
     };
   }
 }
@@ -348,7 +356,7 @@ export async function compileFunction(
 function identifyClassOrFunction(context: any, modulName: string) {
   //Klasse/Function von typ function da js sie so wertet
 
-  //nicht exportierte Klasse
+  //nicht exportierte Klassen/Function
   if (context[modulName] && typeof context[modulName] === "function") {
     return context[modulName];
   }

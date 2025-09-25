@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { List, Trash } from "react-bootstrap-icons";
 
-function ConsoleLogComponent() {
+function ConsoleLogComponent({
+  logsAsStringArr,
+}: {
+  logsAsStringArr: string[];
+}) {
   const [logs, setLogs] = useState<string[]>([]);
 
   const addLog = (message: string) => {
@@ -12,6 +16,12 @@ function ConsoleLogComponent() {
   const clearLog = () => {
     setLogs([]);
   };
+
+  useEffect(() => {
+    if (logsAsStringArr && logsAsStringArr.length > 0) {
+      setLogs(logsAsStringArr); 
+    }
+  }, [logsAsStringArr]);
 
   return (
     <>
