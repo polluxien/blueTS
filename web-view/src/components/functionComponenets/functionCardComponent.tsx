@@ -147,7 +147,7 @@ function FunctionCardComponent({
       {errorDialogOpen && tsCodeValidation && !isValid && (
         <CompilerErrorModalComponent
           close={closeErrorDialog}
-          tsFile={func.tsFile}
+          tsFileRes={func.tsFile}
           compilerErrs={tsCodeValidation.errors}
         ></CompilerErrorModalComponent>
       )}

@@ -3,7 +3,7 @@
     "module": "CommonJS",
     "esModuleInterop": true,
     "target": "ES2022",
-    "outDir": "dist",
+    "outDir": "out",
     "lib": ["ES2022", "DOM"],
     "sourceMap": true,
     "rootDir": "src",
@@ -16,5 +16,5 @@
     // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
     // "noUnusedParameters": true,  /* Report errors on unused parameters. */
   },
-  "include": ["src/**/*", "resources"]
+  "include": ["src/**/*"]
 }

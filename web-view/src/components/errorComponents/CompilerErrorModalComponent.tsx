@@ -5,13 +5,13 @@ import type { CompileErrorResource } from "../../ressources/classRessources";
 
 type CompilerErrorModalComponentType = {
   close: () => void;
-  tsFile: TsFileResource;
+  tsFileRes: TsFileResource;
   compilerErrs: CompileErrorResource[];
 };
 
 function CompilerErrorModalComponent({
   close,
-  tsFile,
+  tsFileRes: tsFile,
   compilerErrs,
 }: CompilerErrorModalComponentType) {
   return (

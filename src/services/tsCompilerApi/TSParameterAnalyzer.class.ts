@@ -193,6 +193,7 @@ export class TSParameterAnalyzer {
     }
 
     //* generic type
+
     if (
       type.getTypeArguments().length > 0 ||
       //überprüfe Alias hat TypeArguments --> Record
