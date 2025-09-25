@@ -12,6 +12,7 @@ import ParameterFormControllComponent from "../../paramComponents/ParameterFormC
 import type { ClassResource } from "../../../ressources/backend/tsCompilerAPIResources.ts";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";
 import { VscodeContext } from "../../../api/vscodeAPIContext.ts";
+import { validateInstanceName } from "../../../helper/validateType.ts";
 
 type CreateClassInstanceDialogComponentProps = {
   cls: ClassResource;
@@ -29,7 +30,7 @@ function CreateClassInstanceDialogComponent({
   instancesAsParamsMap,
 }: CreateClassInstanceDialogComponentProps) {
   const vscode = useContext(VscodeContext);
-  
+
   const [validated, setValidated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, Error>>({});
 
@@ -59,7 +60,7 @@ function CreateClassInstanceDialogComponent({
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     console.log("submit pressed");
-    
+
     event.preventDefault();
     event.stopPropagation();
 
@@ -71,13 +72,9 @@ function CreateClassInstanceDialogComponent({
 
     //externe InstanceName Überprüfung
     const instanceName = formValues["__instanceName"];
-    if (!instanceName) {
-      newErrors["__instanceName"] = new Error("name for instance is required");
-    }
-    if (instanceNameSet.current.has(instanceName)) {
-      newErrors["__instanceName"] = new Error(
-        "name for instance is allready used"
-      );
+    const err = validateInstanceName(instanceName, instanceNameSet.current);
+    if (err) {
+      newErrors["__instanceName"] = err;
     }
 
     setErrors(newErrors);

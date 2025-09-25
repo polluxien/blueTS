@@ -38,6 +38,11 @@ export function validateFormControllType(
           (formValue.startsWith("`") && formValue.endsWith("`")) ||
           (formValue.startsWith("'") && formValue.endsWith("'")))
       ) {
+        if (formValue.length > 100) {
+          return {
+            err: new Error("string can't be longer than 100 characters"),
+          };
+        }
         const stripped = formValue.slice(1, -1);
         return { parsedValue: stripped };
       }
@@ -146,7 +151,7 @@ export function validateFormControllType(
     return { parsedValue: { specialLockedType: "null" } };
   }
 
-  //never kann niemal vorkommen -> keine auswahl erlaubt -> übergebe nur err
+  //never kann niemals vorkommen -> keine auswahl erlaubt -> übergebe nur err
   if (typeRes.typeAsString === "never") {
     return { err: new Error("never can't be used !") };
   }
@@ -209,10 +214,36 @@ function parseDynamicValue(formValue: string): ValidationResult {
       (trimmed.startsWith("'") && trimmed.endsWith("'")) ||
       (trimmed.startsWith("`") && trimmed.endsWith("`")))
   ) {
+    if (trimmed.length > 100) {
+      return { err: new Error("string can't be longer than 100 characters") };
+    }
     result = trimmed.slice(1, -1);
   }
   if (!result) {
     return { err: new Error("no suitable type") };
   }
-  return {};
+  return result;
+}
+
+export function validateInstanceName(
+  varName: string,
+  taken: Set<string>
+): Error | undefined {
+  if (!varName) {
+    return new Error("Name for instance is required");
+  }
+
+  if (varName.length > 30) {
+    return new Error("Name for instance can't be longer than 30 characters");
+  }
+
+  if (taken.has(varName)) {
+    return new Error(" name for instance is allready used");
+  }
+
+  const allowedReg = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+
+  if (!allowedReg.test(varName)) {
+    return new Error("Not an allowed variable name syntax");
+  }
 }
