@@ -208,7 +208,7 @@ function PageController() {
       for (const func of data) {
         const path = func.tsFile.path;
 
-        // nach existierende Klassen für diesen Pfad prüfen
+        // nach existierende Functions für diesen Pfad prüfen
         const map = newMap.get(path) ?? [];
 
         // neue Klasse hinzufügen
@@ -396,7 +396,7 @@ function PageController() {
   return (
     <div style={{ width: "100%" }}>
       {/* Directory settings */}
-      <div className="mb-3">
+      <div className="mb-3 mt-3">
         <DirectorySettingsComponent
           currentDirectoryRes={currentDirectoryRes}
         ></DirectorySettingsComponent>
@@ -406,7 +406,7 @@ function PageController() {
       <div className="d-flex align-items-center gap-3 mb-3">
         <span
           className={`fw-bold ${
-            viewMode === "object" ? "text-primary" : "text-muted"
+            viewMode === "object" ? "text-dark" : "text-muted"
           }`}
         >
           Object
@@ -417,7 +417,8 @@ function PageController() {
             setViewMode(viewMode === "object" ? "function" : "object")
           }
           checked={viewMode === "function"}
-          onColor="#304674"
+          onColor="#C7751D"
+          offColor="#304674"
           onHandleColor="#ffffff"
           handleDiameter={24}
           uncheckedIcon={false}
@@ -429,7 +430,7 @@ function PageController() {
         />
         <span
           className={`fw-bold ${
-            viewMode === "function" ? "text-primary" : "text-muted"
+            viewMode === "function" ? "text-dark" : "text-muted"
           }`}
         >
           Function
