@@ -8,7 +8,7 @@ describe("Error Handling und Edge Cases", () => {
     const res: ClassResource[] = myAnalyser.parse();
 
     console.log(JSON);
-    expect(JSON.stringify(res[0].constructor!.parameters[0])).toContain(
+    expect(JSON.stringify(res[0].constructorParams![0])).toContain(
       "recursive-reference"
     );
   });

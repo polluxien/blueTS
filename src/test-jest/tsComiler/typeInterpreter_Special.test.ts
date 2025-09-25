@@ -15,7 +15,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: any", () => {
@@ -30,7 +30,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: unknown", () => {
@@ -45,7 +45,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: symbol", () => {
@@ -60,7 +60,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: undefined", () => {
@@ -75,7 +75,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: null", () => {
@@ -90,6 +90,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> WEIRD", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 });

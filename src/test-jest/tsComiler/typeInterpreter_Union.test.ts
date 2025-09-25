@@ -21,7 +21,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
+    expect(res[0].constructorParams![0]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: number | boolean", () => {
@@ -37,7 +37,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
+    expect(res[0].constructorParams![1]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: string | string[]", () => {
@@ -57,7 +57,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
+    expect(res[0].constructorParams![2]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: string[] | [number, number]", () => {
@@ -84,9 +84,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    console.log(JSON.stringify(res[0].constructor!.parameters[3]));
+    console.log(JSON.stringify(res[0].constructorParams![3]));
 
-    expect(res[0].constructor!.parameters[3]).toEqual(expectedParam);
+    expect(res[0].constructorParams![3]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: { name: string } | null", () => {
@@ -115,9 +115,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    console.log(JSON.stringify(res[0].constructor!.parameters[4]));
+    console.log(JSON.stringify(res[0].constructorParams![4]));
 
-    expect(res[0].constructor!.parameters[4]).toEqual(expectedParam);
+    expect(res[0].constructorParams![4]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: 'start' | 'stop' | boolean", () => {
@@ -142,7 +142,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[5]).toEqual(expectedParam);
+    expect(res[0].constructorParams![5]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: string | (() => void)", () => {
@@ -171,7 +171,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[6]).toEqual(expectedParam);
+    expect(res[0].constructorParams![6]).toEqual(expectedParam);
   });
 
   // ! erkennt kein null oder undefined
@@ -191,6 +191,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[7]).toEqual(expectedParam);
+    expect(res[0].constructorParams![7]).toEqual(expectedParam);
   });
 });

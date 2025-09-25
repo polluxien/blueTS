@@ -17,7 +17,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: number", () => {
@@ -32,7 +32,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: boolean", () => {
@@ -47,6 +47,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> BASIC", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 });

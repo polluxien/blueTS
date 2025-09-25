@@ -16,7 +16,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> ENUM", () =
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters).toContainEqual(expectedParam);
+    expect(res[0].constructorParams!).toContainEqual(expectedParam);
   });
 });
 

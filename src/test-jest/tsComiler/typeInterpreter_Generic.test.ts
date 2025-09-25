@@ -16,7 +16,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       },
       isOptional: false,
     };
-    expect(res[1].constructor!.parameters[0]).toEqual(expectedParam);
+    expect(res[1].constructorParams![0]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Promise<number>", () => {
@@ -34,7 +34,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       },
       isOptional: false,
     };
-    expect(res[1].constructor!.parameters[1]).toEqual(expectedParam);
+    expect(res[1].constructorParams![1]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Map<string, number>", () => {
@@ -53,7 +53,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       },
       isOptional: false,
     };
-    expect(res[1].constructor!.parameters[2]).toEqual(expectedParam);
+    expect(res[1].constructorParams![2]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Set<User> (mit custom type)", () => {
@@ -69,7 +69,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       },
       isOptional: false,
     };
-    expect(res[1].constructor!.parameters[3]).toEqual(expectedParam);
+    expect(res[1].constructorParams![3]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Promise<Array<string>>", () => {
@@ -94,7 +94,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       },
       isOptional: false,
     };
-    expect(res[1].constructor!.parameters[4]).toEqual(expectedParam);
+    expect(res[1].constructorParams![4]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Record<string, User>", () => {
@@ -113,6 +113,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> GENERIC", (
       },
       isOptional: false,
     };
-    expect(res[1].constructor!.parameters[5]).toEqual(expectedParam);
+    expect(res[1].constructorParams![5]).toEqual(expectedParam);
   });
 });

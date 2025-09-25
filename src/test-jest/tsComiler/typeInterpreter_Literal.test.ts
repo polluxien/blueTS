@@ -16,7 +16,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
+    expect(res[0].constructorParams![0]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: 42 (number literal)", () => {
@@ -29,7 +29,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
+    expect(res[0].constructorParams![1]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: true (boolean literal)", () => {
@@ -42,7 +42,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
+    expect(res[0].constructorParams![2]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: 123n (bigint literal)", () => {
@@ -55,6 +55,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> LITERAL", (
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[3]).toEqual(expectedParam);
+    expect(res[0].constructorParams![3]).toEqual(expectedParam);
   });
 });

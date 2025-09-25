@@ -19,7 +19,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
+    expect(res[0].constructorParams![0]).toEqual(expectedParam);
   });
 
   // ! erkennt keine optional types
@@ -41,9 +41,9 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
       },
       isOptional: false,
     };
-    console.log(JSON.stringify(res[0].constructor!.parameters[1]), null, 2);
+    console.log(JSON.stringify(res[0].constructorParams![1]), null, 2);
 
-    expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
+    expect(res[0].constructorParams![1]).toEqual(expectedParam);
   });
 
   // ! erkennt keine rest types
@@ -64,7 +64,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> TUPLE", () 
       },
       isOptional: false,
     };
-    console.log(JSON.stringify(res[0].constructor!.parameters[2]), null, 2);
-    expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
+    console.log(JSON.stringify(res[0].constructorParams![2]), null, 2);
+    expect(res[0].constructorParams![2]).toEqual(expectedParam);
   });
 });

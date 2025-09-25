@@ -54,7 +54,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
+    expect(res[0].constructorParams![0]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: { name: string } & { age: number } & { email: string }", () => {
@@ -102,6 +102,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> INTERSECTIO
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
+    expect(res[0].constructorParams![1]).toEqual(expectedParam);
   });
 });

@@ -27,7 +27,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[0]).toEqual(expectedParam);
+    expect(res[0].constructorParams![0]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: { name: string; age?: number; tags: string[] }", () => {
@@ -60,7 +60,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[1]).toEqual(expectedParam);
+    expect(res[0].constructorParams![1]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: nested object", () => {
@@ -110,7 +110,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[2]).toEqual(expectedParam);
+    expect(res[0].constructorParams![2]).toEqual(expectedParam);
   });
 
   test("erkenne Eingabeparameter: Record<string, any>", () => {
@@ -123,12 +123,12 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> OBJECT", ()
           baseType: "Record",
           genericArgs: [
             { typeAsString: "string", paramType: "primitive-basic" },
-            { typeAsString: "any", paramType: "any" },
+            { typeAsString: "any", paramType: "special" },
           ],
         },
       },
       isOptional: false,
     };
-    expect(res[0].constructor!.parameters[3]).toEqual(expectedParam);
+    expect(res[0].constructorParams![3]).toEqual(expectedParam);
   });
 });

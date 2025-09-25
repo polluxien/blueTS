@@ -559,9 +559,10 @@ export class TSParameterAnalyzer {
       paramType: "generic",
       genericRes: {
         baseType,
-        genericArgs: typeArgs.map((arg: Type<ts.Type>) =>
-          this.typeAnalyzer(arg, depth, visited)
-        ),
+        genericArgs:
+          typeArgs.map((arg: Type<ts.Type>) =>
+            this.typeAnalyzer(arg, depth, visited)
+          ) ?? [],
       },
     };
   }

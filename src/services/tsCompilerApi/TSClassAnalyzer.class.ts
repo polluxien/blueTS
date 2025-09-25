@@ -14,9 +14,9 @@ import {
 import { TsFileResource } from "../../_resources/FileResources";
 import {
   ClassResource,
-  ConstructorResource,
   MethodResource,
   ParameterResource,
+  PropertyResource,
 } from "../../_resources/tsCompilerAPIResources";
 
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
@@ -44,27 +44,20 @@ export class TSClassAnalyzer {
         const myClass: ClassResource = {
           className: cls.getName()!,
           tsFile: this.tsFile,
-          constructor: this.extractConstructors(cls),
+          constructorParams:
+            this.extractParameters(cls.getConstructors()[0]) ?? [],
           methods: this.extractMethodes(cls),
+          properties: this.extractProperties(cls),
+          specs: {
+            extendsClass: cls.getExtends()?.getText(),
+            implementsInterfaces:
+              cls.getImplements().map((impl) => impl.getText()) ?? [],
+          },
         };
         this.classResourceArr.push(myClass);
       }
     }
     return this.classResourceArr;
-  }
-
-  private extractConstructors(
-    cls: ClassDeclaration
-  ): ConstructorResource | undefined {
-    if (!cls.getConstructors()[0]) {
-      return undefined;
-    }
-    const myConstructor: ConstructorResource = {
-      //typescript klassisches überladen nicht möglich, nur mit signaturen
-      parameters: this.extractParameters(cls.getConstructors()[0]),
-    };
-
-    return myConstructor;
   }
 
   private extractMethodes(cls: ClassDeclaration): MethodResource[] {
@@ -120,9 +113,38 @@ export class TSClassAnalyzer {
     };
   }
 
+  private extractProperties(cls: ClassDeclaration): PropertyResource[] {
+    const propertyResourceArr: PropertyResource[] = [];
+
+    for (let prop of cls.getProperties()) {
+      // Sichtbarkeit bestimmen
+      let visibility: "public" | "private" | "protected" = "public";
+      if (prop.hasModifier(SyntaxKind.PrivateKeyword)) {
+        visibility = "private";
+      } else if (prop.hasModifier(SyntaxKind.ProtectedKeyword)) {
+        visibility = "protected";
+      }
+
+      const property: PropertyResource = {
+        name: prop.getName(),
+        type: prop.getType().getText(),
+        specs: {
+          visibility,
+          isStatic: prop.isStatic(),
+          isReadonly: prop.isReadonly(),
+        },
+      };
+
+      propertyResourceArr.push(property);
+    }
+
+    return propertyResourceArr;
+  }
+
   private extractParameters(
-    foo: //Methoden alg. u. getter und setter
-    | MethodDeclaration
+    foo: 
+      //Methoden algemein, getter und setter
+      | MethodDeclaration
       | GetAccessorDeclaration
       | SetAccessorDeclaration
       //Konstrucktor
