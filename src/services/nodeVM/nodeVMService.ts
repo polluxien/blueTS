@@ -12,6 +12,8 @@ import {
   CreateClassInstanceRequestType,
   RunMethodInInstanceRequestType,
 } from "../../_resources/request/objectRequest";
+import { CompiledFunctionResponseTyp } from "../../_resources/response/functionResponse";
+import { RunFunctionRequestType } from "../../_resources/request/functionRequest";
 
 /**
  * https://nodejs.org/api/vm.html
@@ -20,12 +22,12 @@ import {
 const vm = require("node:vm");
 
 //für alle Operationen einheitliches collectedLogsArr
-const collectedLogsArr: string[] = [];
+let collectedLogsArr: string[];
 
 const setConsoleLogTxt = (logType: string, ...args: any[]) => {
-  const txt = `${new Date().toLocaleTimeString()} • ${
-    logType !== "DEFAULT" ? logType + ": " : ""
-  } ${args.join(" ")}`;
+  const txt = `${new Date().toLocaleTimeString()} • ${logType}: ${args.join(
+    " "
+  )}`;
 
   collectedLogsArr.push(txt);
 };
@@ -44,7 +46,7 @@ const createNewContext = () => {
      */
     console: {
       log: (...args: any[]) => {
-        setConsoleLogTxt("DEFAULT", ...args);
+        setConsoleLogTxt("LOG", ...args);
       },
       warn: (...args: any[]) => setConsoleLogTxt("WARN", ...args),
       error: (...args: any[]) => setConsoleLogTxt("ERROR", ...args),
@@ -77,10 +79,12 @@ function compileTS(filePath: string): string {
 }
 
 function runInVM(jsCode: string, timeout = 5000) {
+  collectedLogsArr = [];
+
   const context = createNewContext();
   vm.createContext(context);
   vm.runInContext(jsCode, context, { timeout });
-  
+
   return context;
 }
 
@@ -291,28 +295,9 @@ export async function compileInstanceMethod(
   }
 }
 
-export type RunFunctionType = {
-  functionName: string;
-  params: unknown[];
-  specs: {
-    isAsync: boolean;
-  };
-  tsFile: TsFileResource;
-};
-
-export type CompiledFunctionTyp = {
-  functionName: string;
-  tsFile: TsFileResource;
-  isValid: boolean;
-  returnValue?: string;
-  error?: Error;
-  logs?: string[];
-  //unique über functionName + tsFile.path
-};
-
 export async function compileFunction(
-  runFunctionType: RunFunctionType
-): Promise<CompiledFunctionTyp> {
+  runFunctionType: RunFunctionRequestType
+): Promise<CompiledFunctionResponseTyp> {
   // params parsen wenn nötig
   runFunctionType.params = runFunctionType.params.flatMap(normalizeParam);
 

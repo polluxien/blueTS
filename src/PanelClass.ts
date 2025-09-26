@@ -227,7 +227,10 @@ export class Panel {
             // ? Function
             case "runFunction": {
               const messageData = await compileFunction(curMessage.data);
-              console.log("Sende FunctionCheckRes zurück: ", messageData);
+              console.log(
+                "Sende FunctionCheckRes zurück: ",
+                JSON.stringify(messageData, null, 2)
+              );
               this.postMessage({
                 command: "postFunctionCheck",
                 data: messageData,

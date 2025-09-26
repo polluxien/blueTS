@@ -238,8 +238,8 @@ function PageController() {
     }
     instanceWaitingMap.current.delete(data.instanceName);
 
-    if (data.logs) {
-      setLogsAsStringArr(data.logs);
+    if (data.logs && data.logs.length > 0) {
+      setLogsAsStringArr((prev) => [...prev, ...data.logs!]);
     }
 
     //füge props hinzu
@@ -275,8 +275,8 @@ function PageController() {
       JSON.stringify(data, null, 2)
     );
 
-    if (data.logs) {
-      setLogsAsStringArr(data.logs);
+    if (data.logs && data.logs.length > 0) {
+      setLogsAsStringArr((prev) => [...prev, ...data.logs!]);
     }
 
     //setzte rückgabe an richtige steller
@@ -326,8 +326,8 @@ function PageController() {
   function handelPostFunctionCheck(data: CompiledFunctionResponseTyp) {
     const myKey = `${data.functionName}_${data.tsFile.path}`;
 
-    if (data.logs) {
-      setLogsAsStringArr(data.logs);
+    if (data.logs && data.logs.length > 0) {
+      setLogsAsStringArr((prev) => [...prev, ...data.logs!]);
     }
 
     setFunctionResultsMap((prev) => {

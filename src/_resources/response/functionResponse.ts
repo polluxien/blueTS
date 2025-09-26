@@ -1,14 +1,14 @@
 import { TsFileResource } from "../FileResources";
 import { FunctionResource } from "../tsCompilerAPIResources";
 
-
 export type CompiledFunctionResponseTyp = {
+  //unique über functionName + tsFile.path
   functionName: string;
+  tsFile: TsFileResource;
   isValid: boolean;
   returnValue?: string;
   error?: Error;
-  //unique über functionName + tsFile.path
-  tsFile: TsFileResource;
+  logs?: string[]
 };
 
 //wenn file aktualisierung angefordeert wird
