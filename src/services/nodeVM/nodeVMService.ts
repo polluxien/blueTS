@@ -13,6 +13,10 @@ import {
   RunMethodInInstanceRequestType,
 } from "../../_resources/request/objectRequest";
 
+/**
+ * https://nodejs.org/api/vm.html
+ * node VM-Doku
+ */
 const vm = require("node:vm");
 
 //für alle Operationen einheitliches collectedLogsArr
@@ -30,8 +34,8 @@ const setConsoleLogTxt = (logType: string, ...args: any[]) => {
 // ? Module können nicht doppelt vorkommen im gleichen context
 const createNewContext = () => {
   return {
-    //fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
-    //...globalThis,
+    // fügt alle verfügbaren apis den context hinzu, nicht besonders sicher
+    // ...globalThis,
 
     // ? logging
     /**
@@ -40,10 +44,10 @@ const createNewContext = () => {
      */
     console: {
       log: (...args: any[]) => {
-        setConsoleLogTxt("DEFAULT", args);
+        setConsoleLogTxt("DEFAULT", ...args);
       },
-      warn: (...args: any[]) => setConsoleLogTxt("WARN", args),
-      error: (...args: any[]) => setConsoleLogTxt("ERROR", args),
+      warn: (...args: any[]) => setConsoleLogTxt("WARN", ...args),
+      error: (...args: any[]) => setConsoleLogTxt("ERROR", ...args),
     },
 
     // ? hole alle module
@@ -75,7 +79,9 @@ function compileTS(filePath: string): string {
 function runInVM(jsCode: string, timeout = 5000) {
   const context = createNewContext();
   vm.createContext(context);
-  return vm.runInContext(jsCode, context, { timeout });
+  vm.runInContext(jsCode, context, { timeout });
+  
+  return context;
 }
 
 /**
@@ -173,7 +179,7 @@ export async function extractClassInstanceProps(
 
   try {
     // Hole alle props der Instanz
-    const instanceProps = Object.getOwnPropertyNames(instance);
+    const instanceProps = Object.getOwnPropertyNames(instance) ?? [];
 
     for (let propName of instanceProps) {
       try {

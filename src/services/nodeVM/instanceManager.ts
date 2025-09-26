@@ -94,7 +94,7 @@ export async function addInstanceToInstanceMap(
       myInstance
     );
     console.log("My Props: ", JSON.stringify(myProps, null, 2));
-    result.props = myProps;
+    result.props = myProps ?? [];
 
     instanceMap.set(createClsInstanceRes.instanceName, [myInstance, myProps]);
     result.isValid = true;
@@ -138,7 +138,7 @@ export async function compileMethodInClassObject(
     if (collectedLogsArr.length > 0) {
       compiledResult.logs = collectedLogsArr;
     }
-    
+
     compiledResult.isValid = true;
 
     compiledResult.returnValue = parseReturnResult(result);
