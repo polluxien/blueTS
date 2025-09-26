@@ -94,7 +94,7 @@ export async function addInstanceToInstanceMap(
       myInstance
     );
     console.log("My Props: ", JSON.stringify(myProps, null, 2));
-    result.props = myProps ?? [];
+    result.props = myProps;
 
     instanceMap.set(createClsInstanceRes.instanceName, [myInstance, myProps]);
     result.isValid = true;
@@ -141,7 +141,7 @@ export async function compileMethodInClassObject(
 
     compiledResult.isValid = true;
 
-    compiledResult.returnValue = parseReturnResult(result);
+    compiledResult.returnValue = result as string;
 
     //hole aktuelle instance
     const curIns = getInstanceFromInstanceMap(

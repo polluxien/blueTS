@@ -287,9 +287,10 @@ export async function compileInstanceMethod(
       result = isAsync
         ? await method.apply(instance, params)
         : method.apply(instance, params);
-    }
 
-    return { result, collectedLogsArr };
+      const { parsedValue } = parseReturnResult(result);
+      return { result: parsedValue, collectedLogsArr };
+    }
   } catch (err) {
     throw err;
   }
@@ -326,10 +327,12 @@ export async function compileFunction(
 
     result = isAsync ? await func(...params) : func(...params);
 
+    const { parsedValue } = parseReturnResult(result);
+
     return {
       functionName,
       isValid: true,
-      returnValue: parseReturnResult(result),
+      returnValue: parsedValue,
       tsFile: runFunctionType.tsFile,
       ...(collectedLogsArr.length > 0 && { logs: collectedLogsArr }),
     };
