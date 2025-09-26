@@ -150,6 +150,7 @@ function InstanceMethodComponent({
                     error={errors[param.paramName]}
                     onChange={handleChange}
                     onValidationChange={handleParamValidation}
+                    isTopLevel={true}
                     instancesAsParamsMap={instancesAsParamsMap}
                   ></ParameterFormControllComponent>
                 </Container>

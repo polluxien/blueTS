@@ -105,6 +105,7 @@ function ObjectParamComponent({
                 onChange={handelInternChange}
                 onValidationChange={handleChildChange}
                 instancesAsParamsMap={paramFormType.instancesAsParamsMap}
+                isTopLevel={false}
                 hideLabel={true}
               />
             </div>
@@ -120,6 +121,7 @@ function ObjectParamComponent({
                 validated={paramFormType.validated}
                 error={paramValidations[objParam.paramName]?.errors[0]}
                 onChange={handelInternChange}
+                isTopLevel={false}
                 onValidationChange={handleChildChange}
               />
             </div>

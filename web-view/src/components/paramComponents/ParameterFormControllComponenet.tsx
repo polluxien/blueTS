@@ -24,6 +24,7 @@ function ParameterFormControllComponent({
   onChange,
   onValidationChange,
   instancesAsParamsMap,
+  isTopLevel = true,
   hideLabel,
 }: ParamFormTypeResource) {
   const typeRes: TypeResource = param.typeInfo;
@@ -116,7 +117,7 @@ function ParameterFormControllComponent({
       if (!onValidationChange || nestedTypes.includes(typeRes.paramType))
         return;
 
-      const { err, parsedValue } = validateFormControllType(param, formValue);
+      const { err, parsedValue } = validateFormControllType(param, formValue, isTopLevel);
 
       console.log("primitive type", parsedValue);
 
@@ -137,6 +138,7 @@ function ParameterFormControllComponent({
     validated,
     error,
     onChange,
+    isTopLevel,
     onValidationChange: handleChildChange,
     instancesAsParamsMap,
   };

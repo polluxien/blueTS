@@ -237,6 +237,7 @@ function GenericParameterComponent({
                         onValidationChange={handleChildChange}
                         onChange={handelInternChange}
                         hideLabel={true}
+                        isTopLevel={false}
                         instancesAsParamsMap={
                           paramFormType.instancesAsParamsMap
                         }
@@ -284,6 +285,7 @@ function GenericParameterComponent({
                     onValidationChange={handleChildChange}
                     onChange={handelInternChange}
                     hideLabel={true}
+                    isTopLevel={false}
                     instancesAsParamsMap={paramFormType.instancesAsParamsMap}
                   />
                 </Col>

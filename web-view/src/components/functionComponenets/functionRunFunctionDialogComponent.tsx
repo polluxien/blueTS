@@ -145,6 +145,7 @@ function FunctionRunFunctionDialogComponent({
                           error={errors[param.paramName]}
                           onChange={handleChange}
                           onValidationChange={handleParameterValidation}
+                          isTopLevel={true}
                           instancesAsParamsMap={instancesAsParamsMap}
                         ></ParameterFormControllComponent>
                       </Container>

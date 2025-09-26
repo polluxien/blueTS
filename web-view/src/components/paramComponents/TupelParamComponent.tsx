@@ -92,6 +92,7 @@ function TupelParamComponent({
               onValidationChange={handleChildChange}
               onChange={handelInternChange}
               hideLabel={true}
+              isTopLevel={false}
               instancesAsParamsMap={paramFormType.instancesAsParamsMap}
             />
           </Col>

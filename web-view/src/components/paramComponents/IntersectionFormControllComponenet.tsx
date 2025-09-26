@@ -1,7 +1,10 @@
 import { Form, FormGroup } from "react-bootstrap";
 
 import { useEffect, useState } from "react";
-import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import type {
+  ParamFormTypeResource,
+  ValidationTypeResource,
+} from "../../ressources/frontend/paramResources";
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources";
 
@@ -51,7 +54,7 @@ function IntersectionParamComponent({
     const myIntersectionValues: unknown[] = [];
     typeRes.intersectionValues?.forEach((_, index) => {
       const validation = paramValidations[getElementName(index)];
-      if (validation && validation.isValid && validation.parsedValue) {
+      if (validation && validation.isValid) {
         myIntersectionValues[index] = validation.parsedValue;
       }
     });
@@ -100,6 +103,7 @@ function IntersectionParamComponent({
                 onValidationChange={handleChildChange}
                 onChange={handelInternChange}
                 hideLabel={true}
+                isTopLevel={false}
                 instancesAsParamsMap={paramFormType.instancesAsParamsMap}
               />
               {i < typeRes.intersectionValues!.length - 1 && (

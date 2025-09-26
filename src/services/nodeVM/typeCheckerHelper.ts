@@ -31,9 +31,6 @@ const isSpecialLockedType = (param: any): param is SpecailLockedType => {
 };
 
 export function normalizeParam(param: any): any[] {
-  if (!param || typeof param !== "object") {
-    return param;
-  }
 
   if (isInstanceParamType(param)) {
     const ins = getInstanceFromInstanceMap(param.instanceName);

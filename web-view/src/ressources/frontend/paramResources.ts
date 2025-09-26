@@ -14,6 +14,7 @@ export type ParamFormTypeResource = {
   ) => void;
 
   instancesAsParamsMap: React.RefObject<Map<string, string[]>>;
+  isTopLevel: boolean;
   hideLabel?: boolean;
   showWarning?: boolean;
   showError?: boolean;

@@ -47,7 +47,7 @@ function UnionParamComponent({
     );
 
     //Fallback null
-    const parsedValue = paramValidations[paramName]
+    const parsedValue = paramValidations[paramName].isValid
       ? paramValidations[paramName].parsedValue
       : null;
 
@@ -127,6 +127,7 @@ function UnionParamComponent({
           error={paramFormType.error}
           onChange={handelInternChange}
           onValidationChange={handleChildChange}
+          isTopLevel={false}
           hideLabel={true}
           instancesAsParamsMap={paramFormType.instancesAsParamsMap}
         />

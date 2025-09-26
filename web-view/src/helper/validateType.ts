@@ -9,7 +9,8 @@ import type {
 
 export function validateFormControllType(
   paramRes: ParameterResource,
-  formValue: string
+  formValue: string,
+  isTopLevel: boolean
 ): ValidationResult {
   const typeRes: TypeResource = paramRes.typeInfo;
 
@@ -26,7 +27,8 @@ export function validateFormControllType(
     (!formValue && (paramRes.isOptional || typeRes.isOptional)) ||
     (formValue === "undefined" && typeRes.typeAsString === "undefined")
   ) {
-    return { parsedValue: { specialLockedType: "undefined" } };
+    if (isTopLevel) return { parsedValue: { specialLockedType: "undefined" } };
+    return { parsedValue: null };
   }
 
   //basic types oder literalType defined
@@ -144,11 +146,13 @@ export function validateFormControllType(
   // ! hier ist der knackpunkt - aber warum?
   //void einziger akzepierter typ undefined deswegen überge -> keine auswahl erlaubt
   if (typeRes.typeAsString === "void") {
-    return { parsedValue: { specialLockedType: "undefined" } };
+    if (isTopLevel) return { parsedValue: { specialLockedType: "undefined" } };
+    return { parsedValue: undefined };
   }
 
   if (typeRes.typeAsString === "null") {
-    return { parsedValue: { specialLockedType: "null" } };
+    if (isTopLevel) return { parsedValue: { specialLockedType: "null" } };
+    return { parsedValue: null };
   }
 
   //never kann niemals vorkommen -> keine auswahl erlaubt -> übergebe nur err

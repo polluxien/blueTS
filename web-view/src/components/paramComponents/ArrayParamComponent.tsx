@@ -126,6 +126,7 @@ function ArrayParameterComponent({
               formValue={internValues[getElementName(i)] || ""}
               validated={paramFormType.validated}
               error={paramValidations[getElementName(i)]?.errors[0]}
+              isTopLevel={false}
               onChange={handelInternChange}
               onValidationChange={handleChildChange}
               instancesAsParamsMap={paramFormType.instancesAsParamsMap}

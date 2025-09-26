@@ -20,7 +20,11 @@ export function validateSubmit(
       // Fallback
       if (!validation) {
         const value = formValues[param.paramName];
-        const { err, parsedValue } = validateFormControllType(param, value);
+        const { err, parsedValue } = validateFormControllType(
+          param,
+          value,
+          true
+        );
 
         if (err) {
           newErrors[param.paramName] = err;
