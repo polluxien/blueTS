@@ -88,7 +88,7 @@ function FunctionRunFunctionDialogComponent({
     const runMethodeInInstanceType: RunFunctionRequestType = {
       functionName: func.functionName,
       params: metParameter,
-      specs: { isAsync: func.specs.isAsync },
+      specs: { isAsync: func.isAsync },
       tsFile: func.tsFile,
     };
     console.log(
@@ -115,7 +115,7 @@ function FunctionRunFunctionDialogComponent({
             <div>
               {/* Hier sind die ganzen specs Aufgelistet als tags zur  info */}
               <div className="d-flex flex-wrap gap-2 mb-2">
-                {func.specs.isAsync && <Badge bg="dark"> async</Badge>}
+                {func.isAsync && <Badge bg="dark"> async</Badge>}
               </div>
               {/* Hier methodName */}
               <p>
@@ -176,7 +176,7 @@ function FunctionRunFunctionDialogComponent({
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" type="submit">
-              run method
+              Run Function
             </Button>
             <Button variant="secondary" type="button" onClick={close}>
               Close

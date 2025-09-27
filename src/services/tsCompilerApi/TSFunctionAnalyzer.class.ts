@@ -37,7 +37,6 @@ export class TSFunctionAnalyzer {
     this.program = this.project.getProgram().compilerObject;
 
     for (let sourceFile of this.project.getSourceFiles()) {
-
       //für klassische Functions
       for (let foo of sourceFile.getFunctions()) {
         const myFunction = this.extractFunction(foo, this.tsFile);
@@ -77,6 +76,7 @@ export class TSFunctionAnalyzer {
       tsFile,
       parameters: this.extractParameters(foo),
       specs: this.extractFunctionSpecs(foo),
+      isAsync: foo.isAsync(),
       returnType: foo.getReturnType().getText(),
     };
     return myFunction;
@@ -120,8 +120,7 @@ export class TSFunctionAnalyzer {
       isDefault = foo.isDefaultExport();
       isExported = foo.isExported();
     }
-    const isAsync = foo.isAsync();
 
-    return { isDefault, isExported, isAsync, functionType };
+    return { isDefault, isExported, functionType };
   }
 }

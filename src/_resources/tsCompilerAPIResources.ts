@@ -67,12 +67,12 @@ export type PropertyResource = {
 export type MethodResource = {
   methodName: string;
   parameters: ParameterResource[];
+  methodKind: "default" | "get" | "set";
+  isAsync: boolean;
   specs: {
-    methodKind: "default" | "get" | "set";
     visibility: "public" | "private" | "protected";
     isStatic: boolean;
     isAbstract: boolean;
-    isAsync: boolean;
   };
   returnType: string;
 };
@@ -95,9 +95,9 @@ export type FunctionResource = {
   functionName: string;
   tsFile: TsFileResource;
   parameters: ParameterResource[];
+  isAsync: boolean;
   specs: {
     isDefault: boolean;
-    isAsync: boolean;
     functionType:
       | "function-declaration"
       | "arrow-function"

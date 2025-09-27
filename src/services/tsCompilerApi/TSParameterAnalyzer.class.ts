@@ -302,7 +302,7 @@ export class TSParameterAnalyzer {
     }
 
     // Use native TS API to get union types - more reliable
-    const unionTsNativTypes = (nativeType as ts.UnionType).types;
+    const unionTsNativTypes = (nativeType as ts.UnionType).types ?? [];
     const unionValues: TypeResource[] = [];
     const booleanLiterals: Type[] = [];
 

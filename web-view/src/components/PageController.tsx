@@ -2,7 +2,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 
 import Switch from "react-switch";
 
-import DirectorySettingsComponent from "./DirectorySettingsComponent.tsx";
 import FunctionViewComponent from "./functionComponenets/FunctionViewComponent.tsx";
 import ObjectViewComponent from "./objectComponents/ObjectViewComponet.tsx";
 import type { DirectoryRespondeType } from "../ressources/response/directoryResponde.ts";
@@ -21,6 +20,7 @@ import type { InstanceResource } from "../ressources/frontend/instanceTypes.ts";
 import { VscodeContext } from "../api/vscodeAPIContext.ts";
 import ConsoleLogComponent from "./ConsoleLogComponent.tsx";
 import { Col, Row } from "react-bootstrap";
+import HeaderComponent from "./HeaderComponent.tsx";
 
 function PageController() {
   const vscode = useContext(VscodeContext);
@@ -412,9 +412,9 @@ function PageController() {
     <div style={{ width: "100%" }}>
       {/* Directory settings */}
       <div className="mb-3 mt-3">
-        <DirectorySettingsComponent
+        <HeaderComponent
           currentDirectoryRes={currentDirectoryRes}
-        ></DirectorySettingsComponent>
+        ></HeaderComponent>
       </div>
 
       {/* View settings */}

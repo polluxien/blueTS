@@ -1,6 +1,6 @@
 {
-  "name": "redj",
-  "displayName": "RedJ",
+  "name": "blueTS",
+  "displayName": "blueTS",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -16,15 +16,15 @@
   "contributes": {
     "commands": [
       {
-        "command": "redj.openExtension",
-        "title": "open redJ extension",
+        "command": "blueTS.openExtension",
+        "title": "open blueTS extension",
         "icon": "$(zap)"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "redj.openExtension",
+          "command": "blueTS.openExtension",
           "group": "navigation",
           "when": "extHasTsFiles"
         }

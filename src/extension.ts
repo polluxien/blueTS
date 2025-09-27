@@ -14,7 +14,7 @@ let currentPanel: Panel | undefined = undefined;
 let showToolbarIcon: boolean = false;
 
 const showInformation = () =>
-  vscode.window.showInformationMessage("redJ geöffnet ");
+  vscode.window.showInformationMessage("blueTS geöffnet ");
 
 export async function activate(context: ExtensionContext) {
   try {
@@ -24,7 +24,7 @@ export async function activate(context: ExtensionContext) {
     //öffne view über Command-Palette -> immer möglich
     //öffne view über toolbar -> if extHasTsFiles
     const openFromToolbarCommand = commands.registerCommand(
-      "redj.openExtension",
+      "blueTS.openExtension",
       () => {
         createPanel(context);
       }

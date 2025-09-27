@@ -5,7 +5,6 @@ import {
   CompileErrorResource,
   TsCodeCheckResource,
 } from "./checkTsCodeManager";
-import { TsFileResource } from "../../_resources/FileResources";
 import { parseReturnResult } from "./nodeHelper";
 import { normalizeParam } from "./typeCheckerHelper";
 import {

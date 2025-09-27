@@ -175,7 +175,7 @@ function CreateClassInstanceDialogComponent({
             Close
           </Button>
           <Button variant="primary" type="submit">
-            create instance
+            Create Instance
           </Button>
         </Modal.Footer>
       </Form>

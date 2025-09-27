@@ -1,6 +1,6 @@
-# redj README
+# blueTS README
 
-This is the README for your extension "redj". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "blueTS". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

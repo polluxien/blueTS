@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 
 //Bootstrap Icons
-import { PlayFill, Plus, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
+import { Dash, PlayFill, QuestionCircle } from "react-bootstrap-icons"; // Bootstrap Icons
 import CompilerErrorModalComponent from "../errorComponents/CompilerErrorModalComponent.tsx";
 import type { FunctionResource } from "../../ressources/backend/tsCompilerAPIResources.ts";
 import FunctionRunFunctionDialogComponent from "./FunctionRunFunctionDialogComponent.tsx";
@@ -119,7 +119,7 @@ function FunctionCardComponent({
                 onClick={openFunctionDialog}
               >
                 <>
-                  <Plus className="me-2" /> Add Instance
+                  <Dash className="me-2" /> Run Function
                 </>
               </Button>
             </Col>

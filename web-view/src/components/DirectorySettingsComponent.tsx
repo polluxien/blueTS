@@ -7,6 +7,12 @@ import { Gear } from "react-bootstrap-icons";
 import type { DirectoryRespondeType } from "../ressources/response/directoryResponde";
 import { VscodeContext } from "../api/vscodeAPIContext";
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// ! currently not used, nicht fertigstellt
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// ? Directory auswahl nicht funktionsfähig
+
 type DirectorySettingsComponentType = {
   currentDirectoryRes: DirectoryRespondeType | undefined;
 };

@@ -74,7 +74,7 @@ export class Panel {
       // wenn nicht exestiert erstelle eins und schiebe nach oben
       const panel = window.createWebviewPanel(
         "reactView", // Identefies Type of Webview
-        "redJ View", // Display Titel
+        "blueTS View", // Display Titel
         ViewColumn.One,
         //Webview Options
         {

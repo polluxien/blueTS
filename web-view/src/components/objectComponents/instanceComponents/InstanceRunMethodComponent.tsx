@@ -92,7 +92,7 @@ function InstanceMethodComponent({
       instanceName: insName,
       methodName: met.methodName,
       params: metParameter,
-      specs: { methodKind: met.specs.methodKind, isAsync: met.specs.isAsync },
+      specs: { methodKind: met.methodKind, isAsync: met.isAsync },
     };
     console.log(
       `run ${met.methodName} in instance ${insName} with value: `,
@@ -114,9 +114,9 @@ function InstanceMethodComponent({
         <Badge bg="dark">{met.specs.visibility}</Badge>
         {met.specs.isStatic && <Badge bg="dark">static</Badge>}
         {met.specs.isAbstract && <Badge bg="dark">abstract</Badge>}
-        {met.specs.isAsync && <Badge bg="dark"> async</Badge>}
-        {met.specs.methodKind !== "default" && (
-          <Badge bg="dark">{met.specs.methodKind}</Badge>
+        {met.isAsync && <Badge bg="dark"> async</Badge>}
+        {met.methodKind !== "default" && (
+          <Badge bg="dark">{met.methodKind}</Badge>
         )}
       </div>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -179,7 +179,7 @@ function InstanceMethodComponent({
         )}
         <div className="mb-4 text-end">
           <Button variant="primary" type="submit">
-            run method
+            Run Method
           </Button>
         </div>
       </Form>

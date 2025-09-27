@@ -107,7 +107,7 @@ function InstanceDialogComponent({
                     methodResults={
                       methodResults
                         ? methodResults?.[
-                            `${method.methodName}.${method.specs.methodKind}`
+                            `${method.methodName}.${method.methodKind}`
                           ]
                         : undefined
                     }
