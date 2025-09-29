@@ -28,7 +28,7 @@ export function validateFormControllType(
     (formValue === "undefined" && typeRes.typeAsString === "undefined")
   ) {
     if (isTopLevel) return { parsedValue: { specialLockedType: "undefined" } };
-    return { parsedValue: null };
+    return { parsedValue: undefined };
   }
 
   //basic types oder literalType defined
@@ -161,27 +161,25 @@ export function validateFormControllType(
   }
 
   if (typeRes.typeAsString === "symbol") {
-    const regexS = /^Symbol\((?:[a-zA-Z_][a-zA-Z0-9_]*|(["'`])(.*?)\1)\)$/;
-    const regexSF = /^Symbol\.for\(["'`](.*?)["'`]\)$/;
+    if (formValue.startsWith("Symbol(") && formValue.endsWith(")")) {
+      const content = formValue.slice(7, -1); // "Symbol(" und ")" entfernen
 
-    // Fall: Symbol("...")
-    if (regexS.test(formValue)) {
-      const match = formValue.match(regexS);
-      // match[2] enthält den Inhalt falls in Quotes, ansonsten ist match[0] ein Identifier
-      const key = match?.[2] ?? "";
-      return { parsedValue: Symbol(key) };
+      // Leer 
+      if (content === "") {
+        return { parsedValue: Symbol() };
+      }
+
+      // String literal - Symbol("text")
+      if (
+        (content.startsWith('"') && content.endsWith('"')) ||
+        (content.startsWith("'") && content.endsWith("'"))
+      ) {
+        const key = content.slice(1, -1);
+        return { parsedValue: Symbol(key) };
+      }
+
+      return { err: new Error("Invalid symbol format") };
     }
-
-    // Fall: Symbol.for("...")
-    if (regexSF.test(formValue)) {
-      const match = formValue.match(regexSF);
-      const key = match?.[1] ?? "";
-      return { parsedValue: Symbol.for(key) };
-    }
-
-    return {
-      err: new Error('Invalid symbol (Symbol("...") or  Symbol.for("...") ) '),
-    };
   }
 
   return { parsedValue: formValue };

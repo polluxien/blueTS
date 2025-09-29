@@ -18,7 +18,7 @@
       {
         "command": "blueTS.openExtension",
         "title": "open blueTS extension",
-        "icon": "$(zap)"
+        "icon": "$(symbol-method)"
       }
     ],
     "menus": {

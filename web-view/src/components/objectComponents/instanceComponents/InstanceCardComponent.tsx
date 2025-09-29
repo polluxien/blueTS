@@ -1,7 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useContext, useState } from "react";
-import InstanceDialogComponent from "./InstanceDialog.tsx";
+import InstanceDialogComponent from "./InstanceDialogComponent.tsx";
 import { Info, Trash } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.ts";

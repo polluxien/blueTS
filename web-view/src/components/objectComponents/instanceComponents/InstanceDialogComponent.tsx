@@ -1,7 +1,7 @@
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-import { Accordion, Alert, Table } from "react-bootstrap";
+import { Accordion, Alert, Badge, Table } from "react-bootstrap";
 import type { VSCodeAPIWrapper } from "../../../api/vscodeAPI.js";
 import InstanceMethodComponent from "./InstanceRunMethodComponent.js";
 import type { InstanceResource } from "../../../ressources/frontend/instanceTypes.js";
@@ -33,7 +33,11 @@ function InstanceDialogComponent({
     );
 
     if (!myProp) {
-      return <>{`${prop.name}: ${prop.type}`}</>;
+      return (
+        <>
+          <strong>{prop.name}: </strong> {prop.type}
+        </>
+      );
     }
 
     return (
@@ -98,7 +102,12 @@ function InstanceDialogComponent({
           <Accordion>
             {ins.methods.map((method, i) => (
               <Accordion.Item eventKey={i + ""}>
-                <Accordion.Header>{method.methodName} </Accordion.Header>
+                <Accordion.Header>
+                  <span className="me-2">{method.methodName}</span>
+                  {method.methodKind !== "default" && (
+                    <Badge bg="secondary">{method.methodKind}</Badge>
+                  )}
+                </Accordion.Header>
                 <Accordion.Body>
                   <InstanceMethodComponent
                     met={method}

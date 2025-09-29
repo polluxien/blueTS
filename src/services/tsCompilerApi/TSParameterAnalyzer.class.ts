@@ -4,7 +4,6 @@ import {
   ParameterResource,
   TypeResource,
 } from "../../_resources/tsCompilerAPIResources";
-import { UnionType } from "typescript";
 
 export class TSParameterAnalyzer {
   private MAX_DEPTH = 10;
@@ -450,55 +449,6 @@ export class TSParameterAnalyzer {
     }
     return { typeAsString, paramType: "enum", enumMembers: [] };
   }
-
-  /*
-  private handleFunctionType(
-    type: Type,
-    typeAsString: string,
-    depth: number,
-    visited: Set<string>
-  ): TypeResource {
-    const signatures = type.getCallSignatures();
-
-    if (signatures.length === 0) {
-      return {
-        typeAsString,
-        paramType: "function",
-        functionRes: {
-          defaultImplementation: "() => {}",
-        },
-      };
-    }
-
-    const signature = signatures[0];
-    const paramCount = signature.getParameters().length;
-    const returnType = signature.getReturnType();
-
-    // Generiere Default-Implementation basierend auf Signatur
-    let defaultImpl = "";
-
-    if (paramCount === 0) {
-      defaultImpl = returnType.isVoid() ? "() => {}" : "() => null";
-    } else {
-      const params = Array.from(
-        { length: paramCount },
-        (_, i) => `param${i}`
-      ).join(", ");
-      defaultImpl = returnType.isVoid()
-        ? `(${params}) => {}`
-        : `(${params}) => null`;
-    }
-
-    return {
-      typeAsString,
-      paramType: "function",
-      functionRes: {
-        defaultImplementation: defaultImpl,
-        returnType: this.typeAnalyzer(returnType, depth, visited),
-      },
-    };
-  }
-    */
 
   private handelObjectType(
     type: Type<ts.ObjectType>,

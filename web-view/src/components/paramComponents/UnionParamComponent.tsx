@@ -20,8 +20,9 @@ function UnionParamComponent({
 }) {
   const typeRes: TypeResource = paramFormType.param.typeInfo;
   const [internValues, setInternValues] = useState<Record<string, string>>({});
-  const [selectedUnionType, setSelectedUnionType] =
-    useState<TypeResource | null>(null);
+  const [selectedUnionType, setSelectedUnionType] = useState<
+    TypeResource | undefined
+  >(undefined);
 
   const [paramValidations, setParamValidations] = useState<
     Record<string, ValidationTypeResource>
@@ -41,21 +42,25 @@ function UnionParamComponent({
   }
 
   useEffect(() => {
-    //sammle alle Errors
-    const allErrors = Object.values(paramValidations).flatMap(
-      (value) => value.errors
-    );
+    try {
+      //sammle alle Errors
+      const allErrors = Object.values(paramValidations).flatMap(
+        (value) => value.errors
+      );
 
-    //Fallback null
-    const parsedValue = paramValidations[paramName].isValid
-      ? paramValidations[paramName].parsedValue
-      : null;
+      //Fallback null
+      const parsedValue = paramValidations[paramName].isValid
+        ? paramValidations[paramName].parsedValue
+        : null;
 
-    paramFormType.onValidationChange!(paramName, {
-      isValid: allErrors.length === 0,
-      errors: allErrors,
-      parsedValue,
-    });
+      paramFormType.onValidationChange!(paramName, {
+        isValid: allErrors.length === 0,
+        errors: allErrors,
+        parsedValue,
+      });
+    } catch (err) {
+      console.warn("Error: ", err);
+    }
   }, [
     paramValidations,
     selectedUnionType,
@@ -92,7 +97,7 @@ function UnionParamComponent({
             active={selectedUnionType?.typeAsString === type.typeAsString}
             onClick={() => {
               if (selectedUnionType?.typeAsString === type.typeAsString) {
-                setSelectedUnionType(null);
+                setSelectedUnionType(undefined);
                 paramFormType.onChange(paramFormType.param.paramName, "");
               } else {
                 setSelectedUnionType(type);

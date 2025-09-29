@@ -24,7 +24,7 @@ export class TSFunctionAnalyzer {
 
   private program: ts.Program | undefined;
 
-  constructor(tsFile: TsFileResource, getAllFunctionTypex: boolean = false) {
+  constructor(tsFile: TsFileResource, getAllFunctionTypex: boolean = true) {
     this.tsFile = tsFile;
     this.getAllFunctionTypex = getAllFunctionTypex;
     this.project = new Project();

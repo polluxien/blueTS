@@ -2,7 +2,10 @@ import { Col, Form, Row } from "react-bootstrap";
 
 import ParameterFormControllComponent from "./ParameterFormControllComponenet";
 import { useEffect, useState } from "react";
-import type { ParamFormTypeResource, ValidationTypeResource } from "../../ressources/frontend/paramResources";
+import type {
+  ParamFormTypeResource,
+  ValidationTypeResource,
+} from "../../ressources/frontend/paramResources";
 import type { TypeResource } from "../../ressources/backend/tsCompilerAPIResources";
 //import { useState } from "react";
 
@@ -38,16 +41,22 @@ function TupelParamComponent({
 
     const myTupel: unknown[] = [];
     for (let i = 0; i < tupelSize; i++) {
-      const validation =
-        paramValidations[`${paramFormType.param.paramName}[${i}]`];
-      if (validation && validation.isValid) {
+      const elementName = getElementName(i);
+      const validation = paramValidations[elementName];
+      const tupleElement = typeRes.tupleElements![i];
+
+      if (validation && validation.isValid ) {
         myTupel.push(validation.parsedValue);
       } else {
-        //Fallback an dieser Stelle ist noch nicht valid
-        myTupel.push("");
+        //Fallbacks
+        if (tupleElement.isOptional) {
+          myTupel.push(undefined);
+        } else {
+          myTupel.push(null);
+        }
       }
     }
-
+    
     paramFormType.onValidationChange!(paramFormType.param.paramName, {
       isValid: allErrors.length === 0,
       errors: allErrors,

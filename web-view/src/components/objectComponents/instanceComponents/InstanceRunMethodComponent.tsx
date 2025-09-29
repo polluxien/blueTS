@@ -114,10 +114,7 @@ function InstanceMethodComponent({
         <Badge bg="dark">{met.specs.visibility}</Badge>
         {met.specs.isStatic && <Badge bg="dark">static</Badge>}
         {met.specs.isAbstract && <Badge bg="dark">abstract</Badge>}
-        {met.isAsync && <Badge bg="dark"> async</Badge>}
-        {met.methodKind !== "default" && (
-          <Badge bg="dark">{met.methodKind}</Badge>
-        )}
+        {met.isAsync && <Badge bg="dark">async</Badge>}
       </div>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         {/* Hier methodName */}

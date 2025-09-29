@@ -122,8 +122,8 @@ export async function checkTsCode(
           const { line, character } = err.file.getLineAndCharacterOfPosition(
             err.start
           );
-          row = line;
-          col = character;
+          row = line + 1;
+          col = character + 1;
         }
         errors.push({ message: errMessage, row, col });
       }
@@ -251,6 +251,8 @@ export async function compileInstanceMethod(
   instance: any,
   runMethodeInInstanceType: RunMethodInInstanceRequestType
 ): Promise<{ result: unknown; collectedLogsArr: string[] }> {
+  collectedLogsArr = [];
+
   const { methodName, params } = runMethodeInInstanceType;
   const { isAsync, methodKind } = runMethodeInInstanceType.specs;
   let result: unknown;
