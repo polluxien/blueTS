@@ -13,7 +13,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> FUNCTION", 
         typeAsString: "() => void",
         paramType: "function",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructorParams![0]).toEqual(expectedParam);
   });
@@ -25,7 +25,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> FUNCTION", 
         typeAsString: "(x: string) => number",
         paramType: "function",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructorParams![1]).toEqual(expectedParam);
   });
@@ -37,7 +37,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> FUNCTION", 
         typeAsString: "(a: number, b: string, c?: boolean) => Promise<string>",
         paramType: "function",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructorParams![2]).toEqual(expectedParam);
   });
@@ -49,7 +49,7 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> FUNCTION", 
         typeAsString: "Function",
         paramType: "function",
       },
-      optional: false,
+      isOptional: false,
     };
     expect(res[0].constructorParams![3]).toEqual(expectedParam);
   });

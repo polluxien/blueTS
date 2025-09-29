@@ -53,7 +53,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[1]).toEqual({
       name: "name",
       type: "string",
-      value: '"Bennet"',
+      value: "Bennet",
     });
   });
 
@@ -80,7 +80,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[4]).toEqual({
       name: "uuid",
       type: "string",
-      value: '"123e4567-e89b-12d3-a456-426614174000"',
+      value: "123e4567-e89b-12d3-a456-426614174000",
     });
   });
 
@@ -89,7 +89,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[5]).toEqual({
       name: "nothing",
       type: "undefined",
-      value: "undefined",
+      value: undefined,
     });
   });
 
@@ -98,9 +98,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[6]).toEqual({
       name: "anything",
       type: "object",
-      value: `{
-  \"foo\": \"bar\"
-}`,
+      value: `{\"foo\":\"bar\"}`,
     });
   });
 
@@ -118,7 +116,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[8]).toEqual({
       name: "gender",
       type: "string",
-      value: '"male"',
+      value: "male",
     });
   });
 
@@ -127,7 +125,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[9]).toEqual({
       name: "role",
       type: "string",
-      value: '"user"',
+      value: "user",
     });
   });
 
@@ -136,7 +134,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[10]).toEqual({
       name: "birthDate",
       type: "object",
-      value: '"2000-01-01T00:00:00.000Z"',
+      value: "2000-01-01T00:00:00.000Z",
     });
   });
 
@@ -145,12 +143,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[11]).toEqual({
       name: "address",
       type: "object",
-      value: `{
-  \"street\": \"Musterstraße\",
-  \"houseNumber\": 12,
-  \"postalCode\": \"12345\",
-  \"city\": \"Berlin\"
-}`,
+      value: `{\"street\":\"Musterstraße\",\"houseNumber\":12,\"postalCode\":\"12345\",\"city\":\"Berlin\"}`,
     });
   });
 
@@ -159,11 +152,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[12]).toEqual({
       name: "tags",
       type: "array",
-      value: `[
-  \"example\",
-  \"test\",
-  \"sample\"
-]`,
+      value: `["example","test","sample"]`,
     });
   });
 
@@ -172,11 +161,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[13]).toEqual({
       name: "scores",
       type: "array",
-      value: `[
-  10,
-  20,
-  30
-]`,
+      value: `[10,20,30]`,
     });
   });
 
@@ -185,14 +170,9 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[14]).toEqual({
       name: "mixedTuple",
       type: "array",
-      value: `[
-  \"Level\",
-  5,
-  true
-]`,
+      value: `[\"Level\",5,true]`,
     });
   });
-
   test("propsResultArr[15]: Map", () => {
     expect(propsResultArr[15]).toBeDefined();
     expect(propsResultArr[15]).toEqual({
@@ -216,7 +196,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[17]).toEqual({
       name: "greet",
       type: "function",
-      value: "[Function: greet]",
+      value: 'function (n) { return "Hallo ".concat(n, "!"); }',
     });
   });
 
@@ -225,7 +205,7 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[18]).toEqual({
       name: "action",
       type: "function",
-      value: "[Function: action]",
+      value: 'function () { return console.log("Aktion ausgeführt"); }',
     });
   });
 
@@ -234,7 +214,17 @@ describe("Erstelle eine Klasse und führe methoden richtig aus", () => {
     expect(propsResultArr[19]).toEqual({
       name: "genericValue",
       type: "string",
-      value: '"defaultValue"',
+      value: "defaultValue",
+    });
+  });
+
+  // ! Stacic eigenschaften werden nicht erkannt
+  test("propsResultArr[20]: genericValue", () => {
+    expect(propsResultArr[20]).toBeDefined();
+    expect(propsResultArr[20]).toEqual({
+      name: "instanceCount",
+      type: "number",
+      value: 0,
     });
   });
 });

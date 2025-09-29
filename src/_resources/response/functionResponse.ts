@@ -7,7 +7,7 @@ export type CompiledFunctionResponseTyp = {
   tsFile: TsFileResource;
   isValid: boolean;
   returnValue?: string;
-  error?: Error;
+  error?: string;
   logs?: string[]
 };
 

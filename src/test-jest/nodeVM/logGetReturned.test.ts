@@ -1,12 +1,9 @@
 import { Path } from "typescript";
-import { InstanceCheckResponseType } from "../../_resources/response/objectResponse";
 import path from "path";
 import { addInstanceToInstanceMap } from "../../services/nodeVM/instanceManager";
-import { CreateClassInstanceRequestType } from "../../_resources/src/request/objectRequest";
-import {
-  compileFunction,
-  RunFunctionType,
-} from "../../services/nodeVM/nodeVMService";
+import { CreateClassInstanceRequestType } from "../../_resources/request/objectRequest";
+import { compileFunction } from "../../services/nodeVM/nodeVMService";
+import { RunFunctionRequestType } from "../../_resources/request/functionRequest";
 
 const tsFile = {
   name: "LogClass.ts",
@@ -53,7 +50,7 @@ describe("Teste ob Logs in Konstruckten erfolgreich erkannt werden --> FUNKTION"
       specs: { isAsync: false },
       tsFile,
       params: [],
-    } as RunFunctionType);
+    } as RunFunctionRequestType);
 
     expect(functionRes).toBeDefined();
     expect(functionRes.error).toBeUndefined();

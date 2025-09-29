@@ -89,6 +89,8 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
     expect(res[0].constructorParams![3]).toEqual(expectedParam);
   });
 
+    // ! erkennt kein null
+
   test("erkenne Eingabeparameter: { name: string } | null", () => {
     const expectedParam = {
       paramName: "objectOrNull",
@@ -157,13 +159,6 @@ describe("Interpretiere alle Eingabeparameter bei Klassen korrekt -> UNION", () 
             paramType: "primitive-basic",
           },
           {
-            functionRes: {
-              defaultImplementation: "() => {}",
-              returnType: {
-                paramType: "void",
-                typeAsString: "void",
-              },
-            },
             typeAsString: "() => void",
             paramType: "function",
           },

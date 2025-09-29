@@ -203,8 +203,8 @@ export async function extractClassInstanceProps(
 
         // Bestimme Typ
         // das funktioniert nur sehr oberflächlich nach transpilierung
+
         if (typeof value === "function") {
-          // ! skippe eventuell function
           type = "function";
         } else if (value === null) {
           type = "null";
@@ -214,28 +214,11 @@ export async function extractClassInstanceProps(
           type = typeof value;
         }
 
-        // Konvertiere Wert zu String
-        let valueStr: string;
-        try {
-          if (typeof value === "function") {
-            valueStr = `[Function: ${propName}]`;
-          } else if (typeof value === "object" && value !== null) {
-            valueStr =
-              JSON.stringify(value, null, 2).substring(0, 100) +
-              (JSON.stringify(value).length > 100 ? "..." : "");
-          } else if (typeof value === "string") {
-            valueStr = `"${String(value)}"`;
-          } else {
-            valueStr = String(value);
-          }
-        } catch (err) {
-          valueStr = "[Nicht serialisierbar]";
-        }
 
         propTypeArr.push({
           name: propName,
-          type,
-          value: valueStr,
+          type: type,
+          value: parseReturnResult(value),
         });
       } catch {
         propTypeArr.push({ name: propName, type: "unknown" });
@@ -338,7 +321,7 @@ export async function compileFunction(
     return {
       functionName,
       isValid: false,
-      error: err instanceof Error ? err : new Error(String(err)),
+      error: err instanceof Error ? err.message : String(err),
       tsFile: runFunctionType.tsFile,
       ...(collectedLogsArr.length > 0 && { logs: collectedLogsArr }),
     };
