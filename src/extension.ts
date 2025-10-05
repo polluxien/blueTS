@@ -17,18 +17,21 @@ const showInformation = () =>
   vscode.window.showInformationMessage("blueTS geöffnet ");
 
 export async function activate(context: ExtensionContext) {
+  console.log('=== blueTS Extension ACTIVATE wurde aufgerufen ===');
+  
   try {
-    //stelle zum Anfang fest ob tsFiles im workspace
     await updateToolbarVisibility();
-
-    //öffne view über Command-Palette -> immer möglich
-    //öffne view über toolbar -> if extHasTsFiles
+    
+    console.log('=== Registriere Command blueTS.openExtension ===');
     const openFromToolbarCommand = commands.registerCommand(
       "blueTS.openExtension",
       () => {
+        console.log('=== Command wurde ausgeführt ===');
         createPanel(context);
       }
     );
+    
+    console.log('=== Command erfolgreich registriert ===');
     context.subscriptions.push(openFromToolbarCommand);
 
     // * VSCode trigger ------------------------------------------

@@ -1,4 +1,3 @@
-import { Uri } from "vscode";
 import { TsFileResource } from "../../_resources/FileResources";
 import { getTSFiles } from "../fileService/fileService";
 import { checkTsCode } from "./nodeVMService";

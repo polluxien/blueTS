@@ -14,7 +14,7 @@
 ## Requirements
 
 - Visual Studio Code Version 1.60.0 oder höher
-- Node.js (für die TypeScript-Kompilierung im Hintergrund)
+- Node.js Version 22 oder höher
 
 ## Installation
 
@@ -24,7 +24,29 @@
 4. Klicke Sie  auf "..." → "Install from VSIX..."
 5. Wähle Sie die heruntergeladene `.vsix` Datei
 
-## Usage
+## Öffnen
+
+Es gibt zwei Möglichkeiten, die blueTS Extension zu öffnen:
+
+### 1. Über das Sidebar-Icon (Empfohlen)
+
+Klicken Sie auf das blueTS-Icon in der Sidebar, um die GUI zu öffnen.
+
+![Öffnen über Sidebar](./assests/open_icon.png)
+
+**Voraussetzung:** Ihr Workspace muss mindestens eine TypeScript-Datei mit analysierbaren Konstrukten (Klassen oder Funktionen) enthalten.
+
+### 2. Über die Befehlspalette
+
+Öffnen Sie die Befehlspalette (`Cmd+Shift+P` oder `Strg+Shift+P`) und suchen Sie nach "open blueTS extension".
+
+![Öffnen über Befehlspalette](./assests/open_CommandPalet.png)
+
+**Voraussetzung:** Keine - diese Methode funktioniert in jedem Workspace.
+
+
+
+## Benutztung
 
 1. Öffnen Sie eine TypeScript-Datei
 2. Die Extension analysiert automatisch alle exportierten Funktionen und Klassen
@@ -51,7 +73,7 @@ export class Calculator {
 
 Die Extension generiert automatisch UI-Formulare für beide - `calculateSum` und `Calculator`.
 
-## Supported Types
+## Unterstützte Typen
 
 - **Primitive**: string, number, boolean, bigint, symbol
 - **Special**: null, undefined, void, never

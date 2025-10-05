@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/vscode-webview": "^1.57.5",
     "bootstrap": "^5.3.7",
+    "typescript": "^5.9.3",
     "bootstrap-icons": "^1.13.1",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
@@ -32,6 +33,6 @@
     "globals": "^16.3.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.4"
+    "vite": "^7.1.9"
   }
 }
