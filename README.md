@@ -1,71 +1,74 @@
-# blueTS README
+# blueTS
 
-This is the README for your extension "blueTS". After writing up a brief description, we recommend including the following sections.
+**blueTS** ist eine VS Code Extension, die TypeScript-Code direkt in VS Code ausführbar macht - ohne separate Build-Schritte oder Terminal-Befehle. Perfekt für schnelles Prototyping, Testing und interaktive TypeScript-Entwicklung.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- **Direkte Code-Ausführung**: TypeScript-Dateien mit einem Klick ausführen
+- **Interaktive UI für Funktionsaufrufe**: Generiert automatisch Formulare für TypeScript-Funktionen mit allen Eingabe-Parametern
+- **Intelligente Type-Validierung**: Unterstützt primitive Typen, Enums, Klassen, Generics (Map, Set, Promise, Record), Arrays, Tuples, Union-Types, Intersection-Types und verschachtelte Objekte
+- **Klassen-Instanzen Management**: Erstelle und verwalte Klasseninstanzen direkt in der UI
+- **Methoden-Aufruf Interface**: Rufe Methoden auf erstellten Instanzen über generierte Formulare auf
+- **Live Type-Checking**: Echtzeit-Validierung während der Eingabe
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Visual Studio Code Version 1.60.0 oder höher
+- Node.js (für die TypeScript-Kompilierung im Hintergrund)
 
-## Extension Settings
+## Installation
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+1. Lade die `.vsix` Datei herunter
+2. Öffne VS Code
+3. Gehe zu Extensions (Cmd+Shift+X / Ctrl+Shift+X)
+4. Klicke auf "..." → "Install from VSIX..."
+5. Wähle die heruntergeladene `.vsix` Datei
 
-For example:
+## Usage
 
-This extension contributes the following settings:
+1. Öffne eine TypeScript-Datei
+2. Die Extension analysiert automatisch alle exportierten Funktionen und Klassen
+3. Nutze die generierte UI um:
+   - Funktionen mit Parametern aufzurufen
+   - Klassen-Instanzen zu erstellen
+   - Methoden auf Instanzen auszuführen
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+### Beispiel
 
-## Known Issues
+```typescript
+export function sum(a: number, b: number): number {
+  return a + b;
+}
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+export class Calculator {
+  constructor(private initialValue: number) {}
+  
+  add(value: number): number {
+    return this.initialValue + value;
+  }
+}
+```
+
+Die Extension generiert automatisch UI-Formulare für beide - `calculateSum` und `Calculator`.
+
+## Supported Types
+
+- **Primitive**: string, number, boolean, bigint, symbol
+- **Special**: null, undefined, void, never
+- **Complex**: Array, Set, Map, Record, Promise
+- **Custom**: Enums, Classes, Interfaces (als Objects)
+- **Advanced**: Union Types, Intersection Types, Tuples, Generics
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Initial release von blueTS:
+- Grundlegende Funktion zum Ausführen von TypeScript-Code
+- UI-Generierung für Funktionsparameter
+- Klassen-Instanzen Management
+- Type-Validierung für primitive und komplexe Typen
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Entwickelt von Bennet Worrmann**

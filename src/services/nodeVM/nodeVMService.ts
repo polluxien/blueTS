@@ -20,6 +20,24 @@ import { RunFunctionRequestType } from "../../_resources/request/functionRequest
  */
 const vm = require("node:vm");
 
+const restrictedRequire = (moduleName: string) => {
+  const blockedModules = [
+    "fs", // Datei
+    "http", // Netzwerk
+    "https", // Netzwerk
+    "os", // Betriebssystem-Info
+    "v8", // V8-Engine-Zugriff
+    "vm", // VM-Modul selbst
+  ];
+
+  if (blockedModules.includes(moduleName)) {
+    throw new Error(
+      `Modul '${moduleName}' ist aus Sicherheitsgründen blockiert`
+    );
+  }
+  return require(moduleName);
+};
+
 //für alle Operationen einheitliches collectedLogsArr
 let collectedLogsArr: string[];
 
@@ -54,7 +72,7 @@ const createNewContext = () => {
     // ? hole alle module
     exports: {},
     module: { exports: {} },
-    require: require,
+    require: restrictedRequire,
 
     // ? für async functions
     Promise: Promise,
@@ -65,7 +83,7 @@ const createNewContext = () => {
     setInterval: setInterval,
     clearInterval: clearInterval,
 
-    // ? global object
+    // ? global object ( {} = kein Zugriff auf Node.js global)
     global: {},
   };
 };
@@ -213,7 +231,6 @@ export async function extractClassInstanceProps(
         } else {
           type = typeof value;
         }
-
 
         propTypeArr.push({
           name: propName,

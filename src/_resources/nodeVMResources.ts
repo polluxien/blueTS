@@ -28,6 +28,11 @@ export type SpecailLockedType = {
   specialLockedType: "undefined" | "null";
 };
 
+export type GenericType = {
+  genericType: "map" | "set" | "promise";
+  values: unknown[];
+};
+
 //checke ob der kompilierte code koreckt ist
 export type verifyContext = {
   context: string;
