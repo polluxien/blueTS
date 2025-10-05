@@ -9,7 +9,6 @@
 - **Intelligente Type-Validierung**: Unterstützt primitive Typen, Enums, Klassen, Generics (Map, Set, Promise, Record), Arrays, Tuples, Union-Types, Intersection-Types und verschachtelte Objekte
 - **Klassen-Instanzen Management**: Erstelle und verwalte Klasseninstanzen direkt in der UI
 - **Methoden-Aufruf Interface**: Rufe Methoden auf erstellten Instanzen über generierte Formulare auf
-- **Live Type-Checking**: Echtzeit-Validierung während der Eingabe
 
 ## Requirements
 
