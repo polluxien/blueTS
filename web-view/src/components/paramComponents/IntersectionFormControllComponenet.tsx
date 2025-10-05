@@ -81,7 +81,7 @@ function IntersectionParamComponent({
         <div
           className="mb-4"
           style={{
-            backgroundColor: "#faffdeff",
+            backgroundColor: "#f6ffef",
             borderRadius: "8px",
             padding: "1.5rem",
           }}

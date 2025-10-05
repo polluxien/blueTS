@@ -42,6 +42,7 @@ function GenericParameterComponent({
   function handelInternChange(paramName: string, value: string) {
     setInternValues((prev) => ({ ...prev, [paramName]: value }));
   }
+
   useEffect(() => {
     //sammle alle Errors
     const allErrors = Object.values(paramValidations).flatMap(
@@ -61,6 +62,8 @@ function GenericParameterComponent({
               arrayValues.push(validation.parsedValue);
             }
           }
+
+          // * das default
           parsedValue = arrayValues;
           break;
         }
@@ -74,28 +77,46 @@ function GenericParameterComponent({
               setValues.push(validation.parsedValue);
             }
           }
-          parsedValue = new Set(setValues);
+          try {
+            const setValue = new Set(setValues);
+            parsedValue = { genericType: "set", values: Array.from(setValue) };
+          } catch (err) {
+            parsedValue = null;
+            console.error("ERROR PARSING VALUE TO SET:", err);
+          }
+
           break;
         }
 
         case "map": {
-          //? Map<K,V> -> new Map([[key1, value1], [key2, value2], ...])
-          const mapEntries = [];
+          const mapEntries: [unknown, unknown][] = [];
+
           for (let i = 0; i < arraySize; i++) {
             const keyValidation = paramValidations[getElementName(0, i)];
             const valueValidation = paramValidations[getElementName(1, i)];
 
             if (
-              keyValidation.parsedValue !== undefined &&
-              valueValidation.parsedValue !== undefined
+              keyValidation?.parsedValue !== undefined &&
+              valueValidation?.parsedValue !== undefined
             ) {
-              mapEntries.push([
+              const entry: [unknown, unknown] = [
                 keyValidation.parsedValue,
                 valueValidation.parsedValue,
-              ]);
+              ];
+              mapEntries.push(entry);
             }
           }
-          // parsedValue = new Map(mapEntries);
+
+          try {
+            const mapValue = new Map(mapEntries);
+            parsedValue = {
+              genericType: "map",
+              entries: Array.from(mapValue.entries()),
+            };
+          } catch (err) {
+            parsedValue = null;
+            console.error("ERROR PARSING VALUE TO MAP:", err);
+          }
           break;
         }
 
@@ -107,11 +128,8 @@ function GenericParameterComponent({
 
             if (
               keyValidation?.parsedValue !== undefined &&
-              valueValidation?.parsedValue !== undefined &&
-              keyValidation.parsedValue !== null &&
-              valueValidation.parsedValue !== null
+              valueValidation?.parsedValue !== undefined
             ) {
-              // Type Guard für den Key
               const key = keyValidation.parsedValue;
               if (typeof key === "string" || typeof key === "number") {
                 recordObj[key] = valueValidation.parsedValue;
@@ -124,8 +142,22 @@ function GenericParameterComponent({
         case "promise": {
           // ? Promise<T> -> Promise.resolve(value)
           const validation = paramValidations[getElementName(0)];
-          if (validation?.parsedValue !== undefined) {
-            parsedValue = Promise.resolve(validation.parsedValue);
+          try {
+            const tryResolvePromise = async () => {
+              if (validation?.parsedValue !== undefined) {
+                //kurzu checken
+                await Promise.resolve(validation.parsedValue);
+                parsedValue = {
+                  genericType: "promise",
+                  value: validation.parsedValue!,
+                };
+              }
+            };
+
+            tryResolvePromise();
+          } catch (err) {
+            parsedValue = null;
+            console.error("ERROR PARSING VALUE TO MAP:", err);
           }
           break;
         }
@@ -150,48 +182,45 @@ function GenericParameterComponent({
       );
     }
 
-    /*
-    //iterier über objParams und füge an jedem attribute geparsed value ein
-    for (let arrayI = 0; arrayI < arraySize; arrayI++) {
-      for (let tupelY = 0; tupelY < genericArgs.length; tupelY++) {
-        const validation = [
-          paramValidations[
-            `${paramFormType.param.paramName}[${tupelY}]_[${arrayI}]`
-          ],
-        ];
-    }
-        */
+    console.log("Parsed VAlue: ", parsedValue);
 
     paramFormType.onValidationChange!(paramFormType.param.paramName, {
       isValid: allErrors.length === 0,
       errors: allErrors,
-      parsedValue,
+      parsedValue: parsedValue ?? null,
     });
-  }, [paramValidations, arraySize]);
+  }, [
+    paramValidations,
+    paramFormType.param.paramName,
+    paramFormType.onValidationChange!,
+  ]);
 
   const getElementName = (tupelIndex: number, ArrayElementIndex?: number) => {
-    return `${paramFormType.param.paramName}[${tupelIndex}]_` +
-      ArrayElementIndex
-      ? `[${ArrayElementIndex}]`
-      : `[0]`;
+    const arrayPart =
+      ArrayElementIndex !== undefined ? `[${ArrayElementIndex}]` : `[0]`;
+
+    return `${paramFormType.param.paramName}[${tupelIndex}]_${arrayPart}`;
   };
 
   const addToArray = () => setArraySize(arraySize + 1);
   const minToArray = () => {
     if (arraySize <= 0) return;
-
     const newSize = arraySize - 1;
     setArraySize(newSize);
 
-    //pop die letezten werte
     setInternValues((prevValues) => {
       const newValues = { ...prevValues };
-      delete newValues[`${newSize}`];
+      for (let y = 0; y < genericArgs.length; y++) {
+        delete newValues[getElementName(y, newSize)];
+      }
       return newValues;
     });
+
     setParamValidations((prevValidations) => {
       const newValidations = { ...prevValidations };
-      delete newValidations[`${paramFormType.param.paramName}[${newSize}]`];
+      for (let y = 0; y < genericArgs.length; y++) {
+        delete newValidations[getElementName(y, newSize)];
+      }
       return newValidations;
     });
   };

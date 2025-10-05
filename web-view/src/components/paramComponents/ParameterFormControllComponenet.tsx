@@ -77,7 +77,7 @@ function ParameterFormControllComponent({
   );
 
   //für verschachtelte Typen vom paramType
-  const nestedTypes = ["union", "tuple", "object", "array"];
+  const nestedTypes = ["union", "tuple", "object", "array", "generic"];
 
   //Nested types -> externe überprüfung schon stattgefunden und muss nur übernommen werden
   useEffect(
