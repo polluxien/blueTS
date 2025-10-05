@@ -1,5 +1,5 @@
 import { ClassResource } from "../../_resources/tsCompilerAPIResources";
-import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.class";
+import { TSClassAnalyzer } from "../../services/analyseService/TSClassAnalyzer.class";
 import { giveMeTSResource } from "../testHelper";
 
 describe("Error Handling und Edge Cases", () => {

@@ -5,7 +5,7 @@ import {
   addInstanceToInstanceMap,
   clearInstanceMap,
   compileMethodInClassObject,
-} from "../../services/nodeVM/instanceManager";
+} from "../../services/compileService/instanceManager";
 import {
   CreateClassInstanceRequestType,
   RunMethodInInstanceRequestType,

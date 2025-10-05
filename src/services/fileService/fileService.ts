@@ -32,6 +32,9 @@ const TEST_FILE_EXCLUDE = [
   ".e2e.ts",
 ];
 
+/**
+ * bringt die die Exclude Pattern für in VSCode lesbare Form
+ */
 function exludeFusionForVSCode() {
   const folderExcludes = DIRECTORY_EXCLUDE.map((ex) => `**/${ex}/**`);
   const testFileExcludes = TEST_FILE_EXCLUDE.map((ex) => `**/*${ex}`);
@@ -40,7 +43,17 @@ function exludeFusionForVSCode() {
   return `{${allExcludes.join(",")}}`;
 }
 
-//wenn refresh true, durchsuche neu (bei Pfadänderung)
+
+/**
+ * 
+ * async service um alle verfügbaren TypeScript-Files in TSFileResourcen umzuwandeln 
+ * 
+ * @param refresh 
+ * @returns TsFileResource[]
+ * 
+ * wenn refresh true, durchsuche neu (bei Pfadänderung)
+
+ */
 export async function getTSFiles(refresh = true): Promise<TsFileResource[]> {
   //bekomme alle TS-Files von ausgewählter Ordnerstrucktur
   if (!tsFilesArr || refresh) {
@@ -53,6 +66,11 @@ export async function getTSFiles(refresh = true): Promise<TsFileResource[]> {
   return tsFilesArr;
 }
 
+/**
+ * async service um anzahl an gefundnen Files zu bestimmen
+ * 
+ * @returns number
+ */
 export async function getTsFilesCount(): Promise<number> {
   const files = await getTSFiles(false);
   return files.length;
@@ -63,6 +81,12 @@ export function resetTsFilesCache(): void {
 }
 
 //rekursive rückgabe nach tsFiles mit rückgabe von Resourcen
+/**
+ * durchsucht einen Pfad nach allen verfügbaren ts-Files und gibt diese in Form von TSFileResourcen zurück
+ * 
+ * @param dirPath 
+ * @returns TsFileResource[]
+ */
 async function getAllTsFilesFromDirectory(
   dirPath: string
 ): Promise<TsFileResource[]> {
@@ -103,7 +127,12 @@ async function getAllTsFilesFromDirectory(
   return tsFileArr;
 }
 
-//rekursive suche nach stimmigen TS-Files als boolean
+/**
+ * rekursive suche nach stimmigen TS-Files als boolean, gibt true zurück bei übereinstimmung eines ts-Files für die
+ * INtegration in den Codeeditor
+ * 
+ * @returns boolean
+ */
 export async function hasTsFilesInDirectory(): Promise<boolean> {
   const workspace = getWorkspace();
   if (!workspace) {

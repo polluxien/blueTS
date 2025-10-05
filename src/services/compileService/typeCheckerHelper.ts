@@ -7,12 +7,14 @@ import {
 } from "../../_resources/nodeVMResources";
 import { getInstanceFromInstanceMap } from "./instanceManager";
 
+
 const isInstanceParamType = (param: any): param is InstanceParamType => {
   return (
     typeof param.className === "string" &&
     typeof param.instanceName === "string"
   );
 };
+
 
 const isRestParamType = (param: any): param is RestParamType => {
   return param !== null && Array.isArray(param.restParams);
@@ -23,6 +25,7 @@ const isEnumParamType = (param: any): param is EnumParamType => {
     typeof param.enumValue === "string" && typeof param.enumMembers === "object"
   );
 };
+
 
 const isSpecialLockedType = (param: any): param is SpecailLockedType => {
   return (
@@ -39,6 +42,14 @@ const isGenericType = (param: any): param is GenericType => {
   );
 };
 
+/**
+ * Parameter nach Typen überprüft welche nicht vom Frontend übergeben werden können im JSON
+ * geschieht rekursiv
+ * darunter enum, null, undefined, map, set, promise, rest
+ * 
+ * @param param 
+ * @returns 
+ */
 export function normalizeParam(param: any): any[] {
   if (isInstanceParamType(param)) {
     const ins = getInstanceFromInstanceMap(param.instanceName);
@@ -69,8 +80,24 @@ export function normalizeParam(param: any): any[] {
     return param.restParams;
   }
 
+  // * ------------------- rekursive durchsuchung ob inerhalb eines objekts, welches nicht definierten mustern entspricht weitere Typen vorhanden sind
+    if (Array.isArray(param)) {
+    return [param.map((item) => normalizeParam(item)[0])];
+  }
+
+  if (typeof param === "object") {
+    const normalizedObj: any = {};
+    for (const [key, value] of Object.entries(param)) {
+      normalizedObj[key] = normalizeParam(value)[0];
+    }
+    return [normalizedObj];
+  }
+  // * -----------------------------------------------------------------------------------------------------------------------------------------------
+
+
   return [param];
 }
+
 
 function createMap(param: any): Map<unknown, unknown> {
   if (!param.entries || !Array.isArray(param.entries)) {

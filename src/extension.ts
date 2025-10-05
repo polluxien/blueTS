@@ -3,7 +3,7 @@ import { Panel } from "./PanelClass";
 import * as vscode from "vscode";
 import { hasTsFilesInDirectory } from "./services/fileService/fileService";
 import { ReturnStatement } from "ts-morph";
-import { dropFilesFromTestedFileMap } from "./services/nodeVM/checkTsCodeManager";
+import { dropFilesFromTestedFileMap } from "./services/compileService/checkTsCodeManager";
 
 /**
  * https://code.visualstudio.com/api/get-started/extension-anatomy

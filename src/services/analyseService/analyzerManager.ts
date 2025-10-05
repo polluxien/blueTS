@@ -7,6 +7,9 @@ import { TSClassAnalyzer } from "./TSClassAnalyzer.class";
 import { getTSFiles } from "../fileService/fileService";
 import { TsFileResource } from "../../_resources/FileResources";
 
+/**
+ * Analysiert alle TS-Dateien im Projekt und extrahiert Klassen-MetaDaten
+ */
 export async function getAlltsClasses(): Promise<ClassResource[]> {
   const classResArr: ClassResource[] = [];
 
@@ -20,6 +23,9 @@ export async function getAlltsClasses(): Promise<ClassResource[]> {
   return classResArr;
 }
 
+/**
+ * Analysiert alle TS-Dateien im Projekt und extrahiert Function-MetaDaten
+ */
 export async function getAlltsFunctions(): Promise<FunctionResource[]> {
   const funcResArr: FunctionResource[] = [];
 
@@ -32,6 +38,9 @@ export async function getAlltsFunctions(): Promise<FunctionResource[]> {
   return funcResArr;
 }
 
+/**
+ * Analysiert spezifische TS-Datei im Projekt und extrahiert Klassen-MetaDaten
+ */
 export async function getFileSpeficClasses(
   tsFile: TsFileResource
 ): Promise<ClassResource[]> {
@@ -40,6 +49,9 @@ export async function getFileSpeficClasses(
   return tsClasses.parse();
 }
 
+/**
+ * Analysiert spezifische TS-Datei im Projekt und extrahiert Funktions-MetaDaten
+ */
 export async function getFileSpeficFunctions(
   tsFile: TsFileResource
 ): Promise<FunctionResource[]> {

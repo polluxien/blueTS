@@ -69,3 +69,15 @@ export type CompiledPropInstanceType = {
   type: string;
   value?: string;
 };
+
+
+export type TsCodeCheckResource = {
+  isValid: boolean;
+  errors: CompileErrorResource[];
+};
+
+export type CompileErrorResource = {
+  message: string;
+  col: number | undefined;
+  row: number | undefined;
+};

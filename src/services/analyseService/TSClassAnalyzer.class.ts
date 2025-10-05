@@ -21,6 +21,10 @@ import {
 
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
+/**
+ * Analysiert TypeScript-Klassen mit ts-morph und extrahiert deren Metadaten.
+ * Erfasst Konstruktor, Methoden, Properties und deren Spezifikationen.
+ */
 export class TSClassAnalyzer {
   private tsFile: TsFileResource;
   private project: Project;
@@ -33,6 +37,9 @@ export class TSClassAnalyzer {
     this.project = new Project();
   }
 
+  /**
+   + Parst alle Klassen in der Datei und gibt ClassResource-Array zurück
+   */
   public parse(): ClassResource[] {
     this.project.addSourceFileAtPath(this.tsFile.path);
 
@@ -56,6 +63,7 @@ export class TSClassAnalyzer {
           methods: this.extractMethodes(cls),
           properties: this.extractProperties(cls),
           specs: {
+            // ! für Protyp ersteinaml herausgenommen -> Fehleranfällig
             extendsClass: undefined, //cls.getExtends()?.getText(),
             implementsInterfaces: [],
             //cls.getImplements().map((impl) => impl.getText()) ?? [],
@@ -67,6 +75,9 @@ export class TSClassAnalyzer {
     return this.classResourceArr;
   }
 
+  /**
+   + holt alle Methoden default, getter und setter einer Klasse
+   */
   private extractMethodes(cls: ClassDeclaration): MethodResource[] {
     const clsName = cls.getName()!;
 
@@ -89,6 +100,9 @@ export class TSClassAnalyzer {
     return methodRessourceArr;
   }
 
+  /**
+   * extrahiere Methoden-Metadaten und gebe MethodResource zurück
+   */
   private methodRessourceBuilder(
     met: MethodDeclaration | GetAccessorDeclaration | SetAccessorDeclaration,
     methodKind: "default" | "get" | "set",
@@ -114,7 +128,7 @@ export class TSClassAnalyzer {
       methodName,
       parameters: this.extractParameters(met, clsName, methodName),
       methodKind,
-              isAsync,
+      isAsync,
       specs: {
         visibility,
         isStatic: met.isStatic(),
@@ -124,6 +138,9 @@ export class TSClassAnalyzer {
     };
   }
 
+  /**
+   * Extrahiert alle Properties einer Klasse in PropertyResourcen
+   */
   private extractProperties(cls: ClassDeclaration): PropertyResource[] {
     const propertyResourceArr: PropertyResource[] = [];
 
@@ -152,6 +169,9 @@ export class TSClassAnalyzer {
     return propertyResourceArr;
   }
 
+  /**
+   * Extrahiert Auruf-Parameter von Methoden/Konstruktoren über TSParameterAnalyzer
+   */
   private extractParameters(
     foo: //Methoden algemein, getter und setter
     | MethodDeclaration

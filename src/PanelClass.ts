@@ -12,21 +12,21 @@ import {
   getAlltsFunctions,
   getFileSpeficClasses,
   getFileSpeficFunctions,
-} from "./services/tsCompilerApi/analyzerManager";
+} from "./services/analyseService/analyzerManager";
 import {
   addInstanceToInstanceMap,
   compileMethodInClassObject,
   deleteInstanceInInstanceMap,
-} from "./services/nodeVM/instanceManager";
+} from "./services/compileService/instanceManager";
 import {
   addAllFilesToTestedFilesMap,
   addFilesToTestedFilesMap,
-} from "./services/nodeVM/checkTsCodeManager";
+} from "./services/compileService/checkTsCodeManager";
 import {
   getWorkspaceRessourceForMessage,
   setWorkspace,
 } from "./services/workspaceService";
-import { compileFunction } from "./services/nodeVM/nodeVMService";
+import { compileFunction } from "./services/compileService/nodeVMService";
 import { RefreshedResponseType } from "./_resources/response/fileCheckResponse";
 import { TsFileResource } from "./_resources/FileResources";
 

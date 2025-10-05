@@ -16,6 +16,10 @@ import {
 } from "../../_resources/tsCompilerAPIResources";
 import { TSParameterAnalyzer } from "./TSParameterAnalyzer.class";
 
+/**
+ * Analysiert TypeScript-Funktionen mit ts-morph und extrahiert deren Metadaten.
+ * Unterstützt Function Declarations, Arrow Functions und Function Expressions.
+ */
 export class TSFunctionAnalyzer {
   private tsFile: TsFileResource;
   private getAllFunctionTypex: boolean;
@@ -30,6 +34,9 @@ export class TSFunctionAnalyzer {
     this.project = new Project();
   }
 
+  /**
+   + Parst alle Funktione in der Datei und gibt FunctionResource-Array zurück
+   */
   public parse(): FunctionResource[] {
     this.project.addSourceFilesAtPaths(this.tsFile.path);
 
@@ -63,6 +70,9 @@ export class TSFunctionAnalyzer {
     return this.functionResourceArr;
   }
 
+  /**
+   * holt alle Funktionen (FunctionDeclaration | FunctionExpression | ArrowFunction) einer Datei
+   */
   private extractFunction(
     foo: FunctionDeclaration | FunctionExpression | ArrowFunction,
     tsFile: TsFileResource,
@@ -82,6 +92,9 @@ export class TSFunctionAnalyzer {
     return myFunction;
   }
 
+  /**
+   * Extrahiere alle Eingabe-Parameter für Funktionsaufruf
+   */
   private extractParameters(
     foo: FunctionDeclaration | FunctionExpression | ArrowFunction
   ): ParameterResource[] {
@@ -93,6 +106,9 @@ export class TSFunctionAnalyzer {
     return parameterRessourceArr;
   }
 
+  /**
+   * extrahiere zusätztliche MetaDAten aus Funktionssignatur für specs-Objekt
+   */
   private extractFunctionSpecs(
     foo: FunctionDeclaration | FunctionExpression | ArrowFunction
   ) {

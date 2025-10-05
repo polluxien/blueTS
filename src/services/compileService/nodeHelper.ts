@@ -1,3 +1,9 @@
+
+/**
+ * liefert Type-Values für aus JavaScript transpilation zurück für Response
+ * @param result - unknown
+ * @returns value - unknown
+ */
 export function parseReturnResult(result: unknown): string {
   /*
   console.log(result);

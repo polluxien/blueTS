@@ -1,5 +1,5 @@
 import path from "path";
-import { compileFunction } from "../../services/nodeVM/nodeVMService";
+import { compileFunction } from "../../services/compileService/nodeVMService";
 import { Path } from "typescript";
 import { RunFunctionRequestType } from "../../_resources/request/functionRequest";
 

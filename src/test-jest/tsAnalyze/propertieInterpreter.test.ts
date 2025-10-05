@@ -1,6 +1,6 @@
 import path from "path";
 import { ClassResource } from "../../_resources/tsCompilerAPIResources";
-import { TSClassAnalyzer } from "../../services/tsCompilerApi/TSClassAnalyzer.class";
+import { TSClassAnalyzer } from "../../services/analyseService/TSClassAnalyzer.class";
 import { Path } from "typescript";
 
 describe("Interpretiere alle Klassen Eigenschaften korrekt -> Properties", () => {

@@ -1,10 +1,11 @@
 import fs from "fs";
 import ts from "typescript";
-import { CompiledPropInstanceType } from "../../_resources/nodeVMResources";
 import {
+  CompiledPropInstanceType,
   CompileErrorResource,
   TsCodeCheckResource,
-} from "./checkTsCodeManager";
+} from "../../_resources/nodeVMResources";
+
 import { parseReturnResult } from "./nodeHelper";
 import { normalizeParam } from "./typeCheckerHelper";
 import {
@@ -20,6 +21,9 @@ import { RunFunctionRequestType } from "../../_resources/request/functionRequest
  */
 const vm = require("node:vm");
 
+/**
+ * Blockiert sicherheitskritische Node.js Module
+ */
 const restrictedRequire = (moduleName: string) => {
   const blockedModules = [
     "fs", // Datei
@@ -38,7 +42,8 @@ const restrictedRequire = (moduleName: string) => {
   return require(moduleName);
 };
 
-//für alle Operationen einheitliches collectedLogsArr
+// ? Sammelt alle Console-Outputs während der Code-Ausführung
+// für alle Operationen einheitliches collectedLogsArr
 let collectedLogsArr: string[];
 
 const setConsoleLogTxt = (logType: string, ...args: any[]) => {
@@ -88,6 +93,7 @@ const createNewContext = () => {
   };
 };
 
+// traspiliert ts -> js
 function compileTS(filePath: string): string {
   const tsCode = fs.readFileSync(filePath, { encoding: "utf8" });
   return ts.transpileModule(tsCode, {
@@ -95,6 +101,7 @@ function compileTS(filePath: string): string {
   }).outputText;
 }
 
+// Führt JavaScript-Code in isoliertem VM-Kontext aus
 function runInVM(jsCode: string, timeout = 5000) {
   collectedLogsArr = [];
 
@@ -106,6 +113,8 @@ function runInVM(jsCode: string, timeout = 5000) {
 }
 
 /**
+ * Prüft TypeScript-Code auf Syntax- und Laufzeitfehler
+ *
  * es ist mir leider nicht möglich spezifische teile (KLassen, Funktionen, Module) zu testen
  * ganze Datei -> immer als einheit kompiliert
  */
@@ -163,6 +172,9 @@ export async function checkTsCode(
   }
 }
 
+/**
+ * Erstellt Klasseninstanz in VM mit übergebenen Konstruktorparametern
+ */
 export async function createClassInstanceVM(
   createClsInstanceRes: CreateClassInstanceRequestType
 ): Promise<{ myInstance: object; collectedLogsArr: string[] }> {
@@ -193,6 +205,10 @@ export async function createClassInstanceVM(
   }
 }
 
+/**
+ * Extrahiert alle Properties einer Instanz mit Name, Typ und Wert
+ * Typerkennung funktioniert nach Transpilierung nur oberflächlich
+ */
 export async function extractClassInstanceProps(
   instance: any
 ): Promise<CompiledPropInstanceType[]> {
@@ -247,6 +263,9 @@ export async function extractClassInstanceProps(
   return propTypeArr;
 }
 
+/**
+ * Führt Methode auf Instanz aus default/get/set
+ */
 export async function compileInstanceMethod(
   instance: any,
   runMethodeInInstanceType: RunMethodInInstanceRequestType
@@ -296,6 +315,9 @@ export async function compileInstanceMethod(
   }
 }
 
+/**
+ * Führt Funktion in VM aus
+ */
 export async function compileFunction(
   runFunctionType: RunFunctionRequestType
 ): Promise<CompiledFunctionResponseTyp> {
@@ -344,7 +366,9 @@ export async function compileFunction(
     };
   }
 }
-
+/**
+ * helper -> Findet Klasse oder Funktion innerhalb VM-Kontext
+ */
 function identifyClassOrFunction(context: any, modulName: string) {
   //Klasse/Function von typ function da js sie so wertet
 

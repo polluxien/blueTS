@@ -18,20 +18,23 @@ import {
 } from "./nodeVMService";
 import { normalizeParam } from "./typeCheckerHelper";
 
-// ! eventuell hier ehr Map<string, {VM-Objectobject, MorphInstanceAnalyse[] ,PropInstanceType[]}>
-
-//Map<instanceName, [instanceObject, CurrentProps]>
+// Map zur Verwaltung aller erstellten Klasseninstanzen
+// ? Map<instanceName, [instanceObject, CurrentProps]>
 const instanceMap = new Map<string, [object, CompiledPropInstanceType[]]>([]);
 
 export function deleteInstanceInInstanceMap(instanceName: string) {
   instanceMap.delete(instanceName);
 }
 
-//ehr zum testen
+//? für jest tests
 export function clearInstanceMap() {
   instanceMap.clear();
 }
 
+/**
+ * Gibt eine Instanz aus der Map zurück
+ * @param getProps - true: gibt Tupel [Instanz, Props] zurück, false: nur Instanz
+ */
 export function getInstanceFromInstanceMap(
   instanceName: string,
   getProps: boolean = false
@@ -43,6 +46,9 @@ export function getInstanceFromInstanceMap(
   return getProps ? tupelValue : tupelValue[0];
 }
 
+/**
+ * Aktualisiert die Properties einer Instanz in der Map
+ */
 function setNewProps(
   instanceName: string,
   newProps: CompiledPropInstanceType[]
@@ -54,6 +60,9 @@ function setNewProps(
   instanceMap.set(instanceName, [tupelValue[0], newProps]);
 }
 
+/**
+ * Erstellt eine neue Instance in der Node-VM und fügt isolierete Context-Umgebung zur Map hinzu.
+ */
 export async function addInstanceToInstanceMap(
   createClsInstanceRes: CreateClassInstanceRequestType
 ): Promise<InstanceCheckResponseType> {
@@ -72,7 +81,7 @@ export async function addInstanceToInstanceMap(
 
     let myCreateClsInstanceRes = createClsInstanceRes;
 
-    //übergebenen params nach instances checken
+    //übergebenen params nach auflösungs-types checken
     myCreateClsInstanceRes.params =
       myCreateClsInstanceRes.params.flatMap(normalizeParam);
 
@@ -104,6 +113,10 @@ export async function addInstanceToInstanceMap(
   return result;
 }
 
+/**
+ * Führt eine Methode auf einer Klasseninstanz aus.
+ * Vergleicht Properties vor/nach Ausführung und gibt bei Änderungen die neuen Props zurück.
+ */
 export async function compileMethodInClassObject(
   runMethodeInInstanceType: RunMethodInInstanceRequestType
 ): Promise<CompiledMethodInInstanceResponseTyp> {

@@ -1,8 +1,8 @@
 import { Path } from "typescript";
 import path from "path";
-import { addInstanceToInstanceMap } from "../../services/nodeVM/instanceManager";
+import { addInstanceToInstanceMap } from "../../services/compileService/instanceManager";
 import { CreateClassInstanceRequestType } from "../../_resources/request/objectRequest";
-import { compileFunction } from "../../services/nodeVM/nodeVMService";
+import { compileFunction } from "../../services/compileService/nodeVMService";
 import { RunFunctionRequestType } from "../../_resources/request/functionRequest";
 
 const tsFile = {

@@ -1,6 +1,6 @@
 import { Path } from "typescript";
 import path from "path";
-import { addInstanceToInstanceMap } from "../../services/nodeVM/instanceManager";
+import { addInstanceToInstanceMap } from "../../services/compileService/instanceManager";
 import { InstanceCheckResponseType } from "../../_resources/response/objectResponse";
 import { CreateClassInstanceRequestType } from "../../_resources/request/objectRequest";
 

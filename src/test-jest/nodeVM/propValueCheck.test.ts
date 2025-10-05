@@ -4,7 +4,7 @@ import { Path } from "typescript";
 import {
   addInstanceToInstanceMap,
   clearInstanceMap,
-} from "../../services/nodeVM/instanceManager";
+} from "../../services/compileService/instanceManager";
 import { CompiledPropInstanceType } from "../../_resources/nodeVMResources";
 import { CreateClassInstanceRequestType } from "../../_resources/request/objectRequest";
 import { InstanceCheckResponseType } from "../../_resources/response/objectResponse";

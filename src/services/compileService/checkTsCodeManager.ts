@@ -2,27 +2,28 @@ import { Uri } from "vscode";
 import { TsFileResource } from "../../_resources/FileResources";
 import { getTSFiles } from "../fileService/fileService";
 import { checkTsCode } from "./nodeVMService";
+import { TsCodeCheckResource } from "../../_resources/nodeVMResources";
 
+// hier werden alle Filenmamen mit entsprechnden Syntax-Validierungen hinterlegt
+// ? Map<fileName, TsCodeCheckResource>
 const myTestedFileMap = new Map<string, TsCodeCheckResource>([]);
 
-//nach dopplungen filter
+/**
+ * wird genutzt um dopplungen herauszufiltern aus den Files und nur die Filenamen zu extrahieren
+ * 
+ * @param tsFiles 
+ * @returns Set<string>
+ */
 function filterFiles(tsFiles: TsFileResource[]) {
   const myFileSet = new Set<string>();
   tsFiles.forEach((file) => myFileSet.add(file.path));
   return myFileSet;
 }
 
-export type TsCodeCheckResource = {
-  isValid: boolean;
-  errors: CompileErrorResource[];
-};
-
-export type CompileErrorResource = {
-  message: string;
-  col: number | undefined;
-  row: number | undefined;
-};
-
+/**
+ * Lädt alle TS-Dateien, prüft Syntax und fügt zur Map hinzu.
+ * Gibt Tupel-Array zurück, da Maps nicht serialisierbar sind.
+ */
 export async function addAllFilesToTestedFilesMap(): Promise<
   [string, TsCodeCheckResource][]
 > {
@@ -44,6 +45,9 @@ export async function addAllFilesToTestedFilesMap(): Promise<
   return Array.from(myTestedFileMap.entries());
 }
 
+/**
+ * Fügt einzelne Datei zur Map hinzu (wird bei File-Änderungen manuell vom Frontend abgefragt)
+ */
 export async function addFilesToTestedFilesMap(
   tsFileRes: TsFileResource
 ): Promise<TsCodeCheckResource> {
@@ -58,6 +62,9 @@ export async function addFilesToTestedFilesMap(
   return result;
 }
 
+/**
+ * Entfernt Datei aus Map wird bei Dateiänderung abgerufen
+ */
 export function dropFilesFromTestedFileMap(filepath: string): boolean {
   if (!myTestedFileMap.get(filepath)) {
     return false;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
-import { List, Trash } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
 
 function ConsoleLogComponent({
   logsAsStringArr,
@@ -9,17 +9,13 @@ function ConsoleLogComponent({
 }) {
   const [logs, setLogs] = useState<string[]>([]);
 
-  const addLog = (message: string) => {
-    setLogs((prev) => [...prev, message]);
-  };
-
   const clearLog = () => {
     setLogs([]);
   };
 
   useEffect(() => {
     if (logsAsStringArr && logsAsStringArr.length > 0) {
-      setLogs(logsAsStringArr); 
+      setLogs(logsAsStringArr);
     }
   }, [logsAsStringArr]);
 
@@ -50,17 +46,6 @@ function ConsoleLogComponent({
                 aria-label="Clear Log"
               >
                 <Trash size={16} />
-              </Button>
-              <Button
-                variant="link"
-                size="sm"
-                className="p-0 text-dark"
-                onClick={() =>
-                  addLog(new Date().toLocaleTimeString() + " Hello")
-                }
-                aria-label="Refresh"
-              >
-                <List size={16} />
               </Button>
             </div>
           </div>

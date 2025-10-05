@@ -5,16 +5,22 @@ import {
   TypeResource,
 } from "../../_resources/tsCompilerAPIResources";
 
+/**
+ * Analysiert TypeScript-Parameter und deren komplexe Type-Strukturen
+ * Nutzt sowohl ts-morph als auch native TypeScript Compiler API für vollständige Type-Informationen
+ */
 export class TSParameterAnalyzer {
   private MAX_DEPTH = 10;
-
   private checker;
 
   constructor(private param: ParameterDeclaration, program: ts.Program) {
     this.checker = program.getTypeChecker();
   }
 
-  //default param-analyser
+  /**
+   * Extrahiert Parameter-Metadaten
+   * wird einmal pro Parameter aufgerufen
+   */
   public paramAnalyzer(
     param: ParameterDeclaration = this.param
   ): ParameterResource {
@@ -51,7 +57,9 @@ export class TSParameterAnalyzer {
     return this.checker!.getTypeAtLocation(this.param.compilerNode);
   }
 
-  //type-analyser
+  /**
+   * type-analyser sogrgt für korregte Umsetztung der definierten regeln und checks
+   */
   private typeAnalyzer(
     type: Type,
     depth: number = 0,
@@ -98,6 +106,10 @@ export class TSParameterAnalyzer {
   }
 
   //untersuche Typen
+  /**
+   * eigentlicher analyzer 
+   * durch switch case pattern werden typen abgeleitet oder verantwortlichen Fucktionen zugewiesen 
+   */
   private analyzeTypeSeperate(
     type: Type,
     depth: number,
