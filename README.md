@@ -18,17 +18,17 @@
 
 ## Installation
 
-1. Lade die `.vsix` Datei herunter
-2. Öffne VS Code
-3. Gehe zu Extensions (Cmd+Shift+X / Ctrl+Shift+X)
-4. Klicke auf "..." → "Install from VSIX..."
-5. Wähle die heruntergeladene `.vsix` Datei
+1. Lade Sie die `.vsix` Datei herunter
+2. Öffnen Sie Visual Studio Code
+3. Gehe Sie zu Extensions (Cmd+Shift+X / Ctrl+Shift+X)
+4. Klicke Sie  auf "..." → "Install from VSIX..."
+5. Wähle Sie die heruntergeladene `.vsix` Datei
 
 ## Usage
 
-1. Öffne eine TypeScript-Datei
+1. Öffnen Sie eine TypeScript-Datei
 2. Die Extension analysiert automatisch alle exportierten Funktionen und Klassen
-3. Nutze die generierte UI um:
+3. Nutzen Sie die generierte UI um:
    - Funktionen mit Parametern aufzurufen
    - Klassen-Instanzen zu erstellen
    - Methoden auf Instanzen auszuführen
@@ -55,9 +55,7 @@ Die Extension generiert automatisch UI-Formulare für beide - `calculateSum` und
 
 - **Primitive**: string, number, boolean, bigint, symbol
 - **Special**: null, undefined, void, never
-- **Complex**: Array, Set, Map, Record, Promise
-- **Custom**: Enums, Classes, Interfaces (als Objects)
-- **Advanced**: Union Types, Intersection Types, Tuples, Generics
+- **Complex**: Array, Set, Map, Record, Promise, Enums, Classes, Interfaces (als Objects), Union Types, Intersection Types, Tuples
 
 ## Release Notes
 
