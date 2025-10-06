@@ -1,6 +1,6 @@
 # blueTS
 
-**blueTS** ist eine VS Code Extension, die TypeScript-Code direkt in VS Code ausführbar macht - ohne separate Build-Schritte oder Terminal-Befehle. Perfekt für schnelles Prototyping, Testing und interaktive TypeScript-Entwicklung.
+**VSCode-Extension zur Bereitstellung einer GUI zum direkten Aufruf von in TypeScript geschriebenen Funktionen oder Methoden ähnlich BlueJ**
 
 ## Features
 
@@ -20,7 +20,7 @@
 1. Lade Sie die `.vsix` Datei herunter
 2. Öffnen Sie Visual Studio Code
 3. Gehe Sie zu Extensions (Cmd+Shift+X / Ctrl+Shift+X)
-4. Klicke Sie  auf "..." → "Install from VSIX..."
+4. Klicke Sie auf "..." → "Install from VSIX..."
 5. Wähle Sie die heruntergeladene `.vsix` Datei
 
 ## Öffnen
@@ -43,8 +43,6 @@ Klicken Sie auf das blueTS-Icon in der Sidebar, um die GUI zu öffnen.
 
 **Voraussetzung:** Keine - diese Methode funktioniert in jedem Workspace.
 
-
-
 ## Benutztung
 
 1. Öffnen Sie eine TypeScript-Datei
@@ -63,14 +61,14 @@ export function sum(a: number, b: number): number {
 
 export class Calculator {
   constructor(private initialValue: number) {}
-  
+
   add(value: number): number {
     return this.initialValue + value;
   }
 }
 ```
 
-Die Extension generiert automatisch UI-Formulare für beide - `calculateSum` und `Calculator`.
+Die Extension generiert automatisch UI-Formulare für beide - `sum` und `Calculator`.
 
 ## Unterstützte Typen
 
@@ -83,6 +81,7 @@ Die Extension generiert automatisch UI-Formulare für beide - `calculateSum` und
 ### 0.0.1
 
 Initial release von blueTS:
+
 - Grundlegende Funktion zum Ausführen von TypeScript-Code
 - UI-Generierung für Funktionsparameter
 - Klassen-Instanzen Management
